@@ -3,9 +3,9 @@
 App for finding apartments to rent
 
 ## References
+- [Indroduction Screen Widget](https://github.com/pyozer/introduction_screen)
 
 ## Getting Started
-- [Indroduction Screen Widget](https://github.com/pyozer/introduction_screen)
 
 This project is a starting point for a Flutter application.
 

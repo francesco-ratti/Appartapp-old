@@ -1,5 +1,6 @@
 
 
+import 'package:appartapp/pages/login.dart';
 import 'package:flutter/material.dart';
 
 import 'package:appartapp/pages/loading.dart';
@@ -17,6 +18,7 @@ void main() {
       '/first': (context) => First(),
       '/home': (context) => Home(),
       '/loginorsignup': (context) => LoginOrSignup(),
+      '/login': (context) => Login(),
     },
   ));
 }

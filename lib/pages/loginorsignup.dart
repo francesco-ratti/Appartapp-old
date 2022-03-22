@@ -10,8 +10,7 @@ class LoginOrSignup extends StatelessWidget {
 
     return Scaffold(
         backgroundColor: bgColor,
-        body: SafeArea(
-            child: Center(
+        body: Center(
               child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
@@ -24,17 +23,19 @@ class LoginOrSignup extends StatelessWidget {
                     Padding(
                         padding: EdgeInsets.all(16.0),
                         child: Text(
-                          "Fai il login o crea un account",
+                          "Accedi o crea un account",
                           style: TextStyle(fontSize: 20),
                         )),
                     SignInButton(
                       Buttons.Email,
-                      text: "Login",
-                      onPressed: () {},
+                      text: "Accedi tramite e-mail",
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/login');
+                      },
                     ),
                     SignInButton(
                       Buttons.Email,
-                      text: "Registrati",
+                      text: "Registrati tramite e-mail",
                       onPressed: () {},
                     ),
                     SignInButton(
@@ -43,6 +44,6 @@ class LoginOrSignup extends StatelessWidget {
                       onPressed: () {},
                     )
                   ]),
-            )));
+            ));
   }
 }

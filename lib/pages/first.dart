@@ -5,20 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class First extends StatefulWidget {
-
-  @override
-  _First createState() => _First();
-}
-
-class _First extends State<First> {
-
+class First extends StatelessWidget {
   late SharedPreferences prefs;
+  bool gotPrefs=false;
 
   @override
   void initState() {
   }
-
 
   List<PageViewModel> listPagesViewModel = [
     PageViewModel(
@@ -40,7 +33,13 @@ class _First extends State<First> {
   ];
   @override
   Widget build(BuildContext context) {
-    prefs=ModalRoute.of(context)!.settings.arguments as SharedPreferences;
+    if (!gotPrefs) {
+      prefs = ModalRoute
+          .of(context)!
+          .settings
+          .arguments as SharedPreferences;
+      gotPrefs = true;
+    }
 
     Color bgColor = Colors.red;
 

@@ -13,7 +13,7 @@ class _LoadingState extends State<Loading> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await Future.delayed(Duration(seconds: 1));
     bool? TourCompleted=prefs.getBool('tourcompleted');
-    if (TourCompleted==true) {
+    if (false) {
       Navigator.pushReplacementNamed(context, '/loginorsignup', arguments: prefs);
     } else {
       Navigator.pushReplacementNamed(context, '/first', arguments: prefs);

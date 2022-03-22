@@ -14,7 +14,7 @@ class _LoadingState extends State<Loading> {
     await Future.delayed(Duration(seconds: 1));
     bool? TourCompleted=prefs.getBool('tourcompleted');
     if (TourCompleted==true) {
-      Navigator.pushReplacementNamed(context, '/login', arguments: prefs);
+      Navigator.pushReplacementNamed(context, '/loginorsignup', arguments: prefs);
     } else {
       Navigator.pushReplacementNamed(context, '/first', arguments: prefs);
     }

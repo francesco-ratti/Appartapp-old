@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 
+
 import 'package:flutter/material.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 
@@ -37,6 +38,7 @@ class _First extends State<First> {
       next: const Icon(Icons.arrow_forward),
       onDone: () {
         // When done button is press
+        Navigator.pushReplacementNamed(context, '/loginorsignup');
       },
     ); //Material App
   }

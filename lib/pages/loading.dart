@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Loading extends StatefulWidget {
   @override
@@ -7,15 +8,15 @@ class Loading extends StatefulWidget {
 }
 
 class _LoadingState extends State<Loading> {
-  bool isFirstLaunch = true;
 
   void setup() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     await Future.delayed(Duration(seconds: 1));
-    if (isFirstLaunch) {
-      isFirstLaunch = false;
-      Navigator.pushReplacementNamed(context, '/first', arguments: {});
+    bool? TourCompleted=prefs.getBool('tourcompleted');
+    if (TourCompleted==true) {
+      Navigator.pushReplacementNamed(context, '/login', arguments: prefs);
     } else {
-      Navigator.pushReplacementNamed(context, '/home', arguments: {});
+      Navigator.pushReplacementNamed(context, '/first', arguments: prefs);
     }
   }
 

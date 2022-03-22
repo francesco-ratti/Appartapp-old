@@ -3,13 +3,23 @@
 
 import 'package:flutter/material.dart';
 import 'package:introduction_screen/introduction_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class First extends StatefulWidget {
+
   @override
   _First createState() => _First();
 }
 
 class _First extends State<First> {
+
+  late SharedPreferences prefs;
+
+  @override
+  void initState() {
+  }
+
+
   List<PageViewModel> listPagesViewModel = [
     PageViewModel(
         title: "Initial",
@@ -30,6 +40,8 @@ class _First extends State<First> {
   ];
   @override
   Widget build(BuildContext context) {
+    prefs=ModalRoute.of(context)!.settings.arguments as SharedPreferences;
+
     Color bgColor = Colors.red;
 
     return IntroductionScreen(
@@ -38,6 +50,7 @@ class _First extends State<First> {
       next: const Icon(Icons.arrow_forward),
       onDone: () {
         // When done button is press
+        prefs.setBool('tourcompleted', true);
         Navigator.pushReplacementNamed(context, '/loginorsignup');
       },
     ); //Material App

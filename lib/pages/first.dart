@@ -1,57 +1,61 @@
 // ignore_for_file: prefer_const_constructors
 
-
 import 'package:flutter/material.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class First extends StatelessWidget {
   late SharedPreferences prefs;
-  bool gotPrefs=false;
+  bool gotPrefs = false;
 
   @override
-  void initState() {
-  }
+  void initState() {}
 
   List<PageViewModel> listPagesViewModel = [
     PageViewModel(
-        title: "Initial",
-        body: "Welcome in appartapp",
-        image: Image.asset('assets/Background.jpeg')),
+        title: "Benvenuto!\n",
+        body: "Fai swipe agli appartamenti.\n\nFai swipe agli inquilini.",
+        decoration: const PageDecoration(
+          pageColor: Colors.white,
+        ),
+        image: Image.asset('assets/appart.tiff')),
     PageViewModel(
-        title: "This is a tour",
-        body: "Of this new application",
-        image: Image.asset('assets/Background1.jpeg')),
+        title: "Simmetria informativa",
+        body:
+            "Vedrai sempre tutte le informazioni necessarie per una scelta informata.  ",
+        image: Image.asset('assets/simmetria.tiff')),
     PageViewModel(
-        title: "Are you ready?",
-        body: "Discover what you can do",
-        image: Image.asset('assets/Background2.jpeg')),
+        title: "Abbattiamo i costi",
+        body: "Nessuna agenzia. Nessuna sorpresa.",
+        image: Image.asset('assets/soldi.tiff')),
     PageViewModel(
-        title: "Press Done",
-        body: "Have a nice experiece",
-        image: Image.asset('assets/Background3.jpeg')),
+        title: "Senza discriminazioni",
+        body:
+            "La foto di un inquilino sarà disponibile solo dopo aver espresso una preferenza alla sua biografia.",
+        image: Image.asset('assets/noDiscriminazione.tiff')),
   ];
   @override
   Widget build(BuildContext context) {
     if (!gotPrefs) {
-      prefs = ModalRoute
-          .of(context)!
-          .settings
-          .arguments as SharedPreferences;
+      prefs = ModalRoute.of(context)!.settings.arguments as SharedPreferences;
       gotPrefs = true;
     }
 
-    Color bgColor = Colors.red;
-
     return IntroductionScreen(
       pages: listPagesViewModel,
-      done: const Text("Done", style: TextStyle(fontWeight: FontWeight.w600)),
-      next: const Icon(Icons.arrow_forward),
+      done: const Text("Done",
+          style: TextStyle(fontWeight: FontWeight.w600, color: Colors.black)),
+      next: const Icon(
+        Icons.arrow_forward,
+        color: Colors.black,
+      ),
+      globalBackgroundColor: Colors.white,
       onDone: () {
         // When done button is press
         prefs.setBool('tourcompleted', true);
         Navigator.pushReplacementNamed(context, '/loginorsignup');
       },
+      dotsDecorator: const DotsDecorator(activeColor: Colors.black),
     ); //Material App
   }
 }

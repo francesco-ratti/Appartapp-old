@@ -14,24 +14,133 @@ class First extends StatelessWidget {
   List<PageViewModel> listPagesViewModel = [
     PageViewModel(
         title: "Benvenuto!\n",
-        body: "Fai swipe agli appartamenti.\n\nFai swipe agli inquilini.",
-        decoration: const PageDecoration(
-          pageColor: Colors.white,
-        ),
+        //body: "Fai swipe agli appartamenti.\n\nFai swipe agli inquilini.",
+        bodyWidget:
+            Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+          Container(
+            padding: EdgeInsets.fromLTRB(0, 20, 0, 50),
+            child: Text(
+              "Fai swipe agli appartamenti\nFai swipe agli inquilini",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  fontSize: 18,
+                  fontFamily: "Raleway",
+                  wordSpacing: 2,
+                  letterSpacing: 0.6),
+            ),
+          ),
+          Container(
+            padding: EdgeInsets.only(bottom: 30, top: 30),
+            child: Column(children: [
+              Container(
+                  padding: EdgeInsets.only(bottom: 15),
+                  child: Image.asset(
+                    'assets/swipe-left.png',
+                    height: 34,
+                    width: 34,
+                  )),
+              Text(
+                "swipe",
+                style: TextStyle(letterSpacing: 2),
+              ),
+            ]),
+          )
+        ]),
         image: Image.asset('assets/appart.tiff')),
     PageViewModel(
-        title: "Simmetria informativa",
-        body:
-            "Vedrai sempre tutte le informazioni necessarie per una scelta informata.  ",
+        title: "Non lasciare nulla al caso ",
+        //body:"Vedrai sempre tutte le informazioni necessarie per una scelta informata.  ",
+        bodyWidget: Container(
+            padding: EdgeInsets.symmetric(horizontal: 20),
+            child:
+                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+              Container(
+                padding: EdgeInsets.fromLTRB(0, 20, 0, 50),
+                child: Text(
+                  "Vedrai sempre tutte le informazioni necessarie per una scelta informata.",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      fontSize: 18,
+                      fontFamily: "Raleway",
+                      wordSpacing: 2,
+                      letterSpacing: 0.6),
+                ),
+              ),
+              Container(
+                padding: EdgeInsets.only(bottom: 30, top: 30),
+                child: Column(children: [
+                  Container(
+                      padding: EdgeInsets.only(bottom: 15),
+                      child: Image.asset(
+                        'assets/swipe-left.png',
+                        height: 34,
+                        width: 34,
+                      )),
+                  Text(
+                    "swipe",
+                    style: TextStyle(letterSpacing: 2),
+                  ),
+                ]),
+              )
+            ])),
         image: Image.asset('assets/simmetria.tiff')),
     PageViewModel(
         title: "Abbattiamo i costi",
-        body: "Nessuna agenzia. Nessuna sorpresa.",
+        //body: "Nessuna agenzia. Nessuna sorpresa.",
+        bodyWidget: Container(
+            padding: EdgeInsets.symmetric(horizontal: 20),
+            child:
+                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+              Container(
+                padding: EdgeInsets.fromLTRB(0, 20, 0, 50),
+                child: Text(
+                  "Nessuna agenzia. Nessuna sorpresa.",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      fontSize: 18,
+                      fontFamily: "Raleway",
+                      wordSpacing: 2,
+                      letterSpacing: 0.6),
+                ),
+              ),
+              Container(
+                padding: EdgeInsets.only(bottom: 30, top: 30),
+                child: Column(children: [
+                  Container(
+                      padding: EdgeInsets.only(bottom: 15),
+                      child: Image.asset(
+                        'assets/swipe-left.png',
+                        height: 34,
+                        width: 34,
+                      )),
+                  Text(
+                    "swipe",
+                    style: TextStyle(letterSpacing: 2),
+                  ),
+                ]),
+              )
+            ])),
         image: Image.asset('assets/soldi.tiff')),
     PageViewModel(
         title: "Senza discriminazioni",
-        body:
-            "La foto di un inquilino sarà disponibile solo dopo aver espresso una preferenza alla sua biografia.",
+        //body:"La foto di un inquilino sarà disponibile solo dopo aver espresso una preferenza alla sua biografia.",
+        bodyWidget: Container(
+            padding: EdgeInsets.symmetric(horizontal: 20),
+            child:
+                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+              Container(
+                padding: EdgeInsets.fromLTRB(0, 20, 0, 50),
+                child: Text(
+                  "Non importa chi sei, da dove vieni o che aspetto hai.",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      fontSize: 18,
+                      fontFamily: "Raleway",
+                      wordSpacing: 2,
+                      letterSpacing: 0.6),
+                ),
+              ),
+            ])),
         image: Image.asset('assets/noDiscriminazione.tiff')),
   ];
   @override

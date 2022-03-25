@@ -1,8 +1,12 @@
+
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import './../SimpleTextField.dart';
-import 'package:http/http.dart' as http;
+//import './../SimpleTextField.dart';
+//import 'package:http/http.dart' as http;
+import 'package:dio/dio.dart';
+import "dart:convert" show latinArabic;
+//import "dart:convert" show utf8;
 
 class Login extends StatefulWidget {
   String urlStr = "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/login";
@@ -78,6 +82,7 @@ class _LoginState extends State<Login> {
               ElevatedButton(
                 child: Text("Accedi"),
                 onPressed: () {
+                  /*
                   const HtmlEscape htmlEscape = HtmlEscape();
 
                   String email = htmlEscape.convert(emailController.text);
@@ -98,6 +103,43 @@ class _LoginState extends State<Login> {
                               status = "Failure" + response.body;
                             else
                               status = "Logged in" + response.body;
+                          }));*/
+                  //Instance level
+                  String email = emailController.text;
+                  String password = passwordController.text;
+/*
+                  var url = Uri.parse(widget.urlStr);
+
+                  http
+                      .post(url,
+                      //headers: {
+                      //  "Content-Type": "application/x-www-form-urlencoded"
+                      //},
+                      encoding: Encoding.getByName('iso-8859-1'),
+                      body: {"email": email, "password": password})
+                      .then((response) => setState(() {
+                    if (response.statusCode != 200)
+                      status = "Failure" + response.body;
+                    else
+                      status = "Logged in" + response.body;
+                  }));
+*/
+                  var dio = Dio();
+
+                  //dio.options.contentType = Headers.formUrlEncodedContentType;
+//or works once
+                  dio.post(
+                        widget.urlStr,
+                        data: {"email": email, "password": password},
+                        options: Options(contentType: Headers.formUrlEncodedContentType,
+                          headers: {"Content-Type": "application/x-www-form-urlencoded"},
+                        ),
+                      )
+                      .then((response) => setState(() {
+                            if (response.statusCode != 200)
+                              status = "Failure" + response.data;
+                            else
+                              status = "Logged in" + response.data;
                           }));
                 },
               ),

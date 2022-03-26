@@ -6,20 +6,34 @@ import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 
 class Signup extends StatefulWidget {
-  String urlStr = "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/login";
+  String urlStr = "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/signup";
 
   @override
   _SignupState createState() => _SignupState();
 }
 
+class Gender {
+  const Gender(this.name, this.code);
+
+  final String name;
+  final String code;
+}
+
 class _SignupState extends State<Signup> {
-  void doSignup(
-      Function(String) updateUi, String email, String password) async {
+  void doSignup(Function(String) updateUi, String email, String password,
+      String name, String surname, DateTime birthday, Gender gender) async {
     var dio = Dio();
     try {
       Response response = await dio.post(
         widget.urlStr,
-        data: {"email": email, "password": password},
+        data: {
+          "email": email,
+          "password": password,
+          "name": name,
+          "surname": surname,
+          "birthday": birthday.millisecondsSinceEpoch.toString(),
+          "gender": gender.code
+        },
         options: Options(
           contentType: Headers.formUrlEncodedContentType,
           headers: {"Content-Type": "application/x-www-form-urlencoded"},
@@ -29,7 +43,7 @@ class _SignupState extends State<Signup> {
       if (response.statusCode != 200)
         updateUi("Failure");
       else
-        updateUi("Logged in");
+        updateUi("Signed up");
     } on DioError catch (e) {
       if (e.response?.statusCode != 200) {
         updateUi("Failure");
@@ -45,25 +59,25 @@ class _SignupState extends State<Signup> {
 
   String status = "Not submitted yet";
 
-  DateTime initialDate = new DateTime.now();
+  DateTime _birthday = new DateTime.now();
 
-  List<String> _locations = [
-    "Maschile",
-    "Femminile",
-    "Non binario"
+  List<Gender> _genders = <Gender>[
+    Gender("Maschile", "M"),
+    Gender("Femminile", "F"),
+    Gender("Non binario", "NB")
   ]; // Option 2
-  var _selectedLocation = null; // Option 2
+  var _selectedGender = null; // Option 2
 
   @override
   Widget build(BuildContext context) {
     Color bgColor = Colors.white;
 
     birthdayController.text =
-        "${initialDate.day}/${initialDate.month}/${initialDate.year}";
+        "${_birthday.day}/${_birthday.month}/${_birthday.year}";
 
     return (MaterialApp(
         home: Scaffold(
-            appBar: AppBar(title: const Text('Login')),
+            appBar: AppBar(title: const Text('Registrati')),
             backgroundColor: bgColor,
             body: ListView(
               padding: EdgeInsets.all(16.0),
@@ -114,13 +128,13 @@ class _SignupState extends State<Signup> {
                       onTap: () {
                         showDatePicker(
                                 context: context,
-                                initialDate: initialDate,
+                                initialDate: _birthday,
                                 lastDate: DateTime.now(),
                                 firstDate: DateTime(1900))
                             .then((value) {
                           if (value != null) {
                             setState(() {
-                              initialDate = value;
+                              _birthday = value;
                             });
                           }
                         });
@@ -137,21 +151,51 @@ class _SignupState extends State<Signup> {
                           child: DropdownButton(
                         hint: Text("Scegli il tuo genere"),
                         // Not necessary for Option 1
-                        value: _selectedLocation,
+                        value: _selectedGender,
                         onChanged: (newValue) {
                           setState(() {
-                            _selectedLocation = newValue;
+                            _selectedGender = newValue;
                           });
                         },
-                        items: _locations.map((location) {
+                        items: _genders.map((gender) {
                           return DropdownMenuItem(
-                            child: new Text(location),
-                            value: location,
+                            child: new Text(gender.name),
+                            value: gender,
                           );
                         }).toList(),
                       ))
                     ])),
-                ElevatedButton(child: Text("Registrati"), onPressed: () {})
+                ElevatedButton(
+                    child: Text("Registrati"),
+                    onPressed: () {
+                      String email = emailController.text;
+                      String password = passwordController.text;
+                      String name = nameController.text;
+                      String surname = surnameController.text;
+
+                      if ((email.length > 0 &&
+                          password.length > 0 &&
+                          name.length > 0 &&
+                          surname.length > 0 &&
+                          _selectedGender != null)) {
+                        doSignup((String toWrite) {
+                          setState(() {
+                            status = toWrite;
+                          });
+                        }, email, password, name, surname, _birthday,
+                            _selectedGender);
+                      } else {
+                        setState(() {
+                          status = "Incompleto. Compila tutti i campi";
+                        });
+                      }
+                    }),
+                Padding(
+                    padding: EdgeInsets.all(16.0),
+                    child: Text(
+                      status,
+                      style: TextStyle(fontSize: 20),
+                    )),
               ],
             ))));
   }

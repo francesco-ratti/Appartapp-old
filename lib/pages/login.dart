@@ -47,7 +47,7 @@ class _LoginState extends State<Login> {
 
     return (MaterialApp(
         home: Scaffold(
-            appBar: AppBar(title: const Text('Login')),
+            appBar: AppBar(title: const Text('Accedi')),
             backgroundColor: bgColor,
             body: Center(
                 child: Column(

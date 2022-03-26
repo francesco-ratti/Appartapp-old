@@ -1,12 +1,9 @@
-
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+
 //import './../SimpleTextField.dart';
-//import 'package:http/http.dart' as http;
 import 'package:dio/dio.dart';
-import "dart:convert" show latinArabic;
-//import "dart:convert" show utf8;
 
 class Login extends StatefulWidget {
   String urlStr = "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/login";
@@ -16,6 +13,32 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+
+  void doLogin(Function(String) updateUi, String email, String password) async {
+    var dio = Dio();
+    try {
+      Response response = await dio.post(
+        widget.urlStr,
+        data: {"email": email, "password": password},
+        options: Options(
+          contentType: Headers.formUrlEncodedContentType,
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+        ),
+      );
+
+      if (response.statusCode != 200)
+        updateUi("Failure");
+      else
+        updateUi("Logged in");
+    } on DioError catch (e) {
+      if (e.response?.statusCode != 200) {
+        updateUi("Failure");
+      }
+    }
+  }
+
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
@@ -80,9 +103,9 @@ class _LoginState extends State<Login> {
                     ),
                   )),
               ElevatedButton(
-                child: Text("Accedi"),
-                onPressed: () {
-                  /*
+                  child: Text("Accedi"),
+                  onPressed: () {
+                    /*
                   const HtmlEscape htmlEscape = HtmlEscape();
 
                   String email = htmlEscape.convert(emailController.text);
@@ -104,45 +127,17 @@ class _LoginState extends State<Login> {
                             else
                               status = "Logged in" + response.body;
                           }));*/
-                  //Instance level
-                  String email = emailController.text;
-                  String password = passwordController.text;
-/*
-                  var url = Uri.parse(widget.urlStr);
+                    //Instance level
+                    String email = emailController.text;
+                    String password = passwordController.text;
 
-                  http
-                      .post(url,
-                      //headers: {
-                      //  "Content-Type": "application/x-www-form-urlencoded"
-                      //},
-                      encoding: Encoding.getByName('iso-8859-1'),
-                      body: {"email": email, "password": password})
-                      .then((response) => setState(() {
-                    if (response.statusCode != 200)
-                      status = "Failure" + response.body;
-                    else
-                      status = "Logged in" + response.body;
-                  }));
-*/
-                  var dio = Dio();
+                    doLogin((String toWrite) {
+                      setState(() {
+                        status=toWrite;
+                      });
+                    }, email, password);
 
-                  //dio.options.contentType = Headers.formUrlEncodedContentType;
-//or works once
-                  dio.post(
-                        widget.urlStr,
-                        data: {"email": email, "password": password},
-                        options: Options(contentType: Headers.formUrlEncodedContentType,
-                          headers: {"Content-Type": "application/x-www-form-urlencoded"},
-                        ),
-                      )
-                      .then((response) => setState(() {
-                            if (response.statusCode != 200)
-                              status = "Failure" + response.data;
-                            else
-                              status = "Logged in" + response.data;
-                          }));
-                },
-              ),
+                  })
             ]))));
   }
 

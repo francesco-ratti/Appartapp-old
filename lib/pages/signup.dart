@@ -43,16 +43,23 @@ class _SignupState extends State<Signup> {
   final surnameController = TextEditingController();
   final birthdayController = TextEditingController();
 
-
   String status = "Not submitted yet";
 
-  DateTime initialDate=new DateTime.now();
+  DateTime initialDate = new DateTime.now();
+
+  List<String> _locations = [
+    "Maschile",
+    "Femminile",
+    "Non binario"
+  ]; // Option 2
+  var _selectedLocation = null; // Option 2
 
   @override
   Widget build(BuildContext context) {
     Color bgColor = Colors.white;
 
-    birthdayController.text="${initialDate.day}/${initialDate.month}/${initialDate.year}";
+    birthdayController.text =
+        "${initialDate.day}/${initialDate.month}/${initialDate.year}";
 
     return (MaterialApp(
         home: Scaffold(
@@ -80,7 +87,8 @@ class _SignupState extends State<Signup> {
                         labelText: 'Password',
                       ),
                       controller: passwordController,
-                    )),                Padding(
+                    )),
+                Padding(
                     padding: EdgeInsets.all(8.0),
                     child: TextField(
                       decoration: InputDecoration(
@@ -104,8 +112,13 @@ class _SignupState extends State<Signup> {
                       controller: birthdayController,
                       readOnly: true,
                       onTap: () {
-                        showDatePicker(context: context, initialDate: initialDate, lastDate: DateTime.now(), firstDate: DateTime(1900)).then((value) {
-                          if (value!=null) {
+                        showDatePicker(
+                                context: context,
+                                initialDate: initialDate,
+                                lastDate: DateTime.now(),
+                                firstDate: DateTime(1900))
+                            .then((value) {
+                          if (value != null) {
                             setState(() {
                               initialDate = value;
                             });
@@ -117,7 +130,28 @@ class _SignupState extends State<Signup> {
                         labelText: 'Data di nascita',
                       ),
                     )),
-                //TODO gender
+                Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Row(children: [
+                      Expanded(
+                          child: DropdownButton(
+                        hint: Text("Scegli il tuo genere"),
+                        // Not necessary for Option 1
+                        value: _selectedLocation,
+                        onChanged: (newValue) {
+                          setState(() {
+                            _selectedLocation = newValue;
+                          });
+                        },
+                        items: _locations.map((location) {
+                          return DropdownMenuItem(
+                            child: new Text(location),
+                            value: location,
+                          );
+                        }).toList(),
+                      ))
+                    ])),
+                ElevatedButton(child: Text("Registrati"), onPressed: () {})
               ],
             ))));
   }

@@ -8,7 +8,8 @@ class LoginOrSignup extends StatelessWidget {
   Widget build(BuildContext context) {
     Color bgColor = Colors.white;
 
-    return Scaffold(
+    return MaterialApp(
+        home: Scaffold(
         backgroundColor: bgColor,
         body: Center(
               child: Column(
@@ -36,7 +37,9 @@ class LoginOrSignup extends StatelessWidget {
                     SignInButton(
                       Buttons.Email,
                       text: "Registrati tramite e-mail",
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/signup');
+                      },
                     ),
                     SignInButton(
                       Buttons.Google,
@@ -44,6 +47,6 @@ class LoginOrSignup extends StatelessWidget {
                       onPressed: () {},
                     )
                   ]),
-            ));
+            )));
   }
 }

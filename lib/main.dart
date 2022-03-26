@@ -8,7 +8,7 @@ import 'package:appartapp/pages/home.dart';
 import 'package:appartapp/pages/first.dart';
 
 import 'pages/loginorsignup.dart';
-
+import 'pages/signup.dart';
 void main() {
   //HttpOverrides.global = new MyHttpOverrides();
   runApp(MaterialApp(
@@ -19,6 +19,7 @@ void main() {
       '/home': (context) => Home(),
       '/loginorsignup': (context) => LoginOrSignup(),
       '/login': (context) => Login(),
+      '/signup': (context) => Signup()
     },
   ));
 }

@@ -1,5 +1,3 @@
-
-
 import 'package:appartapp/pages/login.dart';
 import 'package:flutter/material.dart';
 
@@ -9,12 +7,14 @@ import 'package:appartapp/pages/first.dart';
 
 import 'pages/loginorsignup.dart';
 import 'pages/signup.dart';
+
 void main() {
   //HttpOverrides.global = new MyHttpOverrides();
   runApp(MaterialApp(
     initialRoute: '/',
     routes: {
-      '/': (context) => Loading(),
+      '/': (context) => Home(),
+      //'/': (context) => Loading(),
       '/first': (context) => First(),
       '/home': (context) => Home(),
       '/loginorsignup': (context) => LoginOrSignup(),

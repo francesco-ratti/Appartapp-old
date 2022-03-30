@@ -24,18 +24,16 @@ class _Houses extends State<Houses> {
         return MaterialPageRoute(
           settings: settings,
           builder: (BuildContext context) {
-            return Scaffold(
-              appBar: AppBar(
-                title: widget.child,
-                centerTitle: true,
-              ),
-              body: Container(
-                  margin: EdgeInsets.symmetric(
-                    vertical: 10.0,
-                    horizontal: 20.0,
-                  ),
-                  child: Text(
-                      "this is the houses page, for the moment used also elsewhere")),
+            return Container(
+              decoration: const BoxDecoration(
+                  image: DecorationImage(
+                fit: BoxFit.cover,
+                image: AssetImage(
+                  'assets/casa.jpeg',
+                ),
+              )),
+              child:
+                  Scaffold(backgroundColor: Colors.transparent, body: Center()),
             );
           },
         );

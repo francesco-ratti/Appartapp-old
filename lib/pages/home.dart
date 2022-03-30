@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:appartapp/pages/empty_page.dart';
 import 'package:appartapp/pages/houses.dart';
 import 'package:flutter/material.dart';
 
@@ -17,30 +18,35 @@ class _HomeState extends State<Home> {
 
     return Scaffold(
       body: SafeArea(
+        top: false,
+        bottom: false,
         child: IndexedStack(
           index: _pageIndex,
           children: <Widget>[
             Houses(
               child: Text('Esplora'),
             ),
-            Houses(
+            EmptyPage(
               child: Text('Filtri'),
             ),
-            Houses(
+            EmptyPage(
               child: Text('Chat'),
             ),
-            Houses(
+            EmptyPage(
               child: Text('Profilo'),
             ),
           ],
         ),
       ),
+      extendBody: true,
       bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
+        backgroundColor: Colors.transparent, //try transparent
+        type: BottomNavigationBarType.shifting,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.home_rounded),
             label: 'Esplora',
+            backgroundColor: Colors.transparent,
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.filter_list_rounded),

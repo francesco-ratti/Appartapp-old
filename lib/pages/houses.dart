@@ -1,4 +1,6 @@
+import 'package:appartapp/widgets/tab_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class Houses extends StatefulWidget {
   Houses({required this.child});
@@ -24,20 +26,31 @@ class _Houses extends State<Houses> {
         return MaterialPageRoute(
           settings: settings,
           builder: (BuildContext context) {
-            return Container(
-              decoration: const BoxDecoration(
-                  image: DecorationImage(
-                fit: BoxFit.cover,
-                image: AssetImage(
-                  'assets/casa.jpeg',
-                ),
-              )),
-              child:
-                  Scaffold(backgroundColor: Colors.transparent, body: Center()),
+            // da fare: crea un widget che contiene gli appartamenti
+            // da fare: crea un widget che contiene le foto di un appartm
+            return SlidingUpPanel(
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(24.0),
+                topRight: Radius.circular(24.0),
+              ),
+              panelBuilder: (scrollController) =>
+                  buildSlidingPanel(scrollController: scrollController),
+              body: Container(
+                decoration: const BoxDecoration(
+                    image: DecorationImage(
+                  fit: BoxFit.cover,
+                  image: AssetImage(
+                    'assets/casa.jpeg',
+                  ),
+                )),
+              ),
             );
           },
         );
       },
     );
   }
+
+  Widget buildSlidingPanel({required ScrollController scrollController}) =>
+      TabWidget(scrollController: scrollController);
 }

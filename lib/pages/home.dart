@@ -19,7 +19,7 @@ class _HomeState extends State<Home> {
     return Scaffold(
       body: SafeArea(
         top: false,
-        bottom: false,
+        bottom: true,
         child: IndexedStack(
           index: _pageIndex,
           children: <Widget>[
@@ -40,24 +40,36 @@ class _HomeState extends State<Home> {
       ),
       extendBody: true,
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.transparent, //try transparent
+        //backgroundColor: Colors.white, //try transparent
         type: BottomNavigationBarType.shifting,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon(Icons.home_rounded),
+            icon: Icon(
+              Icons.home_rounded,
+              color: Colors.black,
+            ),
             label: 'Esplora',
-            backgroundColor: Colors.transparent,
+            backgroundColor: Colors.white,
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.filter_list_rounded),
+            icon: Icon(
+              Icons.filter_list_rounded,
+              color: Colors.black,
+            ),
             label: 'Filtri',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.chat_bubble_rounded),
+            icon: Icon(
+              Icons.chat_bubble_rounded,
+              color: Colors.black,
+            ),
             label: 'Chat',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.person_outline_rounded),
+            icon: Icon(
+              Icons.person_outline_rounded,
+              color: Colors.black,
+            ),
             label: 'Profilo',
           ),
         ],

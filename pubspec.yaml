@@ -33,6 +33,7 @@ dependencies:
   flutter_spinkit: ^5.0.0
   introduction_screen: ^3.0.0
   flutter_signin_button: ^2.0.0
+  sliding_up_panel: ^2.0.0+1
 
 
   # The following adds the Cupertino Icons font to your application.

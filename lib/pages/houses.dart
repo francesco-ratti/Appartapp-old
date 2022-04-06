@@ -1,3 +1,4 @@
+import 'package:appartapp/widgets/appartment_model.dart';
 import 'package:appartapp/widgets/tab_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
@@ -35,15 +36,17 @@ class _Houses extends State<Houses> {
               ),
               panelBuilder: (scrollController) =>
                   buildSlidingPanel(scrollController: scrollController),
-              body: Container(
-                decoration: const BoxDecoration(
-                    image: DecorationImage(
-                  fit: BoxFit.cover,
-                  image: AssetImage(
-                    'assets/casa.jpeg',
-                  ),
-                )),
-              ),
+              body: AppartmentModel(),
+
+              // Container(
+              //   decoration: const BoxDecoration(
+              //       image: DecorationImage(
+              //     fit: BoxFit.cover,
+              //     image: AssetImage(
+              //       'assets/casa.jpeg',
+              //     ),
+              //   )),
+              // ),
             );
           },
         );

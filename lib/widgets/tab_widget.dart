@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
 
 class TabWidget extends StatelessWidget {
-  const TabWidget({
+  TabWidget({
     Key? key,
     required this.scrollController,
   }) : super(key: key);
   final ScrollController scrollController;
+
+  String title="Bilocale Milano";
+  String description="Casa molto carina, senza soffitto, senza cucina";
+  String price="350€";
+  String address="Via Roma, 27";
+  String additionalExpenseDetail="No, pagamento trimestrale";
 
   @override
   Widget build(BuildContext context) => ListView(
@@ -13,7 +19,7 @@ class TabWidget extends StatelessWidget {
         controller: scrollController,
         children: [
           Text(
-            "\nBilocale Milano",
+            title,
             textAlign: TextAlign.center,
             style: TextStyle(fontSize: 20),
           ),
@@ -22,8 +28,10 @@ class TabWidget extends StatelessWidget {
             width: 300,
             child: Image.asset('assets/appart.tiff'),
           ),
-          Text(
-              "QUESTO E' UN WIDGET. LO PERSONALIZZEREMO COME PIU' CI PIACE\n\n\nTutte le informazioni necessarie.\nPREZZO 350€\nINDIRIZZO: VIA ROMA, 27 \nSPESE INCLUSE: SI"),
+          Text(description),
+          Text("Prezzo: ${price}"),
+          Text("Indirizzo: ${address}"),
+          Text("Spese incluse: ${additionalExpenseDetail}"),
         ],
       );
 }

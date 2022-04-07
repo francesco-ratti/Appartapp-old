@@ -37,16 +37,6 @@ class _Houses extends State<Houses> {
               panelBuilder: (scrollController) =>
                   buildSlidingPanel(scrollController: scrollController),
               body: AppartmentModel(),
-
-              // Container(
-              //   decoration: const BoxDecoration(
-              //       image: DecorationImage(
-              //     fit: BoxFit.cover,
-              //     image: AssetImage(
-              //       'assets/casa.jpeg',
-              //     ),
-              //   )),
-              // ),
             );
           },
         );

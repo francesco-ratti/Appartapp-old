@@ -25,7 +25,7 @@ class _AppartmentModel extends State<AppartmentModel> {
             fit: BoxFit.cover,
           ),
         ),
-        child: GestureDetector(onTapDown: (TapDownDetails details) {
+        child: GestureDetector(onTapUp: (TapUpDetails details) {
           final RenderBox? box = context.findRenderObject() as RenderBox;
           final localOffset = box!.globalToLocal(details.globalPosition);
           final x = localOffset.dx;

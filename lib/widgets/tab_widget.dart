@@ -9,7 +9,7 @@ class TabWidget extends StatelessWidget {
 
   String listingTitle="Bilocale Milano";
   String description="Casa molto carina, senza soffitto, senza cucina";
-  String price="350€";
+  int price=350;
   String address="Via Roma, 27";
   String additionalExpenseDetail="No, pagamento trimestrale";
 
@@ -29,7 +29,7 @@ class TabWidget extends StatelessWidget {
             child: Image.asset('assets/appart.tiff'),
           ),
           Text(description),
-          Text("Prezzo: ${price}"),
+          Text("Prezzo: ${price}€"),
           Text("Indirizzo: ${address}"),
           Text("Spese incluse: ${additionalExpenseDetail}"),
         ],

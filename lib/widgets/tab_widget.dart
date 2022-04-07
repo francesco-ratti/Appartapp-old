@@ -7,7 +7,7 @@ class TabWidget extends StatelessWidget {
   }) : super(key: key);
   final ScrollController scrollController;
 
-  String title="Bilocale Milano";
+  String listingTitle="Bilocale Milano";
   String description="Casa molto carina, senza soffitto, senza cucina";
   String price="350€";
   String address="Via Roma, 27";
@@ -19,7 +19,7 @@ class TabWidget extends StatelessWidget {
         controller: scrollController,
         children: [
           Text(
-            title,
+            listingTitle,
             textAlign: TextAlign.center,
             style: TextStyle(fontSize: 20),
           ),

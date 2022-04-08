@@ -1,5 +1,7 @@
+import 'package:appartapp/classes/appartment.dart';
 import 'package:appartapp/widgets/appartment_model.dart';
 import 'package:appartapp/widgets/tab_widget.dart';
+import 'package:dismissible_page/dismissible_page.dart';
 import 'package:flutter/material.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
@@ -29,14 +31,24 @@ class _Houses extends State<Houses> {
           builder: (BuildContext context) {
             // da fare: crea un widget che contiene gli appartamenti
             // da fare: crea un widget che contiene le foto di un appartm
-            return SlidingUpPanel(
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(24.0),
-                topRight: Radius.circular(24.0),
+            return DismissiblePage(
+              onDismissed: () => {
+                setState(() {
+                  print("DISMISSED");
+                  Appartment().getNewAppartament();
+                })
+              },
+              direction: DismissiblePageDismissDirection.horizontal,
+              dragSensitivity: 0.5,
+              child: SlidingUpPanel(
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(24.0),
+                  topRight: Radius.circular(24.0),
+                ),
+                panelBuilder: (scrollController) =>
+                    buildSlidingPanel(scrollController: scrollController),
+                body: AppartmentModel(),
               ),
-              panelBuilder: (scrollController) =>
-                  buildSlidingPanel(scrollController: scrollController),
-              body: AppartmentModel(),
             );
           },
         );

@@ -1,28 +1,28 @@
-import 'package:appartapp/classes/appartment.dart';
+import 'package:appartapp/classes/apartmentHandler.dart';
 import 'package:appartapp/pages/houses.dart';
 import 'package:flutter/material.dart';
 
-class AppartmentModel extends StatefulWidget {
+class ApartmentModel extends StatefulWidget {
   String urlStr = "http://...";
 
   @override
-  _AppartmentModel createState() => _AppartmentModel();
+  _ApartmentModel createState() => _ApartmentModel();
 }
 
-class _AppartmentModel extends State<AppartmentModel> {
-  //Appartment appartment = Appartment();
+class _ApartmentModel extends State<ApartmentModel> {
+  //Apartment apartment = Apartment();
 
   @override
   void initState() {
     super.initState();
-    Appartment().initializeForTesting();
+    ApartmentHandler().initializeForTesting();
   }
 
   @override
   Widget build(BuildContext context) => Container(
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage(Appartment().currentImage),
+            image: AssetImage(ApartmentHandler().currentImageUrl),
             fit: BoxFit.cover,
           ),
         ),
@@ -34,11 +34,11 @@ class _AppartmentModel extends State<AppartmentModel> {
 
             // if x is less than halfway across the screen and user is not on first image
             if (x < box.size.width / 2) {
-              Appartment().displayPrevious();
+              ApartmentHandler().displayPrevious();
               setState(() {});
             } else {
               // Assume the user tapped on the other half of the screen and check they are not on the last image
-              Appartment().displayNext();
+              ApartmentHandler().displayNext();
               setState(() {});
             }
           },

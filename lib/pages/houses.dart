@@ -1,5 +1,5 @@
-import 'package:appartapp/classes/appartment.dart';
-import 'package:appartapp/widgets/appartment_model.dart';
+import 'package:appartapp/classes/apartmentHandler.dart';
+import 'package:appartapp/widgets/apartment_model.dart';
 import 'package:appartapp/widgets/tab_widget.dart';
 import 'package:dismissible_page/dismissible_page.dart';
 import 'package:flutter/material.dart';
@@ -35,7 +35,7 @@ class _Houses extends State<Houses> {
               onDismissed: () => {
                 setState(() {
                   print("DISMISSED");
-                  Appartment().getNewAppartament();
+                  ApartmentHandler().getNewApartment();
                 })
               },
               direction: DismissiblePageDismissDirection.horizontal,
@@ -47,7 +47,7 @@ class _Houses extends State<Houses> {
                 ),
                 panelBuilder: (scrollController) =>
                     buildSlidingPanel(scrollController: scrollController),
-                body: AppartmentModel(),
+                body: ApartmentModel(),
               ),
             );
           },

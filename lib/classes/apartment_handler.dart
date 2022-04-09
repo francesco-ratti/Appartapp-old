@@ -12,7 +12,7 @@ class ApartmentHandler {
 
   //useful as singleton since network functions will store session cookie here
 
-  Apartment getNewApartment() {
+  Future<Apartment> getNewApartment() async {
     //TODO
     //fai richiesta al server e prendi la nuova lista di
     //urlImages e i dati del nuovo appartamento
@@ -27,7 +27,7 @@ class ApartmentHandler {
     ]);
   }
 
-  List<Apartment> getAllApartments() {
+  Future<List<Apartment>> getAllApartments() async {
     //TODO
     return <Apartment>[];
   }

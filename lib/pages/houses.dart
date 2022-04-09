@@ -44,7 +44,10 @@ class _Houses extends State<Houses> {
               onDismissed: () => {
                 setState(() {
                   print("DISMISSED");
-                  currentApartment=ApartmentHandler().getNewApartment();
+                  ApartmentHandler().getNewApartment().then((value) =>
+                      setState(() {
+                        currentApartment=value;
+                      }) );
                 })
               },
               direction: DismissiblePageDismissDirection.horizontal,

@@ -2,7 +2,7 @@ import 'package:appartapp/classes/apartment.dart';
 import 'package:flutter/material.dart';
 
 class TabWidget extends StatelessWidget {
-  Apartment currentApartment;
+  final Apartment currentApartment;
   final ScrollController scrollController;
 
   TabWidget({

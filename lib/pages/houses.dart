@@ -46,7 +46,7 @@ class _Houses extends State<Houses> {
                   topRight: Radius.circular(24.0),
                 ),
                 panelBuilder: (scrollController) =>
-                    buildSlidingPanel(scrollController: scrollController),
+                    TabWidget(scrollController: scrollController, currentApartment: ApartmentHandler().getCurrentApartment()),
                 body: ApartmentModel(),
               ),
             );
@@ -55,7 +55,4 @@ class _Houses extends State<Houses> {
       },
     );
   }
-
-  Widget buildSlidingPanel({required ScrollController scrollController}) =>
-      TabWidget(scrollController: scrollController, currentApartment: ApartmentHandler().getCurrentApartment());
 }

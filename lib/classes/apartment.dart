@@ -15,4 +15,13 @@ class Apartment {
     required this.additionalExpenseDetail,
     required this.imagesUrl,
   });
+
+  Apartment.fromMap(Map map) :
+    this.listingTitle=map["listingTitle"],
+    this.description=map['description'],
+    this.price=map['price'],
+    this.address=map['address'],
+    this.additionalExpenseDetail=map['additionalExpenseDetail'],
+    this.imagesUrl=map['imagesUrl'];
+
 }

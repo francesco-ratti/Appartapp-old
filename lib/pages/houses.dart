@@ -57,5 +57,5 @@ class _Houses extends State<Houses> {
   }
 
   Widget buildSlidingPanel({required ScrollController scrollController}) =>
-      TabWidget(scrollController: scrollController, listingTitle: "Bilocale Milano", description: "Casa molto carina, senza soffitto, senza cucina", price: 350, address: "Via di Paperone, Paperopoli", additionalExpenseDetail: "No, pagamento trimestrale",);
+      TabWidget(scrollController: scrollController, currentApartment: ApartmentHandler().getCurrentApartment());
 }

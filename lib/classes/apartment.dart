@@ -8,7 +8,7 @@ class Apartment {
   final List<String> imagesUrl;
 
   Apartment({
-    required  this.listingTitle,
+    required this.listingTitle,
     required this.description,
     required this.price,
     required this.address,

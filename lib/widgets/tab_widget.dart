@@ -1,21 +1,15 @@
+import 'package:appartapp/classes/apartment.dart';
 import 'package:flutter/material.dart';
 
 class TabWidget extends StatelessWidget {
+  Apartment currentApartment;
+  final ScrollController scrollController;
+
   TabWidget({
     Key? key,
     required this.scrollController,
-    required this.listingTitle,
-    required this.description,
-    required this.price,
-    required this.address,
-    required this.additionalExpenseDetail
+    required this.currentApartment,
   }) : super(key: key);
-  final ScrollController scrollController;
-  final String listingTitle;//="Bilocale Milano";
-  final String description;//="Casa molto carina, senza soffitto, senza cucina";
-  final int price;//=350;
-  final String address;//="Via Roma, 27";
-  final String additionalExpenseDetail;//="No, pagamento trimestrale";
 
   @override
   Widget build(BuildContext context) => ListView(
@@ -23,7 +17,7 @@ class TabWidget extends StatelessWidget {
     controller: scrollController,
     children: [
       Text(
-        listingTitle,
+        currentApartment.listingTitle,
         textAlign: TextAlign.center,
         style: TextStyle(fontSize: 20),
       ),
@@ -32,10 +26,10 @@ class TabWidget extends StatelessWidget {
         width: 300,
         child: Image.asset('assets/appart.tiff'),
       ),
-      Text(description),
-      Text("Prezzo: ${price}€"),
-      Text("Indirizzo: ${address}"),
-      Text("Spese incluse: ${additionalExpenseDetail}"),
+      Text(currentApartment.description),
+      Text("Prezzo: ${currentApartment.price}€"),
+      Text("Indirizzo: ${currentApartment.address}"),
+      Text("Spese incluse: ${currentApartment.additionalExpenseDetail}"),
     ],
   );
 }

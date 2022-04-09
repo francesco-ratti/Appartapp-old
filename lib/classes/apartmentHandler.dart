@@ -57,7 +57,7 @@ class ApartmentHandler {
     }
   }
 
-  String getTitle() {
-    return currentApartment.listingTitle;
+  Apartment getCurrentApartment() {
+    return currentApartment;
   }
 }

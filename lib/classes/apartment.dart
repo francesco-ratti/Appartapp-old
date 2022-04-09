@@ -1,9 +1,9 @@
 class Apartment {
-  final String listingTitle;//="Bilocale Milano";
-  final String description;//="Casa molto carina, senza soffitto, senza cucina";
-  final int price;//=350;
-  final String address;//="Via Roma, 27";
-  final String additionalExpenseDetail;//="No, pagamento trimestrale";
+  final String listingTitle;
+  final String description;
+  final int price;
+  final String address;
+  final String additionalExpenseDetail;
 
   final List<String> imagesUrl;
 

@@ -25,12 +25,9 @@ class ApartmentHandler {
   //useful as singleton since network functions will store session cookie here
 
   Future<Apartment> getNewApartment() async {
-    //TODO
-    //fai richiesta al server e prendi la nuova lista di
-    //urlImages e i dati del nuovo appartamento
+    //TODO test
 
-    //just for testing
-
+    /*
     var dio = Dio();
     dio.interceptors.add(CookieManager(cookieJar));
 
@@ -56,7 +53,7 @@ class ApartmentHandler {
         throw new UnauthorizedException();
       else
         throw new NetworkException();
-    }
+    }*/
 
     return Apartment(listingTitle: "Bilocale Milano 2", description: "Casa molto carina 2, senza soffitto, senza cucina", price: 350, address: "Via di Paperone, Paperopoli", additionalExpenseDetail: "No, pagamento trimestrale", imagesUrl: [
       "assets/house2/img1.jpeg",

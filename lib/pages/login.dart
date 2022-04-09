@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 
 //import './../SimpleTextField.dart';
+import 'package:appartapp/classes/runtime_store.dart';
 import 'package:dio/dio.dart';
 
 class Login extends StatefulWidget {
@@ -27,8 +28,11 @@ class _LoginState extends State<Login> {
 
       if (response.statusCode != 200)
         updateUi("Failure");
-      else
-        updateUi("Logged in");
+      else {
+        Map responseMap = response.data;
+        updateUi("Logged in as ${responseMap['email']}");
+        RuntimeStore().setCredentialsByString(responseMap['email'], responseMap['password']);
+      }
     } on DioError catch (e) {
       if (e.response?.statusCode != 200) {
         updateUi("Failure");

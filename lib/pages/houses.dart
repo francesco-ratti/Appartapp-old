@@ -1,4 +1,5 @@
-import 'package:appartapp/classes/apartmentHandler.dart';
+import 'package:appartapp/classes/apartment.dart';
+import 'package:appartapp/classes/apartment_handler.dart';
 import 'package:appartapp/widgets/apartment_model.dart';
 import 'package:appartapp/widgets/tab_widget.dart';
 import 'package:dismissible_page/dismissible_page.dart';
@@ -16,6 +17,14 @@ class Houses extends StatefulWidget {
 
 class _Houses extends State<Houses> {
   int _currentRoute = 0;
+
+  Apartment currentApartment=Apartment(listingTitle: "Bilocale Milano", description: "Casa molto carina, senza soffitto, senza cucina", price: 350, address: "Via di Paperone, Paperopoli", additionalExpenseDetail: "No, pagamento trimestrale", imagesUrl: [
+    "assets/house1/img1.jpeg",
+    "assets/house1/img2.jpeg",
+    "assets/house1/img3.jpeg",
+    "assets/house1/img4.jpeg",
+    "assets/house1/img5.jpeg",
+  ]); //TODO
 
   @override
   void initState() {
@@ -35,7 +44,7 @@ class _Houses extends State<Houses> {
               onDismissed: () => {
                 setState(() {
                   print("DISMISSED");
-                  ApartmentHandler().getNewApartment();
+                  currentApartment=ApartmentHandler().getNewApartment();
                 })
               },
               direction: DismissiblePageDismissDirection.horizontal,
@@ -46,8 +55,8 @@ class _Houses extends State<Houses> {
                   topRight: Radius.circular(24.0),
                 ),
                 panelBuilder: (scrollController) =>
-                    TabWidget(scrollController: scrollController, currentApartment: ApartmentHandler().getCurrentApartment()),
-                body: ApartmentModel(),
+                    TabWidget(scrollController: scrollController, currentApartment: currentApartment),
+                body: ApartmentModel(currentApartment: currentApartment),
               ),
             );
           },

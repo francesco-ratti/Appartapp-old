@@ -9,6 +9,8 @@ import 'package:cookie_jar/cookie_jar.dart';
 
 class ApartmentHandler {
   //SINGLETON PATTERN
+  //useful as singleton since network functions will store session cookie here, in cookie jar
+
   final String urlStrGetNextNewApartment="http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/getnextnewapartment";
   final String urlStrGetAllNewApartments="http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/getallnewapartments";
 
@@ -21,8 +23,6 @@ class ApartmentHandler {
   }
 
   ApartmentHandler._internal();
-
-  //useful as singleton since network functions will store session cookie here
 
   Future<Apartment> getNewApartment() async {
     //TODO test

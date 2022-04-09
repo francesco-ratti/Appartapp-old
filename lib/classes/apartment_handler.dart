@@ -55,7 +55,7 @@ class ApartmentHandler {
         throw new NetworkException();
     }*/
 
-    return Apartment(listingTitle: "Bilocale Milano 2", description: "Casa molto carina 2, senza soffitto, senza cucina", price: 350, address: "Via di Paperone, Paperopoli", additionalExpenseDetail: "No, pagamento trimestrale", imagesUrl: [
+    return Apartment(id: 0, listingTitle: "Bilocale Milano 2", description: "Casa molto carina 2, senza soffitto, senza cucina", price: 350, address: "Via di Paperone, Paperopoli", additionalExpenseDetail: "No, pagamento trimestrale", imagesUrl: [
       "assets/house2/img1.jpeg",
       "assets/house2/img2.jpeg",
       "assets/house2/img3.jpeg",

@@ -18,13 +18,20 @@ class Houses extends StatefulWidget {
 class _Houses extends State<Houses> {
   int _currentRoute = 0;
 
-  Apartment currentApartment=Apartment(id: 0, listingTitle: "Bilocale Milano", description: "Casa molto carina, senza soffitto, senza cucina", price: 350, address: "Via di Paperone, Paperopoli", additionalExpenseDetail: "No, pagamento trimestrale", imagesUrl: [
-    "assets/house1/img1.jpeg",
-    "assets/house1/img2.jpeg",
-    "assets/house1/img3.jpeg",
-    "assets/house1/img4.jpeg",
-    "assets/house1/img5.jpeg",
-  ]); //TODO
+  Apartment currentApartment = Apartment(
+      id: 0,
+      listingTitle: "Bilocale Milano",
+      description: "Casa molto carina, senza soffitto, senza cucina",
+      price: 350,
+      address: "Via di Paperone, Paperopoli",
+      additionalExpenseDetail: "No, pagamento trimestrale",
+      imagesUrl: [
+        "assets/house1/img1.jpeg",
+        "assets/house1/img2.jpeg",
+        "assets/house1/img3.jpeg",
+        "assets/house1/img4.jpeg",
+        "assets/house1/img5.jpeg",
+      ]); //TODO
 
   @override
   void initState() {
@@ -38,16 +45,15 @@ class _Houses extends State<Houses> {
         return MaterialPageRoute(
           settings: settings,
           builder: (BuildContext context) {
-            // da fare: crea un widget che contiene gli appartamenti
-            // da fare: crea un widget che contiene le foto di un appartm
             return DismissiblePage(
               onDismissed: () => {
                 setState(() {
                   print("DISMISSED");
-                  ApartmentHandler().getNewApartment().then((value) =>
-                      setState(() {
-                        currentApartment=value;
-                      }) );
+                  ApartmentHandler()
+                      .getNewApartment()
+                      .then((value) => setState(() {
+                            currentApartment = value;
+                          }));
                 })
               },
               direction: DismissiblePageDismissDirection.horizontal,
@@ -57,8 +63,9 @@ class _Houses extends State<Houses> {
                   topLeft: Radius.circular(24.0),
                   topRight: Radius.circular(24.0),
                 ),
-                panelBuilder: (scrollController) =>
-                    TabWidget(scrollController: scrollController, currentApartment: currentApartment),
+                panelBuilder: (scrollController) => TabWidget(
+                    scrollController: scrollController,
+                    currentApartment: currentApartment),
                 body: ApartmentModel(currentApartment: currentApartment),
               ),
             );

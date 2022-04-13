@@ -36,6 +36,9 @@ class _Houses extends State<Houses> {
   @override
   void initState() {
     super.initState();
+    ApartmentHandler()
+        .getNewApartment()
+        .then((value) => currentApartment = value);
   }
 
   @override
@@ -48,12 +51,20 @@ class _Houses extends State<Houses> {
             return DismissiblePage(
               onDismissed: () => {
                 setState(() {
+                  Navigator.of(context).pop();
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => Houses(
+                                child: Text("Esplora"),
+                              )));
                   print("DISMISSED");
-                  ApartmentHandler()
-                      .getNewApartment()
-                      .then((value) => setState(() {
-                            currentApartment = value;
-                          }));
+
+                  // ApartmentHandler()
+                  //     .getNewApartment()
+                  //     .then((value) => setState(() {
+                  //           currentApartment = value;
+                  //         }));
                 })
               },
               direction: DismissiblePageDismissDirection.horizontal,

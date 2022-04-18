@@ -48,15 +48,60 @@ class _Houses extends State<Houses> {
         return MaterialPageRoute(
           settings: settings,
           builder: (BuildContext context) {
-            return DismissiblePage(
-              onDismissed: () => {
-                setState(() {
+            // try {
+            //   context.pushTransparentRoute(ContentPage(
+            //     currentApartment: currentApartment,
+            //   ));
+
+            //   return ContentPage(currentApartment: currentApartment);
+            // } catch (e) {
+            //   print("Error");
+            //   print(e);
+            //   return Container(
+            //     child: Text("Errore 2"),
+            //   );
+            // }
+            return ContentPage(
+              currentApartment: currentApartment,
+              // updateHouses: () {setState(() {
+
+              // });}
+            );
+          },
+        );
+      },
+    );
+  }
+}
+
+class ContentPage extends StatelessWidget {
+  Apartment currentApartment;
+  //Function updateHouses;
+
+  ContentPage({
+    required this.currentApartment,
+    //required this.updateHouses,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Navigator(
+      onGenerateRoute: (RouteSettings settings) {
+        return MaterialPageRoute(
+            settings: settings,
+            builder: (BuildContext context) {
+              return DismissiblePage(
+                onDismissed: () {
                   Navigator.of(context).pop();
+                  ApartmentHandler().getNewApartment().then((value) {
+                    currentApartment = value;
+                    //updateHouses;
+                  });
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => Houses(
-                                child: Text("Esplora"),
+                          builder: (context) => ContentPage(
+                                currentApartment: currentApartment,
                               )));
                   print("DISMISSED");
 
@@ -65,23 +110,21 @@ class _Houses extends State<Houses> {
                   //     .then((value) => setState(() {
                   //           currentApartment = value;
                   //         }));
-                })
-              },
-              direction: DismissiblePageDismissDirection.horizontal,
-              dragSensitivity: 0.5,
-              child: SlidingUpPanel(
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(24.0),
-                  topRight: Radius.circular(24.0),
+                },
+                direction: DismissiblePageDismissDirection.horizontal,
+                dragSensitivity: 0.5,
+                child: SlidingUpPanel(
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(24.0),
+                    topRight: Radius.circular(24.0),
+                  ),
+                  panelBuilder: (scrollController) => TabWidget(
+                      scrollController: scrollController,
+                      currentApartment: currentApartment),
+                  body: ApartmentModel(currentApartment: currentApartment),
                 ),
-                panelBuilder: (scrollController) => TabWidget(
-                    scrollController: scrollController,
-                    currentApartment: currentApartment),
-                body: ApartmentModel(currentApartment: currentApartment),
-              ),
-            );
-          },
-        );
+              );
+            });
       },
     );
   }

@@ -61,12 +61,19 @@ class _Houses extends State<Houses> {
             //     child: Text("Errore 2"),
             //   );
             // }
-            return ContentPage(
-              currentApartment: currentApartment,
-              // updateHouses: () {setState(() {
+            return Container(
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage("assets/background.jpeg"),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                child: ContentPage(
+                  currentApartment: currentApartment,
+                  // updateHouses: () {setState(() {
 
-              // });}
-            );
+                  // });}
+                ));
           },
         );
       },
@@ -91,6 +98,7 @@ class ContentPage extends StatelessWidget {
             settings: settings,
             builder: (BuildContext context) {
               return DismissiblePage(
+                //backgroundColor: Colors.white,
                 onDismissed: () {
                   Navigator.of(context).pop();
                   ApartmentHandler().getNewApartment().then((value) {

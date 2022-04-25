@@ -1,5 +1,7 @@
 import 'package:appartapp/classes/apartment.dart';
+import 'package:appartapp/widgets/display_text.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class TabWidget extends StatelessWidget {
   final Apartment currentApartment;
@@ -13,23 +15,26 @@ class TabWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => ListView(
-    padding: EdgeInsets.all(16),
-    controller: scrollController,
-    children: [
-      Text(
-        currentApartment.listingTitle,
-        textAlign: TextAlign.center,
-        style: TextStyle(fontSize: 20),
-      ),
-      Container(
-        height: 300,
-        width: 300,
-        child: Image.asset('assets/appart.tiff'),
-      ),
-      Text(currentApartment.description),
-      Text("Prezzo: ${currentApartment.price}€"),
-      Text("Indirizzo: ${currentApartment.address}"),
-      Text("Spese incluse: ${currentApartment.additionalExpenseDetail}"),
-    ],
-  );
+        padding: EdgeInsets.all(16),
+        controller: scrollController,
+        //physics: Scroll,
+        children: [
+          Container(
+            padding: EdgeInsets.fromLTRB(30, 10, 10, 30),
+            child: Text(
+              currentApartment.listingTitle,
+              //textAlign: TextAlign.center,
+              style: GoogleFonts.nunito(color: Colors.white70, fontSize: 30),
+            ),
+          ),
+          DisplayText(
+              title: "Descrizione", content: currentApartment.description),
+          DisplayText(title: "Prezzo", content: "${currentApartment.price}€"),
+          DisplayText(
+              title: "Indirizzo", content: "${currentApartment.address}"),
+          DisplayText(
+              title: "Spese incluse",
+              content: "${currentApartment.additionalExpenseDetail}"),
+        ],
+      );
 }

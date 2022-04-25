@@ -114,6 +114,7 @@ class ContentPage extends StatelessWidget {
                 direction: DismissiblePageDismissDirection.horizontal,
                 dragSensitivity: 0.5,
                 child: SlidingUpPanel(
+                  color: Colors.transparent.withOpacity(0.7),
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(24.0),
                     topRight: Radius.circular(24.0),

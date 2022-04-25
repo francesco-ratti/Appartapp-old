@@ -1,10 +1,14 @@
 import 'dart:convert';
 
+import 'package:appartapp/classes/credentials.dart';
+import 'package:appartapp/classes/enum%20LoginResult.dart';
 import 'package:flutter/material.dart';
 
 //import './../SimpleTextField.dart';
 import 'package:appartapp/classes/runtime_store.dart';
 import 'package:dio/dio.dart';
+
+import '../classes/login_handler.dart';
 
 class Login extends StatefulWidget {
   String urlStr = "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/login";
@@ -15,28 +19,25 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
   void doLogin(Function(String) updateUi, String email, String password) async {
-    var dio = Dio();
-    try {
-      Response response = await dio.post(
-        widget.urlStr,
-        data: {"email": email, "password": password},
-        options: Options(
-          contentType: Headers.formUrlEncodedContentType,
-          headers: {"Content-Type": "application/x-www-form-urlencoded"},
-        ),
-      );
+    List res = await LoginHandler.doLogin(email, password);
 
-      if (response.statusCode != 200)
-        updateUi("Failure");
-      else {
-        Map responseMap = response.data;
-        updateUi("Logged in as ${responseMap['email']}");
-        RuntimeStore().setCredentialsByString(responseMap['email'], responseMap['password']);
-      }
-    } on DioError catch (e) {
-      if (e.response?.statusCode != 200) {
-        updateUi("Failure");
-      }
+    Credentials credentials=res[0];
+    LoginResult loginResult=res[1];
+
+    switch (loginResult) {
+      case LoginResult.ok:
+        updateUi("Logged in");
+        RuntimeStore().setCredentials(credentials);
+        RuntimeStore().getSharedPreferences()?.setString("email", credentials.email);
+        RuntimeStore().getSharedPreferences()?.setString("password", credentials.password);
+        Navigator.pushReplacementNamed(context, '/home');
+        break;
+      case LoginResult.wrong_credentials:
+        updateUi("Credenziali errate");
+        break;
+      default:
+        updateUi("Errore");
+        break;
     }
   }
 

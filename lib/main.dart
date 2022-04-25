@@ -13,13 +13,13 @@ void main() {
   runApp(MaterialApp(
     initialRoute: '/',
     routes: {
-      '/': (context) => Home(), //to delete
-      //'/': (context) => Loading(), //to uncomment
+      //'/': (context) => Home(), //to delete
+      '/': (context) => Loading(), //to uncomment
       '/first': (context) => First(),
       '/home': (context) => Home(),
       '/loginorsignup': (context) => LoginOrSignup(),
       '/login': (context) => Login(),
-      '/signup': (context) => Signup()
+      '/signup': (context) => Signup(),
     },
   ));
 }

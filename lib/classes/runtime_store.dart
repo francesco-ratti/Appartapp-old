@@ -1,4 +1,6 @@
 
+import 'package:shared_preferences/shared_preferences.dart';
+
 import 'credentials.dart';
 
 class RuntimeStore {
@@ -14,7 +16,16 @@ class RuntimeStore {
 
 
   //useful as singleton since this will be our temporary application state store
-  Credentials _credentials=new Credentials(email: "email", password: "password");
+  Credentials? _credentials=null;
+  SharedPreferences? _sharedPreferences=null;
+
+  SharedPreferences? getSharedPreferences() {
+    return _sharedPreferences;
+  }
+
+  void setSharedPreferences(SharedPreferences sharedPreferences) {
+    _sharedPreferences=sharedPreferences;
+  }
 
   void setCredentialsByString(String email, String password) {
     _credentials=new Credentials(email: email, password: password);
@@ -24,15 +35,15 @@ class RuntimeStore {
     _credentials=credentials;
   }
 
-  Credentials getCredentials() {
+  Credentials? getCredentials() {
     return _credentials;
   }
 
-  String getEmail() {
-    return _credentials.email;
+  String? getEmail() {
+    return _credentials?.email;
   }
 
-  String getPassword() {
-    return _credentials.password;
+  String? getPassword() {
+    return _credentials?.password;
   }
 }

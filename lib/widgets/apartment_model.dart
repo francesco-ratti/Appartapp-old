@@ -53,7 +53,7 @@ class _ApartmentModel extends State<ApartmentModel> {
   Widget build(BuildContext context) => Container(
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage(currentImageUrl),
+            image: Image.network(currentImageUrl).image,
             fit: BoxFit.cover,
           ),
         ),

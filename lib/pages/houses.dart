@@ -85,6 +85,8 @@ class _ContentPage extends State<ContentPage> {
         "assets/house1/img5.jpeg",
       ]);
 
+  Future<Apartment> nextApartmentFuture=ApartmentHandler().getNewApartment();
+
   @override
   void initState() {
     super.initState();
@@ -112,7 +114,7 @@ class _ContentPage extends State<ContentPage> {
                       context,
                       MaterialPageRoute(
                           builder: (context) => ContentPage(
-                            currentApartmentFuture: ApartmentHandler().getNewApartment(),
+                            currentApartmentFuture: nextApartmentFuture,
                           )));
                   print("DISMISSED");
 

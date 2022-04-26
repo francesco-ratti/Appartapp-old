@@ -8,8 +8,8 @@ import 'apartment_handler.dart';
 
 class Apartment {
 
-  String urlStrMarkAsIgnored="";
-  String urlStrMarkAsLiked="";
+  static final String urlStrMarkAsIgnored="";
+  static final String urlStrMarkAsLiked="";
 
 
   final int id;
@@ -31,6 +31,14 @@ class Apartment {
     required this.imagesUrl,
   });
 
+  static List<String> fromImagesToImagesUrl(List images) {
+    List<String> imagesUrl=[];
+    for (final Map im in images) {
+      imagesUrl.add('http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/images/apartments/${im['id']}');
+    }
+    return imagesUrl;
+  }
+
   Apartment.fromMap(Map map) :
         this.id=map['id'],
         this.listingTitle=map["listingTitle"],
@@ -38,7 +46,7 @@ class Apartment {
         this.price=map['price'],
         this.address=map['address'],
         this.additionalExpenseDetail=map['additionalExpenseDetail'],
-        this.imagesUrl=map['imagesUrl'];
+        this.imagesUrl=fromImagesToImagesUrl(map['images']);
 
   void _performRequest(String urlStr) async {
     var dio = Dio();

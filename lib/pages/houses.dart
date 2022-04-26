@@ -18,27 +18,33 @@ class Houses extends StatefulWidget {
 class _Houses extends State<Houses> {
   int _currentRoute = 0;
 
-  Apartment currentApartment = Apartment(
-      id: 0,
-      listingTitle: "Bilocale Milano",
-      description: "Casa molto carina, senza soffitto, senza cucina",
-      price: 350,
-      address: "Via di Paperone, Paperopoli",
-      additionalExpenseDetail: "No, pagamento trimestrale",
-      imagesUrl: [
-        "assets/house1/img1.jpeg",
-        "assets/house1/img2.jpeg",
-        "assets/house1/img3.jpeg",
-        "assets/house1/img4.jpeg",
-        "assets/house1/img5.jpeg",
-      ]); //TODO
+  late Apartment currentApartment;
 
   @override
   void initState() {
     super.initState();
+
+    currentApartment=Apartment(
+        id: 0,
+        listingTitle: "Init Milano",
+        description: "Casa molto carina, senza soffitto, senza cucina",
+        price: 350,
+        address: "Via di Paperone, Paperopoli",
+        additionalExpenseDetail: "No, pagamento trimestrale",
+        imagesUrl: [
+          "assets/house1/img1.jpeg",
+          "assets/house1/img2.jpeg",
+          "assets/house1/img3.jpeg",
+          "assets/house1/img4.jpeg",
+          "assets/house1/img5.jpeg",
+        ]); //TODO
+/*
     ApartmentHandler()
         .getNewApartment()
-        .then((value) => currentApartment = value);
+        .then((value) { setState(() {
+      currentApartment = value;
+    });});*/
+    return;
   }
 
   @override
@@ -101,16 +107,13 @@ class ContentPage extends StatelessWidget {
                 //backgroundColor: Colors.white,
                 onDismissed: () {
                   Navigator.of(context).pop();
-                  ApartmentHandler().getNewApartment().then((value) {
-                    currentApartment = value;
-                    //updateHouses;
-                  });
+
                   Navigator.push(
                       context,
                       MaterialPageRoute(
                           builder: (context) => ContentPage(
-                                currentApartment: currentApartment,
-                              )));
+                            currentApartment: currentApartment,
+                          )));
                   print("DISMISSED");
 
                   // ApartmentHandler()

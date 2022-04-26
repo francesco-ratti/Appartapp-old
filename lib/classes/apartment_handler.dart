@@ -29,7 +29,6 @@ class ApartmentHandler {
   Future<Apartment> getNewApartment() async {
     //TODO test
 
-    /*
     var dio = Dio();
     dio.interceptors.add(CookieManager(cookieJar));
 
@@ -55,8 +54,9 @@ class ApartmentHandler {
         throw new UnauthorizedException();
       else
         throw new NetworkException();
-    }*/
+    }
 
+    /*
     return Apartment(
         id: 0,
         listingTitle: "Bilocale Milano 2",
@@ -70,6 +70,8 @@ class ApartmentHandler {
           "assets/house2/img3.jpeg",
           "assets/house2/img4.jpeg",
         ]);
+
+     */
   }
 
   Future<List<Apartment>> getAllApartments() async {

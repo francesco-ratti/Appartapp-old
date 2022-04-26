@@ -18,35 +18,6 @@ class Houses extends StatefulWidget {
 class _Houses extends State<Houses> {
   int _currentRoute = 0;
 
-  late Apartment currentApartment;
-
-  @override
-  void initState() {
-    super.initState();
-
-    currentApartment=Apartment(
-        id: 0,
-        listingTitle: "Init Milano",
-        description: "Casa molto carina, senza soffitto, senza cucina",
-        price: 350,
-        address: "Via di Paperone, Paperopoli",
-        additionalExpenseDetail: "No, pagamento trimestrale",
-        imagesUrl: [
-          "assets/house1/img1.jpeg",
-          "assets/house1/img2.jpeg",
-          "assets/house1/img3.jpeg",
-          "assets/house1/img4.jpeg",
-          "assets/house1/img5.jpeg",
-        ]); //TODO
-/*
-    ApartmentHandler()
-        .getNewApartment()
-        .then((value) { setState(() {
-      currentApartment = value;
-    });});*/
-    return;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Navigator(
@@ -75,7 +46,7 @@ class _Houses extends State<Houses> {
                   ),
                 ),
                 child: ContentPage(
-                  currentApartment: currentApartment,
+                  currentApartmentFuture: ApartmentHandler().getNewApartment(),
                   // updateHouses: () {setState(() {
 
                   // });}
@@ -87,14 +58,43 @@ class _Houses extends State<Houses> {
   }
 }
 
-class ContentPage extends StatelessWidget {
-  Apartment currentApartment;
-  //Function updateHouses;
-
+class ContentPage extends StatefulWidget {
+  Future<Apartment> currentApartmentFuture;
+//Function updateHouses;
+  @override
+  _ContentPage createState() => _ContentPage();
   ContentPage({
-    required this.currentApartment,
+    required this.currentApartmentFuture,
     //required this.updateHouses,
   });
+}
+
+class _ContentPage extends State<ContentPage> {
+  Apartment currentApartment=Apartment(
+      id: 0,
+      listingTitle: "LOADING",
+      description: "LOADING",
+      price: 350,
+      address: "Via di Paperone, Paperopoli",
+      additionalExpenseDetail: "No, pagamento trimestrale",
+      imagesUrl: [
+        "assets/house1/img1.jpeg",
+        "assets/house1/img2.jpeg",
+        "assets/house1/img3.jpeg",
+        "assets/house1/img4.jpeg",
+        "assets/house1/img5.jpeg",
+      ]);
+
+  @override
+  void initState() {
+    super.initState();
+
+    widget.currentApartmentFuture.then((value) {
+      setState(() {
+        currentApartment=value;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -112,7 +112,7 @@ class ContentPage extends StatelessWidget {
                       context,
                       MaterialPageRoute(
                           builder: (context) => ContentPage(
-                            currentApartment: currentApartment,
+                            currentApartmentFuture: ApartmentHandler().getNewApartment(),
                           )));
                   print("DISMISSED");
 

@@ -24,12 +24,6 @@ class Apartment {
   late List imagesDetails;
   final List<Image> images;
 
-  static void createImages(final List imagesDetails) {
-    List<Image> images=[];
-    for (final Map im in imagesDetails) {
-      images.add(Image.network('http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/images/apartments/${im['id']}'));
-    }
-  }
 
   Apartment({
     required this.id,
@@ -45,7 +39,25 @@ class Apartment {
   static List<Image> fromImagesDetailsToImages(List imagesDetails) {
     List<Image> images=[];
     for (final Map im in imagesDetails) {
-      images.add(Image.network('http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/images/apartments/${im['id']}'));
+      images.add(
+          Image.network(
+            'http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/images/apartments/${im['id']}',
+            loadingBuilder: (BuildContext context, Widget child,
+                ImageChunkEvent? loadingProgress) {
+              if (loadingProgress == null) {
+                return child;
+              }
+              return Center(
+                child: CircularProgressIndicator(
+                  value: loadingProgress.expectedTotalBytes != null  ? (loadingProgress.cumulativeBytesLoaded / (loadingProgress.expectedTotalBytes as int))
+                      : null,
+                ),
+              );
+            },
+            fit: BoxFit.cover,
+          )
+
+      );
     }
     return images;
   }

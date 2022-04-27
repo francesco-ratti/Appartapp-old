@@ -91,32 +91,29 @@ class ContentPage extends StatefulWidget {
 class _ContentPage extends State<ContentPage> {
   Apartment currentApartment=Apartment.withLocalImages(
       0,
-      "LOADING",
-      "LOADING",
-      350,
-      "Via di Paperone, Paperopoli",
-      "No, pagamento trimestrale",
-      [
-        "assets/house1/img1.jpeg",
-        "assets/house1/img2.jpeg",
-        "assets/house1/img3.jpeg",
-        "assets/house1/img4.jpeg",
-        "assets/house1/img5.jpeg",
-      ]);
+      "Caricamento in corso...",
+      "Caricamento in corso...",
+      0,
+      "Caricamento in corso...",
+      "Caricamento in corso...",
+      []);
 
   late Future<Apartment> nextApartmentFuture;
+  bool apartmentLoaded=false;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     nextApartmentFuture=ApartmentHandler().getNewApartment((Apartment apartment) {
-      /*Future.delayed(Duration(seconds: 3)).then((value) {
+      /*Future.delayed(Duration(seconds: 10)).then((value) {
         for (final Image im in apartment.images) {
-          precacheImage(im.image, context);
+          precacheImage(im.image, context).then((value) {
+            print("precached");
+          });
         }
       });
-
        */
+
       for (final Image im in apartment.images) {
         precacheImage(im.image, context);
       }
@@ -129,6 +126,7 @@ class _ContentPage extends State<ContentPage> {
     super.initState();
 
     widget.currentApartmentFuture.then((value) {
+      apartmentLoaded=true;
       setState(() {
         currentApartment=value;
       });
@@ -163,6 +161,7 @@ class _ContentPage extends State<ContentPage> {
                 },
                 direction: DismissiblePageDismissDirection.horizontal,
                 dragSensitivity: 0.5,
+                disabled: !apartmentLoaded,
                 child: SlidingUpPanel(
                   color: Colors.transparent.withOpacity(0.7),
                   borderRadius: BorderRadius.only(
@@ -172,7 +171,10 @@ class _ContentPage extends State<ContentPage> {
                   panelBuilder: (scrollController) => TabWidget(
                       scrollController: scrollController,
                       currentApartment: currentApartment),
-                  body: ApartmentModel(currentApartment: currentApartment),
+                  body: apartmentLoaded ? ApartmentModel(currentApartment: currentApartment) : Center(
+                      child: CircularProgressIndicator(
+                        value: null,
+                      )),
                 ),
               );
             });

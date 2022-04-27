@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:appartapp/classes/apartment.dart';
 import 'package:appartapp/pages/empty_page.dart';
 import 'package:appartapp/pages/houses.dart';
 import 'package:flutter/material.dart';
@@ -25,6 +26,7 @@ class _HomeState extends State<Home> {
           children: <Widget>[
             Houses(
               child: Text('Esplora'),
+                firstApartmentFuture: (ModalRoute.of(context)!.settings.arguments) as Future<Apartment>
             ),
             EmptyPage(
               child: Text('Filtri'),

@@ -1,3 +1,5 @@
+import 'package:appartapp/classes/apartment.dart';
+import 'package:appartapp/classes/apartment_handler.dart';
 import 'package:appartapp/classes/credentials.dart';
 import 'package:appartapp/classes/enum%20LoginResult.dart';
 import 'package:appartapp/classes/runtime_store.dart';
@@ -26,7 +28,7 @@ class _LoadingState extends State<Loading> {
       if (email==null || password==null) {
         Navigator.pushReplacementNamed(context, '/loginorsignup');
       } else {
-        LoginHandler.doLogin(email, password).then((res) {
+        LoginHandler.doLogin(email, password).then((res) async {
           Credentials credentials = res[0];
           LoginResult loginResult = res[1];
           switch (loginResult) {
@@ -34,13 +36,28 @@ class _LoadingState extends State<Loading> {
               RuntimeStore().setCredentials(credentials);
               prefs.setString("email", credentials.email);
               prefs.setString("password", credentials.password);
-              Navigator.pushReplacementNamed(context, '/home');
+
+              Apartment firstApartment = await ApartmentHandler().getNewApartment(
+                      (Apartment apartment) {
+                    for (final Image im in apartment.images) {
+                      precacheImage(im.image, context);
+                    }
+                      });
+
+              Future<Apartment> firstApartmentFuture = Future (
+                  () {
+                    return firstApartment;
+                  }
+              );
+
+              Navigator.pushReplacementNamed(context, '/home', arguments: firstApartmentFuture);
+
               break;
             case LoginResult.wrong_credentials:
               Navigator.pushReplacementNamed(context, '/loginorsignup');
               break;
             default:
-              //TODO showerror: network error
+            //TODO showerror: network error
           }
         }
         );

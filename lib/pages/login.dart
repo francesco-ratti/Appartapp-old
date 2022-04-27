@@ -1,8 +1,10 @@
 import 'dart:convert';
 
+import 'package:appartapp/classes/apartment.dart';
 import 'package:appartapp/classes/credentials.dart';
 import 'package:appartapp/classes/enum%20LoginResult.dart';
 import 'package:flutter/material.dart';
+import 'package:appartapp/classes/apartment_handler.dart';
 
 //import './../SimpleTextField.dart';
 import 'package:appartapp/classes/runtime_store.dart';
@@ -30,7 +32,21 @@ class _LoginState extends State<Login> {
         RuntimeStore().setCredentials(credentials);
         RuntimeStore().getSharedPreferences()?.setString("email", credentials.email);
         RuntimeStore().getSharedPreferences()?.setString("password", credentials.password);
-        Navigator.pushReplacementNamed(context, '/home');
+
+        Apartment firstApartment = await ApartmentHandler().getNewApartment(
+                (Apartment apartment) {
+              for (final Image im in apartment.images) {
+                precacheImage(im.image, context);
+              }
+            });
+
+        Future<Apartment> firstApartmentFuture = Future (
+                () {
+              return firstApartment;
+            }
+        );
+
+        Navigator.pushReplacementNamed(context, '/home', arguments: firstApartmentFuture);
         break;
       case LoginResult.wrong_credentials:
         updateUi("Credenziali errate");

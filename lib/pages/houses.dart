@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:appartapp/classes/apartment.dart';
 import 'package:appartapp/classes/apartment_handler.dart';
 import 'package:appartapp/widgets/apartment_model.dart';
@@ -7,7 +9,9 @@ import 'package:flutter/material.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class Houses extends StatefulWidget {
-  Houses({required this.child});
+  Future<Apartment> firstApartmentFuture;
+
+  Houses({required this.child, required this.firstApartmentFuture});
 
   final Widget child;
 
@@ -17,6 +21,21 @@ class Houses extends StatefulWidget {
 
 class _Houses extends State<Houses> {
   int _currentRoute = 0;
+
+  /*
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    firstApartmentFuture=ApartmentHandler().getNewApartment((Apartment apartment) {
+      for (final Image im in apartment.images) {
+        precacheImage(im.image, context);
+      }
+    }
+    );
+  }
+
+   */
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +65,7 @@ class _Houses extends State<Houses> {
                   ),
                 ),
                 child: ContentPage(
-                  currentApartmentFuture: ApartmentHandler().getNewApartment(),
+                  currentApartmentFuture: widget.firstApartmentFuture,
                   // updateHouses: () {setState(() {
 
                   // });}
@@ -70,14 +89,14 @@ class ContentPage extends StatefulWidget {
 }
 
 class _ContentPage extends State<ContentPage> {
-  Apartment currentApartment=Apartment(
-      id: 0,
-      listingTitle: "LOADING",
-      description: "LOADING",
-      price: 350,
-      address: "Via di Paperone, Paperopoli",
-      additionalExpenseDetail: "No, pagamento trimestrale",
-      imagesUrl: [
+  Apartment currentApartment=Apartment.withLocalImages(
+      0,
+      "LOADING",
+      "LOADING",
+      350,
+      "Via di Paperone, Paperopoli",
+      "No, pagamento trimestrale",
+      [
         "assets/house1/img1.jpeg",
         "assets/house1/img2.jpeg",
         "assets/house1/img3.jpeg",
@@ -85,7 +104,20 @@ class _ContentPage extends State<ContentPage> {
         "assets/house1/img5.jpeg",
       ]);
 
-  Future<Apartment> nextApartmentFuture=ApartmentHandler().getNewApartment();
+  late Future<Apartment> nextApartmentFuture;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    nextApartmentFuture=ApartmentHandler().getNewApartment((Apartment apartment) {
+      Future.delayed(Duration(seconds: 3)).then((value) {
+        for (final Image im in apartment.images) {
+          precacheImage(im.image, context);
+        }
+      });
+    }
+    );
+  }
 
   @override
   void initState() {

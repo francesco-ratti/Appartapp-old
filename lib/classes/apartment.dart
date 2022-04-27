@@ -4,6 +4,8 @@ import 'package:appartapp/exceptions/unauthorized_exception.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 
+import 'package:flutter/material.dart';
+
 import 'apartment_handler.dart';
 
 class Apartment {
@@ -19,7 +21,15 @@ class Apartment {
   final String address;
   final String additionalExpenseDetail;
 
-  final List<String> imagesUrl;
+  late List imagesDetails;
+  final List<Image> images;
+
+  static void createImages(final List imagesDetails) {
+    List<Image> images=[];
+    for (final Map im in imagesDetails) {
+      images.add(Image.network('http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/images/apartments/${im['id']}'));
+    }
+  }
 
   Apartment({
     required this.id,
@@ -28,15 +38,24 @@ class Apartment {
     required this.price,
     required this.address,
     required this.additionalExpenseDetail,
-    required this.imagesUrl,
+    required this.imagesDetails,
+    required this.images,
   });
 
-  static List<String> fromImagesToImagesUrl(List images) {
-    List<String> imagesUrl=[];
-    for (final Map im in images) {
-      imagesUrl.add('http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/images/apartments/${im['id']}');
+  static List<Image> fromImagesDetailsToImages(List imagesDetails) {
+    List<Image> images=[];
+    for (final Map im in imagesDetails) {
+      images.add(Image.network('http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/images/apartments/${im['id']}'));
     }
-    return imagesUrl;
+    return images;
+  }
+
+  static List<Image> fromImagesUriToImages (List <String> imagesUri) {
+    List<Image> images=[];
+    for (final String uri in imagesUri) {
+      images.add(Image.asset(uri));
+    }
+    return images;
   }
 
   Apartment.fromMap(Map map) :
@@ -46,7 +65,18 @@ class Apartment {
         this.price=map['price'],
         this.address=map['address'],
         this.additionalExpenseDetail=map['additionalExpenseDetail'],
-        this.imagesUrl=fromImagesToImagesUrl(map['images']);
+        this.imagesDetails=map['images'],
+        this.images=fromImagesDetailsToImages(map['images']);
+
+  Apartment.withLocalImages(this.id,
+      this.listingTitle,
+      this.description,
+      this.price,
+      this.address,
+      this.additionalExpenseDetail,
+      imagesUri) :
+        this.images=fromImagesUriToImages(imagesUri);
+
 
   void _performRequest(String urlStr) async {
     var dio = Dio();

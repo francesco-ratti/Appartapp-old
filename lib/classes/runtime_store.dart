@@ -7,7 +7,7 @@ import 'credentials.dart';
 
 class RuntimeStore {
   //SINGLETON PATTERN
-  static const backgroundColor=const Color(0xFFF89921);
+  static const backgroundColor=const Color(0x566573);
 
   static final RuntimeStore _runtimeStore = RuntimeStore._internal();
 

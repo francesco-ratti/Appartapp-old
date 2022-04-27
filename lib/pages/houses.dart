@@ -65,7 +65,7 @@ class _Houses extends State<Houses> {
                   ),
                 ),
                 child: ContentPage(
-                  currentApartmentFuture: widget.firstApartmentFuture,
+                  currentApartmentFuture: widget.firstApartmentFuture, apartmentChangeCallback: (Apartment ) {  },
                   // updateHouses: () {setState(() {
 
                   // });}
@@ -78,12 +78,13 @@ class _Houses extends State<Houses> {
 }
 
 class ContentPage extends StatefulWidget {
+  Function(Apartment) apartmentChangeCallback;
   Future<Apartment> currentApartmentFuture;
 //Function updateHouses;
   @override
   _ContentPage createState() => _ContentPage();
   ContentPage({
-    required this.currentApartmentFuture,
+    required this.currentApartmentFuture, required this.apartmentChangeCallback
     //required this.updateHouses,
   });
 }
@@ -104,21 +105,14 @@ class _ContentPage extends State<ContentPage> {
         "assets/house1/img5.jpeg",
       ]);
 
-  late Future<Apartment> nextApartmentFuture;
-
+//  late Future<Apartment> nextApartmentFuture;
+/*
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    nextApartmentFuture=ApartmentHandler().getNewApartment((Apartment apartment) {
-      Future.delayed(Duration(seconds: 3)).then((value) {
-        for (final Image im in apartment.images) {
-          precacheImage(im.image, context);
-        }
-      });
-    }
-    );
-  }
 
+  }
+*/
   @override
   void initState() {
     super.initState();
@@ -140,14 +134,16 @@ class _ContentPage extends State<ContentPage> {
               return DismissiblePage(
                 //backgroundColor: Colors.white,
                 onDismissed: () {
+
+                  /*
                   Navigator.of(context).pop();
 
                   Navigator.push(
                       context,
                       MaterialPageRoute(
                           builder: (context) => ContentPage(
-                            currentApartmentFuture: nextApartmentFuture,
-                          )));
+                            currentApartmentFuture: widget.currentApartmentFuture, apartmentChangeCallback: widget.apartmentChangeCallback
+                          )));*/
                   print("DISMISSED");
 
                   // ApartmentHandler()

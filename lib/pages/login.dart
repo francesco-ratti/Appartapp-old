@@ -66,8 +66,7 @@ class _LoginState extends State<Login> {
   Widget build(BuildContext context) {
     Color bgColor = Colors.white;
 
-    return (MaterialApp(
-        home: Scaffold(
+    return (Scaffold(
             appBar: AppBar(title: const Text('Accedi')),
             backgroundColor: bgColor,
             body: Center(
@@ -133,7 +132,7 @@ class _LoginState extends State<Login> {
                           });
                         }, email, password);
                       })
-                ])))));
+                ]))));
   }
 
   @override

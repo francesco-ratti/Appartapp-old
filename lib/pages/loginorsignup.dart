@@ -8,8 +8,7 @@ class LoginOrSignup extends StatelessWidget {
   Widget build(BuildContext context) {
     Color bgColor = Colors.white;
 
-    return MaterialApp(
-        home: Scaffold(
+    return Scaffold(
         backgroundColor: bgColor,
         body: Center(
               child: Column(
@@ -47,6 +46,6 @@ class LoginOrSignup extends StatelessWidget {
                       onPressed: () {},
                     )
                   ]),
-            )));
+            ));
   }
 }

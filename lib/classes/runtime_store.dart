@@ -1,10 +1,13 @@
 
+import 'dart:ui';
+
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'credentials.dart';
 
 class RuntimeStore {
   //SINGLETON PATTERN
+  static const backgroundColor=const Color(0xFFF89921);
 
   static final RuntimeStore _runtimeStore = RuntimeStore._internal();
 

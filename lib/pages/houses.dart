@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:appartapp/classes/apartment.dart';
 import 'package:appartapp/classes/apartment_handler.dart';
+import 'package:appartapp/classes/runtime_store.dart';
 import 'package:appartapp/widgets/apartment_model.dart';
 import 'package:appartapp/widgets/tab_widget.dart';
 import 'package:appartapp/widgets/tab_widget_loading.dart';
@@ -40,7 +41,7 @@ class _Houses extends State<Houses> {
 
   @override
   Widget build(BuildContext context) {
-    return Navigator(
+        return Navigator(
       onGenerateRoute: (RouteSettings settings) {
         return MaterialPageRoute(
           settings: settings,
@@ -163,7 +164,9 @@ class _ContentPage extends State<ContentPage> {
                 direction: DismissiblePageDismissDirection.horizontal,
                 dragSensitivity: 0.5,
                 disabled: !apartmentLoaded,
-                child: SlidingUpPanel(
+                child: Container (
+                  color: RuntimeStore.backgroundColor,
+                  child: SlidingUpPanel(
                   color: Colors.transparent.withOpacity(0.7),
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(24.0),
@@ -179,7 +182,7 @@ class _ContentPage extends State<ContentPage> {
                         value: null,
                       )),
                 ),
-              );
+              ));
             });
       },
     );

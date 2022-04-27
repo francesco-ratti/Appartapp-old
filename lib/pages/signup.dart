@@ -75,8 +75,7 @@ class _SignupState extends State<Signup> {
     birthdayController.text =
         "${_birthday.day}/${_birthday.month}/${_birthday.year}";
 
-    return (MaterialApp(
-        home: Scaffold(
+    return Scaffold(
             appBar: AppBar(title: const Text('Registrati')),
             backgroundColor: bgColor,
             body: ListView(
@@ -197,7 +196,7 @@ class _SignupState extends State<Signup> {
                       style: TextStyle(fontSize: 20),
                     )),
               ],
-            ))));
+            ));
   }
 
   @override

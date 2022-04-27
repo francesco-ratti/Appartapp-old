@@ -4,6 +4,7 @@ import 'package:appartapp/classes/apartment.dart';
 import 'package:appartapp/classes/apartment_handler.dart';
 import 'package:appartapp/widgets/apartment_model.dart';
 import 'package:appartapp/widgets/tab_widget.dart';
+import 'package:appartapp/widgets/tab_widget_loading.dart';
 import 'package:dismissible_page/dismissible_page.dart';
 import 'package:flutter/material.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
@@ -96,7 +97,7 @@ class _ContentPage extends State<ContentPage> {
       0,
       "Caricamento in corso...",
       "Caricamento in corso...",
-      []);
+      <String>[]);
 
   late Future<Apartment> nextApartmentFuture;
   bool apartmentLoaded=false;
@@ -168,9 +169,11 @@ class _ContentPage extends State<ContentPage> {
                     topLeft: Radius.circular(24.0),
                     topRight: Radius.circular(24.0),
                   ),
-                  panelBuilder: (scrollController) => TabWidget(
+                  isDraggable: apartmentLoaded,
+                  panelBuilder: (scrollController) =>
+                  apartmentLoaded ? TabWidget(
                       scrollController: scrollController,
-                      currentApartment: currentApartment),
+                      currentApartment: currentApartment) : TabWidgetLoading(),
                   body: apartmentLoaded ? ApartmentModel(currentApartment: currentApartment) : Center(
                       child: CircularProgressIndicator(
                         value: null,

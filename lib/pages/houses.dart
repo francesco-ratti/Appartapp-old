@@ -110,11 +110,16 @@ class _ContentPage extends State<ContentPage> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     nextApartmentFuture=ApartmentHandler().getNewApartment((Apartment apartment) {
-      Future.delayed(Duration(seconds: 3)).then((value) {
+      /*Future.delayed(Duration(seconds: 3)).then((value) {
         for (final Image im in apartment.images) {
           precacheImage(im.image, context);
         }
       });
+
+       */
+      for (final Image im in apartment.images) {
+        precacheImage(im.image, context);
+      }
     }
     );
   }

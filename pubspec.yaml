@@ -35,6 +35,8 @@ dependencies:
   flutter_signin_button: ^2.0.0
   sliding_up_panel: ^2.0.0+1
   dismissible_page: ^0.7.2
+  image_picker_gallery_camera: ^0.2.2
+  image_picker_platform_interface: ^2.4.4
 
 
   # The following adds the Cupertino Icons font to your application.

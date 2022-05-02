@@ -3,30 +3,30 @@ import 'package:flutter/material.dart';
 class SimpleTextField extends StatefulWidget {
   const SimpleTextField(
       {this.onChanged,
-        this.textEditingController,
-        this.autofillHints,
-        this.textInputType,
-        this.autoFocus = false,
-        this.obscureText = false,
-        this.textInputAction,
-        this.focusNode,
-        this.prefixIconData,
-        this.hintText,
-        this.labelText,
-        this.errorText,
-        this.helperText,
-        this.showLabelAboveTextField = false,
-        this.floatingLabelBehavior = FloatingLabelBehavior.auto,
-        this.fillColor,
-        this.accentColor,
-        this.textColor = Colors.black,
-        this.borderRadius = 6,
-        this.validator,
-        this.showConfirmation = true,
-        this.showError = true,
-        this.verticalPadding = 20,
-        this.horizontalPadding = 12,
-        Key? key})
+      this.textEditingController,
+      this.autofillHints,
+      this.textInputType,
+      this.autoFocus = false,
+      this.obscureText = false,
+      this.textInputAction,
+      this.focusNode,
+      this.prefixIconData,
+      this.hintText,
+      this.labelText,
+      this.errorText,
+      this.helperText,
+      this.showLabelAboveTextField = false,
+      this.floatingLabelBehavior = FloatingLabelBehavior.auto,
+      this.fillColor,
+      this.accentColor,
+      this.textColor = Colors.black,
+      this.borderRadius = 6,
+      this.validator,
+      this.showConfirmation = true,
+      this.showError = true,
+      this.verticalPadding = 20,
+      this.horizontalPadding = 12,
+      Key? key})
       : super(key: key);
 
   final Function(String)? onChanged;
@@ -215,7 +215,7 @@ class _SimpleTextFieldState extends State<SimpleTextField> {
               hintText: widget.hintText,
               hintStyle: TextStyle(color: widget.textColor.withOpacity(.45)),
               labelText:
-              widget.showLabelAboveTextField ? null : widget.labelText,
+                  widget.showLabelAboveTextField ? null : widget.labelText,
               labelStyle: buildLabelStyle(),
               errorText: widget.errorText != null && hasError && hasValidator
                   ? widget.errorText
@@ -230,18 +230,18 @@ class _SimpleTextFieldState extends State<SimpleTextField> {
               ),
               prefixIcon: widget.prefixIconData != null
                   ? Padding(
-                padding: const EdgeInsets.only(left: 12.0, right: 8),
-                child: Icon(
-                  widget.prefixIconData,
-                  color: hasFocus
-                      ? widget.accentColor
-                      : widget.textColor.withOpacity(.6),
-                  size: 20,
-                ),
-              )
+                      padding: const EdgeInsets.only(left: 12.0, right: 8),
+                      child: Icon(
+                        widget.prefixIconData,
+                        color: hasFocus
+                            ? widget.accentColor
+                            : widget.textColor.withOpacity(.6),
+                        size: 20,
+                      ),
+                    )
                   : null,
               prefixIconConstraints:
-              const BoxConstraints(minHeight: 24, minWidth: 24),
+                  const BoxConstraints(minHeight: 24, minWidth: 24),
               suffixIcon: buildSuffixIcon(),
             ),
           ),

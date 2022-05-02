@@ -1,3 +1,4 @@
+import 'package:appartapp/pages/add_apartment.dart';
 import 'package:flutter/material.dart';
 
 class EmptyPage extends StatefulWidget {
@@ -34,7 +35,22 @@ class _EmptyPage extends State<EmptyPage> {
                     vertical: 10.0,
                     horizontal: 20.0,
                   ),
-                  child: Text("this is an empty page")),
+                  child: Column(
+                    children: [
+                      Text("this is an empty page"),
+                      ElevatedButton(
+                        onPressed: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => AddApartment()),
+                        ),
+                        child: Text(
+                          'Aggiungi un appartamento'.toUpperCase(),
+                          style: const TextStyle(color: Colors.white),
+                        ),
+                      ),
+                    ],
+                  )),
             );
           },
         );

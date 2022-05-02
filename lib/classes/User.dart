@@ -43,7 +43,7 @@ class User {
         this.email=map["email"],
         this.name=map['name'],
         this.surname=map['surname'],
-        this.birthday=DateTime.fromMillisecondsSinceEpoch(int.parse(map['birthday'])),
+        this.birthday=DateTime.fromMillisecondsSinceEpoch(map['birthday']),
         this.gender= Gender.values.firstWhere((e) => e.toString() == 'Gender.' + map['gender']),
         this.imagesDetails=map['images'],
         this.images=fromImagesDetailsToImages(map['images']);

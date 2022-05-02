@@ -1,3 +1,4 @@
+import 'package:appartapp/classes/User.dart';
 import 'package:appartapp/classes/apartment.dart';
 import 'package:appartapp/classes/apartment_handler.dart';
 import 'package:appartapp/classes/credentials.dart';
@@ -19,7 +20,7 @@ class _LoadingState extends State<Loading> {
   void setup() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     RuntimeStore().setSharedPreferences(prefs);
-    await Future.delayed(Duration(seconds: 1));
+    //await Future.delayed(Duration(seconds: 1));
     bool? TourCompleted=prefs.getBool('tourcompleted');
     if (TourCompleted!= null && TourCompleted) {
       String? email=prefs.getString("email");
@@ -30,10 +31,13 @@ class _LoadingState extends State<Loading> {
       } else {
         LoginHandler.doLogin(email, password).then((res) async {
           Credentials credentials = res[0];
-          LoginResult loginResult = res[1];
+          User user=res[1];
+          LoginResult loginResult = res[2];
           switch (loginResult) {
             case LoginResult.ok:
               RuntimeStore().setCredentials(credentials);
+              RuntimeStore().setUser(user);
+
               prefs.setString("email", credentials.email);
               prefs.setString("password", credentials.password);
 

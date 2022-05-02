@@ -1,9 +1,13 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:appartapp/classes/User.dart';
 import 'package:appartapp/classes/apartment.dart';
+import 'package:appartapp/pages/edit_profile.dart';
 import 'package:appartapp/pages/empty_page.dart';
 import 'package:appartapp/pages/houses.dart';
 import 'package:flutter/material.dart';
+
+import '../classes/runtime_store.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -16,6 +20,13 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     Color bgColor = Colors.yellowAccent;
+
+    User? user=RuntimeStore().getUser();
+    if (user!=null) {
+      for (final Image im in user.images) {
+        precacheImage(im.image, context);
+      }
+    }
 
     return Scaffold(
       body: SafeArea(
@@ -34,8 +45,8 @@ class _HomeState extends State<Home> {
             EmptyPage(
               child: Text('Chat'),
             ),
-            EmptyPage(
-              child: Text('Profilo'),
+            EditProfile(
+              //child: Text('Profilo'),
             ),
           ],
         ),

@@ -1,3 +1,4 @@
+import 'package:appartapp/classes/User.dart';
 import 'package:appartapp/classes/credentials.dart';
 import 'package:appartapp/classes/enum%20LoginResult.dart';
 import 'package:appartapp/classes/runtime_store.dart';
@@ -21,19 +22,21 @@ class LoginHandler {
 
       if (response.statusCode != 200) {
         if (response.statusCode == 401)
-          return [null,LoginResult.wrong_credentials];
+          return [null,null,LoginResult.wrong_credentials];
         else
-          return [null, LoginResult.server_error];
+          return [null,null,LoginResult.server_error];
       }
       else {
         Map responseMap = response.data;
         Credentials credentials=Credentials(email: responseMap['email'], password: responseMap['password']);
-        return [credentials, LoginResult.ok];
+        User user=User.fromMap(responseMap);
+
+        return [credentials, user, LoginResult.ok];
       }
     } on DioError catch (e) {
       if (e.response?.statusCode == 401)
-        return [null, LoginResult.wrong_credentials];
+        return [null, null, LoginResult.wrong_credentials];
       else
-        return [null, LoginResult.server_error];
+        return [null, null, LoginResult.server_error];
     }
   }}

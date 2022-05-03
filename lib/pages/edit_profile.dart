@@ -64,7 +64,7 @@ class _EditProfileState extends State<EditProfile> {
   final surnameController = TextEditingController();
   final birthdayController = TextEditingController();
 
-  String status = "Not submitted yet";
+  String status = "";
 
   User? user=RuntimeStore().getUser();
 
@@ -171,7 +171,10 @@ class _EditProfileState extends State<EditProfile> {
                   ),
                 )),
             Padding(
-                padding: EdgeInsets.all(8.0),
+                padding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 0.0),
+                child: Text("Genere")),
+            Padding(
+                padding: EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 8.0),
                 child: Row(children: [
                   Expanded(
                       child: DropdownButton(

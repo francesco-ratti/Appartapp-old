@@ -1,4 +1,3 @@
-import 'package:appartapp/classes/User.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:appartapp/classes/runtime_store.dart';
@@ -44,6 +43,8 @@ class _EditPasswordState extends State<EditPassword> {
         RuntimeStore().setCredentialsByString(responseMap["email"], responseMap["password"]);
         RuntimeStore().getSharedPreferences()?.setString("password", responseMap["password"]);
         //RuntimeStore().setUser(User.fromMap(responseMap));
+
+        Navigator.pop(context);
       }
     } on DioError catch (e) {
       if (e.response?.statusCode != 200) {

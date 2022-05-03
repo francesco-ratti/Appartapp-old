@@ -144,7 +144,10 @@ class _SignupState extends State<Signup> {
                       ),
                     )),
                 Padding(
-                    padding: EdgeInsets.all(8.0),
+                    padding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 0.0),
+                    child: Text("Genere")),
+                Padding(
+                    padding: EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 8.0),
                     child: Row(children: [
                       Expanded(
                           child: DropdownButton(

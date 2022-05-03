@@ -1,8 +1,10 @@
 import 'dart:io';
+import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker_gallery_camera/image_picker_gallery_camera.dart';
 import 'package:image_picker_platform_interface/image_picker_platform_interface.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 
 class AddApartment extends StatefulWidget {
   @override
@@ -10,7 +12,8 @@ class AddApartment extends StatefulWidget {
 }
 
 class _AddApartment extends State<AddApartment> {
-  PickedFile? _image;
+  List<PickedFile> _images = [];
+  List<Widget> imageSliders = [];
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descController = TextEditingController();
   final TextEditingController _priceController = TextEditingController();
@@ -29,7 +32,11 @@ class _AddApartment extends State<AddApartment> {
       ),
     ) as PickedFile;
     setState(() {
-      _image = image;
+      _images.add(image);
+      imageSliders.add(Container(
+        child: Image.file(File(image.path)),
+        constraints: const BoxConstraints(maxWidth: 200),
+      ));
     });
   }
 
@@ -86,19 +93,32 @@ class _AddApartment extends State<AddApartment> {
               Container(
                 child: ElevatedButton(
                   onPressed: () => getImage(ImgSource.Both),
+                  style: ElevatedButton.styleFrom(primary: Colors.black38),
                   child: Text(
                     'Aggiungi una foto'.toUpperCase(),
                     style: const TextStyle(color: Colors.white),
                   ),
                 ),
               ),
-              if (_image != null)
+              if (_images.isNotEmpty)
                 Padding(
                   padding: const EdgeInsets.only(top: 15.0),
                   child: Container(
-                    child: Image.file(File(_image!.path)),
-                    constraints: const BoxConstraints(maxWidth: 200),
-                  ),
+                      child: CarouselSlider(
+                    options: CarouselOptions(
+                      aspectRatio: 2.0,
+                      enlargeCenterPage: true,
+                      enableInfiniteScroll: false,
+                      initialPage: 2,
+                      autoPlay: true,
+                    ),
+                    items: imageSliders,
+                  )),
+
+                  // Container(
+                  //   child: Image.file(File(_image!.path)),
+                  //   constraints: const BoxConstraints(maxWidth: 200),
+                  //),
                 )
               else
                 Container(),
@@ -199,6 +219,7 @@ class _AddApartment extends State<AddApartment> {
       child: Container(
         child: ElevatedButton(
           onPressed: () => isReady() ? publishApartment() : null,
+          style: ElevatedButton.styleFrom(primary: Colors.black87),
           child: Text(
             'Pubblica'.toUpperCase(),
             style: const TextStyle(color: Colors.white),
@@ -214,7 +235,7 @@ class _AddApartment extends State<AddApartment> {
         _priceController.text.isNotEmpty &&
         _addressController.text.isNotEmpty &&
         _aedController.text.isNotEmpty &&
-        _image != null)
+        _images != null)
       return true;
     else
       return false;

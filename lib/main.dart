@@ -6,6 +6,7 @@ import 'package:appartapp/pages/loading.dart';
 import 'package:appartapp/pages/home.dart';
 import 'package:appartapp/pages/first.dart';
 
+import 'pages/edit_password.dart';
 import 'pages/loginorsignup.dart';
 import 'pages/signup.dart';
 
@@ -24,6 +25,7 @@ void main() {
       '/loginorsignup': (context) => LoginOrSignup(),
       '/login': (context) => Login(),
       '/signup': (context) => Signup(),
+      '/editpassword': (context) => EditPassword(),
     },
   ));
 }

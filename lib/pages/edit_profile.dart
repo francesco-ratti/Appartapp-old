@@ -1,14 +1,14 @@
 import 'package:appartapp/classes/User.dart';
 import 'package:appartapp/classes/enum%20Gender.dart';
+import 'package:appartapp/classes/runtime_store.dart';
 import 'package:flutter/material.dart';
 
 //import './../SimpleTextField.dart';
 import 'package:dio/dio.dart';
 
-import '../classes/runtime_store.dart';
-
 class EditProfile extends StatefulWidget {
   String urlStr = "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/edituser";
+  Color bgColor = Colors.white;
 
   @override
   _EditProfileState createState() => _EditProfileState();
@@ -46,7 +46,10 @@ class _EditProfileState extends State<EditProfile> {
         updateUi("Failure");
       else {
         updateUi("Updated");
-        RuntimeStore().setUser(User.fromMap(response.data));
+        Map responseMap=response.data;
+
+        RuntimeStore().setCredentialsByString(responseMap["email"], responseMap["password"]);
+        RuntimeStore().setUser(User.fromMap(responseMap));
       }
     } on DioError catch (e) {
       if (e.response?.statusCode != 200) {
@@ -105,14 +108,13 @@ class _EditProfileState extends State<EditProfile> {
 
   @override
   Widget build(BuildContext context) {
-    Color bgColor = Colors.white;
 
     birthdayController.text =
     "${_birthday.day}/${_birthday.month}/${_birthday.year}";
 
     return Scaffold(
         appBar: AppBar(title: const Text('Il tuo profilo')),
-        backgroundColor: bgColor,
+        backgroundColor: widget.bgColor,
         body: ListView(
           padding: EdgeInsets.all(16.0),
           children: <Widget>[
@@ -229,6 +231,20 @@ class _EditProfileState extends State<EditProfile> {
                       status = "Incompleto. Compila tutti i campi";
                     });
                   }
+                }),
+            ElevatedButton(
+                child: Text("Aggiorna la password"),
+                onPressed: () {
+                  Navigator.pushNamed(context, "/editpassword");
+                }),
+            ElevatedButton(
+                child: Text("Esci"),
+                style: ElevatedButton.styleFrom(primary: Colors.red),
+                onPressed: () {
+                  RuntimeStore().setCredentials(null);
+                  RuntimeStore().getSharedPreferences()?.remove("email");
+                  RuntimeStore().getSharedPreferences()?.remove("password");
+                  Navigator.pushReplacementNamed(context, "/loginorsignup");
                 }),
             Padding(
                 padding: EdgeInsets.all(16.0),

@@ -46,7 +46,7 @@ class RuntimeStore {
     _credentials=new Credentials(email: email, password: password);
   }
 
-  void setCredentials(Credentials credentials) {
+  void setCredentials(Credentials? credentials) {
     _credentials=credentials;
   }
 

@@ -15,6 +15,8 @@ import '../classes/login_handler.dart';
 
 class Login extends StatefulWidget {
   String urlStr = "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/login";
+  Color bgColor = Colors.white;
+
 
   @override
   _LoginState createState() => _LoginState();
@@ -66,11 +68,9 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
-    Color bgColor = Colors.white;
-
     return (Scaffold(
             appBar: AppBar(title: const Text('Accedi')),
-            backgroundColor: bgColor,
+            backgroundColor: widget.bgColor,
             body: Center(
                 child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,

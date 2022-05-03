@@ -226,15 +226,19 @@ class _EditProfileState extends State<EditProfile> {
                             status = toWrite;
                           });
                         }, RuntimeStore().getEmail() ?? email, email, password, name, surname, _birthday, _selectedGender);
-
-//TODO upload modifications
-
                   } else {
                     setState(() {
                       status = "Incompleto. Compila tutti i campi";
                     });
                   }
                 }),
+            const Divider(
+              height: 20,
+              thickness: 1,
+              indent: 20,
+              endIndent: 20,
+              color: Colors.grey,
+            ),
             ElevatedButton(
                 child: Text("Aggiorna la password"),
                 onPressed: () {

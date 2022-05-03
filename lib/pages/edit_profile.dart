@@ -8,7 +8,7 @@ import 'package:dio/dio.dart';
 import '../classes/runtime_store.dart';
 
 class EditProfile extends StatefulWidget {
-  String urlStr = "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/signup";
+  String urlStr = "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/edituser";
 
   @override
   _EditProfileState createState() => _EditProfileState();
@@ -20,15 +20,17 @@ class GenderForList {
   final String code;
 }
 class _EditProfileState extends State<EditProfile> {
-  void doSignup(Function(String) updateUi, String email, String password,
+  void doUpdate(Function(String) updateUi, String oldemail, String email, String oldpassword,
       String name, String surname, DateTime birthday, GenderForList gender) async {
     var dio = Dio();
     try {
       Response response = await dio.post(
         widget.urlStr,
         data: {
-          "email": email,
-          "password": password,
+          "email": oldemail,
+          "password": oldpassword,
+
+          "newemail": email,
           "name": name,
           "surname": surname,
           "birthday": birthday.millisecondsSinceEpoch.toString(),
@@ -42,8 +44,10 @@ class _EditProfileState extends State<EditProfile> {
 
       if (response.statusCode != 200)
         updateUi("Failure");
-      else
-        updateUi("Signed up");
+      else {
+        updateUi("Updated");
+        RuntimeStore().setUser(User.fromMap(response.data));
+      }
     } on DioError catch (e) {
       if (e.response?.statusCode != 200) {
         updateUi("Failure");
@@ -52,7 +56,7 @@ class _EditProfileState extends State<EditProfile> {
   }
 
   final emailController = TextEditingController();
-  //final passwordController = TextEditingController();
+  final passwordController = TextEditingController();
   final nameController = TextEditingController();
   final surnameController = TextEditingController();
   final birthdayController = TextEditingController();
@@ -122,18 +126,6 @@ class _EditProfileState extends State<EditProfile> {
                   ),
                   controller: emailController,
                 )),
-            /*Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: TextField(
-                      obscureText: true,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'Password',
-                      ),
-                      controller: passwordController,
-                    )),
-
-                 */
             Padding(
                 padding: EdgeInsets.all(8.0),
                 child: TextField(
@@ -197,28 +189,39 @@ class _EditProfileState extends State<EditProfile> {
                         }).toList(),
                       ))
                 ])),
+            Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Text("Reinserisci la tua password per modificare i dati")),
+            Padding(
+                padding: EdgeInsets.all(8.0),
+                child: TextField(
+                  obscureText: true,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 'Password',
+                  ),
+                  controller: passwordController,
+                )),
             ElevatedButton(
-                child: Text("Registrati"),
+                child: Text("Modifica"),
                 onPressed: () {
                   String email = emailController.text;
-                  //String password = passwordController.text;
+                  String password = passwordController.text;
                   String name = nameController.text;
                   String surname = surnameController.text;
 
                   if ((email.length > 0 &&
-                      //password.length > 0 &&
+                      password.length > 0 &&
                       name.length > 0 &&
                       surname.length > 0 &&
                       _selectedGender != null)) {
 
-                    /*doSignup((String toWrite) {
+                    doUpdate((String toWrite) {
                           setState(() {
                             status = toWrite;
                           });
-                        }, email, password, name, surname, _birthday,
-                            _selectedGender);
+                        }, RuntimeStore().getEmail() ?? email, email, password, name, surname, _birthday, _selectedGender);
 
-                         */
 //TODO upload modifications
 
                   } else {
@@ -243,6 +246,6 @@ class _EditProfileState extends State<EditProfile> {
     nameController.dispose();
     surnameController.dispose();
     birthdayController.dispose();
-    //passwordController.dispose();
+    passwordController.dispose();
   }
 }

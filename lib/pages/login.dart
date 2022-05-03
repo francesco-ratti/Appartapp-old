@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:appartapp/classes/User.dart';
 import 'package:appartapp/classes/apartment.dart';
 import 'package:appartapp/classes/credentials.dart';
 import 'package:appartapp/classes/enum%20LoginResult.dart';
@@ -23,13 +24,14 @@ class _LoginState extends State<Login> {
   void doLogin(Function(String) updateUi, String email, String password) async {
     List res = await LoginHandler.doLogin(email, password);
 
-    Credentials credentials=res[0];
-    LoginResult loginResult=res[1];
-
+    Credentials credentials = res[0];
+    User user=res[1];
+    LoginResult loginResult = res[2];
     switch (loginResult) {
       case LoginResult.ok:
-        updateUi("Logged in");
         RuntimeStore().setCredentials(credentials);
+        RuntimeStore().setUser(user);
+
         RuntimeStore().getSharedPreferences()?.setString("email", credentials.email);
         RuntimeStore().getSharedPreferences()?.setString("password", credentials.password);
 

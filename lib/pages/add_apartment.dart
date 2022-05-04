@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker_gallery_camera/image_picker_gallery_camera.dart';
 import 'package:image_picker_platform_interface/image_picker_platform_interface.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -12,7 +13,7 @@ class AddApartment extends StatefulWidget {
 }
 
 class _AddApartment extends State<AddApartment> {
-  List<PickedFile> _images = [];
+  List<CroppedFile> _images = [];
   List<Widget> imageSliders = [];
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descController = TextEditingController();
@@ -30,14 +31,64 @@ class _AddApartment extends State<AddApartment> {
         Icons.add,
         color: Colors.red,
       ),
-    ) as PickedFile;
-    setState(() {
-      _images.add(image);
-      imageSliders.add(Container(
-        child: Image.file(File(image.path)),
-        constraints: const BoxConstraints(maxWidth: 200),
-      ));
-    });
+    );
+
+    CroppedFile? croppedFile = await ImageCropper().cropImage(
+      sourcePath: image.path,
+      aspectRatioPresets: [
+        CropAspectRatioPreset.square,
+        CropAspectRatioPreset.ratio3x2,
+        CropAspectRatioPreset.original,
+        CropAspectRatioPreset.ratio4x3,
+        CropAspectRatioPreset.ratio16x9
+      ],
+      compressFormat: ImageCompressFormat.jpg,
+      compressQuality: 85,
+      maxHeight: 1920,
+      maxWidth: 1920,
+      uiSettings: [
+        AndroidUiSettings(
+            toolbarTitle: 'Cropper',
+            toolbarColor: Colors.deepOrange,
+            toolbarWidgetColor: Colors.white,
+            initAspectRatio: CropAspectRatioPreset.original,
+            lockAspectRatio: false),
+        IOSUiSettings(
+          title: 'Cropper',
+        ),
+        /// this settings is required for Web
+        /*WebUiSettings(
+          context: context,
+          presentStyle: CropperPresentStyle.dialog,
+          boundary: Boundary(
+            width: 520,
+            height: 520,
+          ),
+          viewPort: ViewPort(
+              width: 480,
+              height: 480,
+              type: 'circle'
+          ),
+          enableExif: true,
+          enableZoom: true,
+          showZoomer: true,
+        )*/
+      ],
+    );
+
+    if (croppedFile!=null) {
+      _images.add(croppedFile);
+      croppedFile.readAsBytes().then((byteStream) {
+        setState(() {
+          imageSliders.add(Container(
+            //child: Image.file(File(croppedFile.path)),
+            child: Image.memory(byteStream),
+            //child: Image.memory(croppedFile.readAsBytesSync()),
+            constraints: const BoxConstraints(maxWidth: 200),
+          ));
+        });
+      });
+    }
   }
 
   @override
@@ -105,15 +156,15 @@ class _AddApartment extends State<AddApartment> {
                   padding: const EdgeInsets.only(top: 15.0),
                   child: Container(
                       child: CarouselSlider(
-                    options: CarouselOptions(
-                      aspectRatio: 2.0,
-                      enlargeCenterPage: true,
-                      enableInfiniteScroll: false,
-                      initialPage: 2,
-                      autoPlay: true,
-                    ),
-                    items: imageSliders,
-                  )),
+                        options: CarouselOptions(
+                          aspectRatio: 2.0,
+                          enlargeCenterPage: true,
+                          enableInfiniteScroll: false,
+                          initialPage: 2,
+                          autoPlay: true,
+                        ),
+                        items: imageSliders,
+                      )),
 
                   // Container(
                   //   child: Image.file(File(_image!.path)),

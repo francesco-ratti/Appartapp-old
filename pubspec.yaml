@@ -48,6 +48,7 @@ dependencies:
   cookie_jar: 3.0.1
   dio_cookie_manager: ^2.0.0
   google_fonts: ^2.3.2
+  image_cropper: ^2.0.0
 
 dev_dependencies:
   flutter_test:

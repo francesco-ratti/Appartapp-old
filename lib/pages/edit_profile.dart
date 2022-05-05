@@ -1,7 +1,9 @@
 import 'package:appartapp/classes/User.dart';
 import 'package:appartapp/classes/enum%20Gender.dart';
 import 'package:appartapp/classes/runtime_store.dart';
+import 'package:cookie_jar/cookie_jar.dart';
 import 'package:flutter/material.dart';
+import 'package:appartapp/classes/apartment_handler.dart';
 
 //import './../SimpleTextField.dart';
 import 'package:dio/dio.dart';
@@ -251,6 +253,7 @@ class _EditProfileState extends State<EditProfile> {
                   RuntimeStore().setCredentials(null);
                   RuntimeStore().getSharedPreferences()?.remove("email");
                   RuntimeStore().getSharedPreferences()?.remove("password");
+                  ApartmentHandler().cookieJar=CookieJar();
                   Navigator.pushReplacementNamed(context, "/loginorsignup");
                 }),
             Padding(

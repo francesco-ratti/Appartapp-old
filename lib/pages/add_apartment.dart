@@ -1,5 +1,6 @@
-import 'dart:io';
 import 'dart:ui';
+import 'package:appartapp/classes/credentials.dart';
+import 'package:appartapp/classes/runtime_store.dart';
 import 'package:appartapp/exceptions/unauthorized_exception.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
@@ -13,56 +14,74 @@ class AddApartment extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _AddApartment();
 
-  final String urlStr = "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/getownedapartments";
+  final String urlStr = "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/createapartment";
 }
 
 class _AddApartment extends State<AddApartment> {
 
-  void doCreatePost(String listingTitle, String description, String additionalExpenseDetail, int price, List<CroppedFile> files) async {
+  void doCreateApartmentPost(Function(String) updateUi, String listingTitle, String description, String additionalExpenseDetail, int price, String address, List<CroppedFile> files) async {
     var dio = Dio();
     try {
-
       var formData = FormData();
 
-      formData.fields.add(MapEntry("listingtitle", listingTitle));
-      formData.fields.add(MapEntry("description", description));
-      formData.fields.add(MapEntry("additionalexpensedetail", additionalExpenseDetail));
-      formData.fields.add(MapEntry("price", price.toString()));
+      Credentials? credentials=RuntimeStore().getCredentials();
+      if (credentials!=null) {
+        formData.fields.add(MapEntry("email", credentials.email));
+        formData.fields.add(MapEntry("password", credentials.password));
 
-      for (final CroppedFile file in files) {
-        MultipartFile mpfile=await MultipartFile.fromFile(file.path, filename: "image.jpg");
-        formData.files.add(MapEntry("images", mpfile));
-      }
-      
-      Response response = await dio.post(
-        widget.urlStr,
-        data: formData,
-        options: Options(
-          contentType: Headers.formUrlEncodedContentType,
-          headers: {"Content-Type": "multipart/form-data"},
-        ),
-      );
+        formData.fields.add(MapEntry("listingtitle", listingTitle));
+        formData.fields.add(MapEntry("description", description));
+        formData.fields.add(MapEntry("additionalexpensedetail", additionalExpenseDetail));
+        formData.fields.add(MapEntry("price", price.toString()));
+        formData.fields.add(MapEntry("address", address));
 
-      if (response.statusCode != 200) {
-        if (response.statusCode == 401)
-          throw new UnauthorizedException();
-        else
-          return;
+        for (final CroppedFile file in files) {
+          MultipartFile mpfile = await MultipartFile.fromFile(
+              file.path, filename: "image.jpg");
+          formData.files.add(MapEntry("images", mpfile));
+        }
+
+        Response response = await dio.post(
+          widget.urlStr,
+          data: formData,
+          options: Options(
+            contentType: Headers.formUrlEncodedContentType,
+            headers: {"Content-Type": "multipart/form-data"},
+          ),
+        );
+
+        if (response.statusCode != 200) {
+          if (response.statusCode == 401) {
+            updateUi("Non autorizzato");
+            throw new UnauthorizedException();
+          }
+          else {
+            updateUi("Errore interno");
+            return;
+          }
+        }
+        else {
+//          print("added");
+          Navigator.pop(context);
+        }
+      } else throw new UnauthorizedException();
+    } on DioError catch (e) {
+      if (e.response?.statusCode == 401) {
+        updateUi("Non autorizzato");
+        throw new UnauthorizedException();
       }
       else {
-//OK
+        updateUi("Errore interno");
       }
-    } on DioError catch (e) {
-      if (e.response?.statusCode == 401)
-        throw new UnauthorizedException();
-      else
-        return;
     }
   }
 
 
   List<CroppedFile> _images = [];
   List<Widget> imageSliders = [];
+
+  String status="";
+
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descController = TextEditingController();
   final TextEditingController _priceController = TextEditingController();
@@ -139,6 +158,8 @@ class _AddApartment extends State<AddApartment> {
     }
   }
 
+  bool uploading=false;
+
   @override
   Widget build(BuildContext context) {
     //final User user = Provider.of<User>(context);
@@ -157,6 +178,12 @@ class _AddApartment extends State<AddApartment> {
                 address(),
                 price(),
                 sendButton(),
+                Padding(
+                    padding: EdgeInsets.all(16.0),
+                    child: Text(
+                      status,
+                      style: TextStyle(fontSize: 20),
+                    )),
               ],
             ),
           ),
@@ -299,12 +326,11 @@ class _AddApartment extends State<AddApartment> {
             controller: _aedController,
             cursorColor: colorTheme,
             decoration: InputDecoration(
-              hintText: 'si/no',
+              hintText: 'dettagli',
               hintStyle: TextStyle(color: Colors.black),
-              labelText: 'Spese Incluse',
+              labelText: 'Spese aggiuntive',
               labelStyle: const TextStyle(color: colorTheme),
             ),
-            keyboardType: TextInputType.number,
             style: TextStyle(color: Colors.black),
           ),
         ),
@@ -317,7 +343,27 @@ class _AddApartment extends State<AddApartment> {
       padding: const EdgeInsets.only(top: 20.0),
       child: Container(
         child: ElevatedButton(
-          onPressed: () => isReady() ? publishApartment() : null,
+          onPressed: !uploading ? () {
+            if (isReady()) {
+              setState(() {
+                uploading = true;
+                status = "Caricamento in corso...";
+              });
+              doCreateApartmentPost(
+                      (String toWrite) {
+                    setState(() {
+                      status = toWrite;
+                    });
+                  },
+                  _titleController.text,
+                  _descController.text,
+                  _aedController.text,
+                  int.parse(_priceController.text),
+                  _addressController.text,
+                  _images
+              );
+            }
+          }: null,
           style: ElevatedButton.styleFrom(primary: Colors.black87),
           child: Text(
             'Pubblica'.toUpperCase(),
@@ -334,27 +380,22 @@ class _AddApartment extends State<AddApartment> {
         _priceController.text.isNotEmpty &&
         _addressController.text.isNotEmpty &&
         _aedController.text.isNotEmpty &&
-        _images != null)
+        _images != null && _images.length>0)
       return true;
     else
       return false;
   }
 
-  // void publishApartment(User user) {
-  //   final ItemModel newItem = ItemModel(
-  //       imagePath: _image,
-  //       name: _titleController.text,
-  //       description: _descController.text,
-  //       price: _priceController.text,
-  //       shippingFees: _fdpController.text,
-  //       state: _stateController.text,
-  //       author: user.name ?? 'Jack Leborgne');
-  //   it.insert(0, newItem);
-  //   Navigator.pop(context);
-  // }
-
-  void publishApartment() {
-    //TODO
-    Navigator.pop(context);
-  }
+// void publishApartment(User user) {
+//   final ItemModel newItem = ItemModel(
+//       imagePath: _image,
+//       name: _titleController.text,
+//       description: _descController.text,
+//       price: _priceController.text,
+//       shippingFees: _fdpController.text,
+//       state: _stateController.text,
+//       author: user.name ?? 'Jack Leborgne');
+//   it.insert(0, newItem);
+//   Navigator.pop(context);
+// }
 }

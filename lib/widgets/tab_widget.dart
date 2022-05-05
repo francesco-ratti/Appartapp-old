@@ -33,7 +33,7 @@ class TabWidget extends StatelessWidget {
           DisplayText(
               title: "Indirizzo", content: "${currentApartment.address}"),
           DisplayText(
-              title: "Spese incluse",
+              title: "Spese aggiuntive",
               content: "${currentApartment.additionalExpenseDetail}"),
         ],
       );

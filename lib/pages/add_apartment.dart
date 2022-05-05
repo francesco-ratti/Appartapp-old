@@ -18,20 +18,22 @@ class AddApartment extends StatefulWidget {
 
 class _AddApartment extends State<AddApartment> {
 
-  void doCreatePost(List<CroppedFile> files) async {
+  void doCreatePost(String listingTitle, String description, String additionalExpenseDetail, int price, List<CroppedFile> files) async {
     var dio = Dio();
     try {
 
       var formData = FormData();
-      List<MapEntry<String, MultipartFile>> mapentries=[];
+
+      formData.fields.add(MapEntry("listingtitle", listingTitle));
+      formData.fields.add(MapEntry("description", description));
+      formData.fields.add(MapEntry("additionalexpensedetail", additionalExpenseDetail));
+      formData.fields.add(MapEntry("price", price.toString()));
 
       for (final CroppedFile file in files) {
         MultipartFile mpfile=await MultipartFile.fromFile(file.path, filename: "image.jpg");
-        mapentries.add(MapEntry("images", mpfile));
+        formData.files.add(MapEntry("images", mpfile));
       }
-
-      formData.files.addAll(mapentries);
-
+      
       Response response = await dio.post(
         widget.urlStr,
         data: formData,

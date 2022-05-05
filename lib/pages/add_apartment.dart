@@ -1,5 +1,7 @@
 import 'dart:io';
 import 'dart:ui';
+import 'package:appartapp/exceptions/unauthorized_exception.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
@@ -10,9 +12,53 @@ import 'package:carousel_slider/carousel_slider.dart';
 class AddApartment extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _AddApartment();
+
+  final String urlStr = "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/getownedapartments";
 }
 
 class _AddApartment extends State<AddApartment> {
+
+  void doCreatePost(List<CroppedFile> files) async {
+    var dio = Dio();
+    try {
+
+      var formData = FormData();
+      List<MapEntry<String, MultipartFile>> mapentries=[];
+
+      for (final CroppedFile file in files) {
+        MultipartFile mpfile=await MultipartFile.fromFile(file.path, filename: "image.jpg");
+        mapentries.add(MapEntry("images", mpfile));
+      }
+
+      formData.files.addAll(mapentries);
+
+      Response response = await dio.post(
+        widget.urlStr,
+        data: formData,
+        options: Options(
+          contentType: Headers.formUrlEncodedContentType,
+          headers: {"Content-Type": "multipart/form-data"},
+        ),
+      );
+
+      if (response.statusCode != 200) {
+        if (response.statusCode == 401)
+          throw new UnauthorizedException();
+        else
+          return;
+      }
+      else {
+//OK
+      }
+    } on DioError catch (e) {
+      if (e.response?.statusCode == 401)
+        throw new UnauthorizedException();
+      else
+        return;
+    }
+  }
+
+
   List<CroppedFile> _images = [];
   List<Widget> imageSliders = [];
   final TextEditingController _titleController = TextEditingController();

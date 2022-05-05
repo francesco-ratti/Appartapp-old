@@ -39,4 +39,5 @@ class LoginHandler {
       else
         return [null, null, LoginResult.server_error];
     }
-  }}
+  }
+}

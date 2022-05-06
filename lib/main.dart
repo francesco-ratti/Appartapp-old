@@ -14,9 +14,9 @@ void main() {
   //HttpOverrides.global = new MyHttpOverrides();
   runApp(MaterialApp(
     initialRoute: '/',
-    theme: ThemeData(
+   /* theme: ThemeData(
       scaffoldBackgroundColor: RuntimeStore.backgroundColor
-    ),
+    ),*/
     routes: {
       //'/': (context) => Home(), //to delete
       '/': (context) => Loading(), //to uncomment

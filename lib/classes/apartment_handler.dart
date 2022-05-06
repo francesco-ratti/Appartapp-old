@@ -1,5 +1,5 @@
 import '../exceptions/unauthorized_exception.dart';
-import 'apartment.dart';
+import 'package:appartapp/classes/apartment.dart';
 import 'package:dio/dio.dart';
 import '../exceptions/network_exception.dart';
 import 'runtime_store.dart';
@@ -15,6 +15,8 @@ class ApartmentHandler {
       "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/getnextnewapartment";
   final String urlStrGetAllNewApartments =
       "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/getallnewapartments";
+  final String urlStrGetOwnedApartments =
+      "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/getownedapartments";
 
   var cookieJar = CookieJar();
 
@@ -25,6 +27,40 @@ class ApartmentHandler {
   }
 
   ApartmentHandler._internal();
+
+  Future<List<Apartment>> getOwnedApartments() async {
+    var dio = Dio();
+
+    try {
+      Response response = await dio.post(
+        urlStrGetOwnedApartments,
+        data: {"email": RuntimeStore().getEmail(), "password": RuntimeStore().getPassword()},
+        options: Options(
+          contentType: Headers.formUrlEncodedContentType,
+          headers: {"Content-Type": "application/x-www-form-urlencoded"},
+        ),
+      );
+
+      if (response.statusCode == 401)
+        throw new UnauthorizedException();
+      else if (response.statusCode == 200) {
+        List apList=response.data as List;
+
+        List<Apartment> ownedApartments=[];
+        apList.forEach((element) {
+          ownedApartments.add(Apartment.fromMap(element));
+        });
+        return ownedApartments;
+      }
+      else
+        throw new NetworkException();
+    } on DioError catch (e) {
+      if (e.response?.statusCode == 401)
+        throw new UnauthorizedException();
+      else
+        throw new NetworkException();
+    }
+  }
 
   Future<Apartment> getNewApartment(Function(Apartment) callback) async {
     //TODO test

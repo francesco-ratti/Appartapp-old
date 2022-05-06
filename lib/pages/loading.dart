@@ -54,6 +54,8 @@ class _LoadingState extends State<Loading> {
                   }
               );
 
+              RuntimeStore().setOwnedApartmentsFuture(ApartmentHandler().getOwnedApartments());
+
               Navigator.pushReplacementNamed(context, '/home', arguments: firstApartmentFuture);
 
               break;

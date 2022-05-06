@@ -8,6 +8,7 @@ import 'package:appartapp/pages/houses.dart';
 import 'package:flutter/material.dart';
 
 import '../classes/runtime_store.dart';
+import 'owned_apartments.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -29,6 +30,7 @@ class _HomeState extends State<Home> {
     }
 
     return Scaffold(
+      //backgroundColor: RuntimeStore.backgroundColor,
       body: SafeArea(
         top: false,
         bottom: true,
@@ -42,12 +44,8 @@ class _HomeState extends State<Home> {
             EmptyPage(
               child: Text('Filtri'),
             ),
-            EmptyPage(
-              child: Text('Chat'),
-            ),
-            EditProfile(
-              //child: Text('Profilo'),
-            ),
+            OwnedApartments(),
+            EditProfile(),
           ],
         ),
       ),

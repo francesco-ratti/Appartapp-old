@@ -2,6 +2,7 @@
 import 'dart:ui';
 
 import 'package:appartapp/classes/User.dart';
+import 'package:appartapp/classes/apartment.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'credentials.dart';
@@ -18,6 +19,15 @@ class RuntimeStore {
 
   RuntimeStore._internal();
 
+  Future<List<Apartment>>? _ownedApartments;
+
+  Future<List<Apartment>>? getOwnedApartments() {
+    return _ownedApartments;
+  }
+
+  void setOwnedApartmentsFuture(Future<List<Apartment>> ownedApartments) {
+    _ownedApartments=ownedApartments;
+  }
 
   //useful as singleton since this will be our temporary application state store
   Credentials? _credentials=null;

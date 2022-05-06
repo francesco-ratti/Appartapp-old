@@ -3,7 +3,7 @@ import 'package:appartapp/classes/credentials.dart';
 import 'package:appartapp/classes/runtime_store.dart';
 import 'package:appartapp/exceptions/unauthorized_exception.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
+//import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker_gallery_camera/image_picker_gallery_camera.dart';
@@ -12,7 +12,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 
 class AddApartment extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => _AddApartment();
+  State<AddApartment> createState() => _AddApartment();
 
   final String urlStr = "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/createapartment";
 }

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:html';
 
 import 'package:appartapp/classes/User.dart';
 import 'package:appartapp/classes/apartment.dart';
@@ -51,6 +52,8 @@ class _LoginState extends State<Login> {
         );
 
         Navigator.pushReplacementNamed(context, '/home', arguments: firstApartmentFuture);
+        Navigator.pop(context);
+
         break;
       case LoginResult.wrong_credentials:
         updateUi("Credenziali errate");

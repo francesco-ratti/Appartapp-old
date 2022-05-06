@@ -1,9 +1,11 @@
 import 'package:appartapp/classes/apartment.dart';
 import 'package:appartapp/pages/add_apartment.dart';
+import 'package:appartapp/pages/houses.dart';
 import 'package:flutter/material.dart';
 
 import '../classes/apartment_handler.dart';
 import '../classes/runtime_store.dart';
+import '../widgets/apartment_viewer.dart';
 
 class OwnedApartments extends StatefulWidget {
   @override
@@ -59,9 +61,20 @@ class _OwnedApartments extends State<OwnedApartments> {
           itemCount: ownedApartments.length,
           itemBuilder: (BuildContext context,int index) {
             Apartment currentApartment=ownedApartments[index];
+
             return ListTile(
               title: Text(currentApartment.listingTitle),
               subtitle: Text(currentApartment.description),
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => Scaffold(
+                            body: ApartmentViewer(
+                              apartmentLoaded: true,
+                              currentApartment: ownedApartments[index],
+                        ))));
+              },
             );
           }
       ),

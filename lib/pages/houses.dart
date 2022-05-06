@@ -2,13 +2,9 @@ import 'dart:ui';
 
 import 'package:appartapp/classes/apartment.dart';
 import 'package:appartapp/classes/apartment_handler.dart';
-import 'package:appartapp/classes/runtime_store.dart';
-import 'package:appartapp/widgets/apartment_model.dart';
-import 'package:appartapp/widgets/tab_widget.dart';
-import 'package:appartapp/widgets/tab_widget_loading.dart';
+import 'package:appartapp/widgets/apartment_viewer.dart';
 import 'package:dismissible_page/dismissible_page.dart';
 import 'package:flutter/material.dart';
-import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class Houses extends StatefulWidget {
   Future<Apartment> firstApartmentFuture;
@@ -164,25 +160,7 @@ class _ContentPage extends State<ContentPage> {
                 direction: DismissiblePageDismissDirection.horizontal,
                 dragSensitivity: 0.5,
                 disabled: !apartmentLoaded,
-                child: Container (
-                  color: RuntimeStore.backgroundColor,
-                  child: SlidingUpPanel(
-                  color: Colors.transparent.withOpacity(0.7),
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(24.0),
-                    topRight: Radius.circular(24.0),
-                  ),
-                  isDraggable: apartmentLoaded,
-                  panelBuilder: (scrollController) =>
-                  apartmentLoaded ? TabWidget(
-                      scrollController: scrollController,
-                      currentApartment: currentApartment) : TabWidgetLoading(),
-                  body: apartmentLoaded ? ApartmentModel(currentApartment: currentApartment) : Center(
-                      child: CircularProgressIndicator(
-                        value: null,
-                      )),
-                ),
-              ));
+                child: ApartmentViewer(apartmentLoaded: apartmentLoaded, currentApartment: currentApartment,));
             });
       },
     );

@@ -51,8 +51,8 @@ class _LoginState extends State<Login> {
             }
         );
 
-        Navigator.pushReplacementNamed(context, '/home', arguments: firstApartmentFuture);
         Navigator.pop(context);
+        Navigator.pushReplacementNamed(context, '/home', arguments: firstApartmentFuture);
 
         break;
       case LoginResult.wrong_credentials:

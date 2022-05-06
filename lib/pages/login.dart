@@ -1,6 +1,3 @@
-import 'dart:convert';
-import 'dart:html';
-
 import 'package:appartapp/classes/User.dart';
 import 'package:appartapp/classes/apartment.dart';
 import 'package:appartapp/classes/credentials.dart';
@@ -10,7 +7,6 @@ import 'package:appartapp/classes/apartment_handler.dart';
 
 //import './../SimpleTextField.dart';
 import 'package:appartapp/classes/runtime_store.dart';
-import 'package:dio/dio.dart';
 
 import '../classes/login_handler.dart';
 

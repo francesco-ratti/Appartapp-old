@@ -2,7 +2,10 @@ import 'dart:ui';
 
 import 'package:appartapp/classes/apartment.dart';
 import 'package:appartapp/classes/apartment_handler.dart';
+import 'package:appartapp/classes/credentials.dart';
+import 'package:appartapp/classes/runtime_store.dart';
 import 'package:appartapp/widgets/apartment_viewer.dart';
+import 'package:dio/dio.dart';
 import 'package:dismissible_page/dismissible_page.dart';
 import 'package:flutter/material.dart';
 
@@ -58,7 +61,7 @@ class _Houses extends State<Houses> {
             return Container(
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: AssetImage("assets/background.jpeg"),
+                    image: AssetImage("assets/background.gif"),
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -76,6 +79,50 @@ class _Houses extends State<Houses> {
 }
 
 class ContentPage extends StatefulWidget {
+
+  final likeUrlStr="http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/likeapartment";
+  final ignoreUrlStr="http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/ignoreapartment";
+
+  Future<void> _networkFunction(String urlString, int apartmentId) async {
+    Credentials? credentials=RuntimeStore().getCredentials();
+    if (credentials!=null) {
+      var dio = Dio();
+      try {
+        Response response = await dio.post(
+          urlString,
+          data: {
+            "email": credentials.email,
+            "password": credentials.password,
+            "apartmentid": apartmentId,
+          },
+          options: Options(
+            contentType: Headers.formUrlEncodedContentType,
+            headers: {"Content-Type": "application/x-www-form-urlencoded"},
+          ),
+        );
+
+
+        if (response.statusCode != 200)
+          print("Failure");
+        else
+          print("Done");
+      } on DioError catch (e) {
+        if (e.response?.statusCode != 200) {
+          print("Failure");
+        }
+      }
+    }
+  }
+
+  void likeApartment(int apartmentId) async {
+    await _networkFunction(likeUrlStr, apartmentId);
+  }
+
+  void ignoreApartment (int apartmentId) async {
+    await _networkFunction(ignoreUrlStr, apartmentId);
+  }
+
+
   Future<Apartment> currentApartmentFuture;
 //Function updateHouses;
   @override
@@ -98,6 +145,10 @@ class _ContentPage extends State<ContentPage> {
 
   late Future<Apartment> nextApartmentFuture;
   bool apartmentLoaded=false;
+
+  bool firstDrag=true;
+  double initialCoord=0.0;
+  double finalCoord=0.0;
 
   @override
   void didChangeDependencies() {
@@ -141,6 +192,12 @@ class _ContentPage extends State<ContentPage> {
               return DismissiblePage(
                 //backgroundColor: Colors.white,
                 onDismissed: () {
+                  if (finalCoord<initialCoord) {
+                    widget.likeApartment(currentApartment.id);
+                  } else {
+                    widget.ignoreApartment(currentApartment.id);
+                  }
+
                   Navigator.of(context).pop();
 
                   Navigator.push(
@@ -149,7 +206,6 @@ class _ContentPage extends State<ContentPage> {
                           builder: (context) => ContentPage(
                             currentApartmentFuture: nextApartmentFuture,
                           )));
-                  print("DISMISSED");
 
                   // ApartmentHandler()
                   //     .getNewApartment()
@@ -158,6 +214,14 @@ class _ContentPage extends State<ContentPage> {
                   //         }));
                 },
                 direction: DismissiblePageDismissDirection.horizontal,
+                  onDragUpdate: (double value) {
+                    if (firstDrag) {
+                      initialCoord=value;
+                      firstDrag=false;
+                    } else {
+                      finalCoord=value;
+                    }
+                  },
                 dragSensitivity: 0.5,
                 disabled: !apartmentLoaded,
                 child: ApartmentViewer(apartmentLoaded: apartmentLoaded, currentApartment: currentApartment,));

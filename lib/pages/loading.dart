@@ -1,6 +1,8 @@
 import 'package:appartapp/classes/User.dart';
 import 'package:appartapp/classes/apartment.dart';
 import 'package:appartapp/classes/apartment_handler.dart';
+import 'package:appartapp/classes/first_arguments.dart';
+import 'package:appartapp/classes/user_handler.dart';
 import 'package:appartapp/classes/credentials.dart';
 import 'package:appartapp/classes/enum%20LoginResult.dart';
 import 'package:appartapp/classes/runtime_store.dart';
@@ -16,22 +18,21 @@ class Loading extends StatefulWidget {
 }
 
 class _LoadingState extends State<Loading> {
-
   void setup() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     RuntimeStore().setSharedPreferences(prefs);
     //await Future.delayed(Duration(seconds: 1));
-    bool? TourCompleted=prefs.getBool('tourcompleted');
-    if (TourCompleted!= null && TourCompleted) {
-      String? email=prefs.getString("email");
-      String? password=prefs.getString("password");
+    bool? TourCompleted = prefs.getBool('tourcompleted');
+    if (TourCompleted != null && TourCompleted) {
+      String? email = prefs.getString("email");
+      String? password = prefs.getString("password");
 
-      if (email==null || password==null) {
+      if (email == null || password == null) {
         Navigator.pushReplacementNamed(context, '/loginorsignup');
       } else {
         LoginHandler.doLogin(email, password).then((res) async {
           Credentials credentials = res[0];
-          User user=res[1];
+          User user = res[1];
           LoginResult loginResult = res[2];
           switch (loginResult) {
             case LoginResult.ok:
@@ -41,22 +42,38 @@ class _LoadingState extends State<Loading> {
               prefs.setString("email", credentials.email);
               prefs.setString("password", credentials.password);
 
-              Apartment firstApartment = await ApartmentHandler().getNewApartment(
-                      (Apartment apartment) {
-                    for (final Image im in apartment.images) {
-                      precacheImage(im.image, context);
-                    }
-                      });
+              Apartment firstApartment = await ApartmentHandler()
+                  .getNewApartment((Apartment apartment) {
+                for (final Image im in apartment.images) {
+                  precacheImage(im.image, context);
+                }
+              });
 
-              Future<Apartment> firstApartmentFuture = Future (
-                  () {
-                    return firstApartment;
-                  }
-              );
+              Future<Apartment> firstApartmentFuture = Future(() {
+                return firstApartment;
+              });
 
-              RuntimeStore().setOwnedApartmentsFuture(ApartmentHandler().getOwnedApartments());
+              RuntimeStore().setOwnedApartmentsFuture(
+                  ApartmentHandler().getOwnedApartments());
 
-              Navigator.pushReplacementNamed(context, '/home', arguments: firstApartmentFuture);
+              // Navigator.pushReplacementNamed(context, '/home',
+              //     arguments: firstApartmentFuture);
+
+              User firstTenant = await UserHandler().getNewUser((User user) {
+                for (final Image im in user.images) {
+                  precacheImage(im.image, context);
+                }
+              });
+
+              Future<User> firstTenantFuture = Future(() {
+                return firstTenant;
+              });
+
+              FirstArguments firstArguments =
+                  FirstArguments(firstApartmentFuture, firstTenantFuture);
+
+              Navigator.pushReplacementNamed(context, '/home',
+                  arguments: firstArguments);
 
               break;
             case LoginResult.wrong_credentials:
@@ -65,8 +82,7 @@ class _LoadingState extends State<Loading> {
             default:
             //TODO showerror: network error
           }
-        }
-        );
+        });
       }
     } else {
       Navigator.pushReplacementNamed(context, '/first', arguments: prefs);

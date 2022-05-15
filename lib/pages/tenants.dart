@@ -1,0 +1,197 @@
+import 'dart:ui';
+import 'package:appartapp/classes/User.dart';
+import 'package:appartapp/classes/enum%20Gender.dart';
+import 'package:appartapp/classes/enum%20Month.dart';
+import 'package:appartapp/classes/user_handler.dart';
+
+import 'package:appartapp/classes/credentials.dart';
+import 'package:appartapp/classes/runtime_store.dart';
+import 'package:appartapp/widgets/tenant_viewer.dart';
+import 'package:dio/dio.dart';
+import 'package:dismissible_page/dismissible_page.dart';
+import 'package:flutter/material.dart';
+
+class Tenants extends StatefulWidget {
+  Future<User> firstTenantFuture;
+
+  Tenants({required this.child, required this.firstTenantFuture});
+
+  final Widget child;
+
+  @override
+  _Tenants createState() => _Tenants();
+}
+
+class _Tenants extends State<Tenants> {
+  int _currentRoute = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    return Navigator(
+      onGenerateRoute: (RouteSettings settings) {
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (BuildContext context) {
+            return Container(
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage("assets/background.gif"),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                child: ContentPage(
+                  currentTenantFuture: widget.firstTenantFuture,
+                ));
+          },
+        );
+      },
+    );
+  }
+}
+
+class ContentPage extends StatefulWidget {
+//-----ARE THIS LINKS CORRECT???----------
+  final likeUrlStr =
+      "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/likeuser";
+  final ignoreUrlStr =
+      "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/ignoreuser";
+//------------------------
+  Future<void> _networkFunction(String urlString, int userId) async {
+    Credentials? credentials = RuntimeStore().getCredentials();
+    if (credentials != null) {
+      var dio = Dio();
+      try {
+        Response response = await dio.post(
+          urlString,
+          data: {
+            "email": credentials.email,
+            "password": credentials.password,
+            "userid": userId, //the tenant I like or ignore
+          },
+          options: Options(
+            contentType: Headers.formUrlEncodedContentType,
+            headers: {"Content-Type": "application/x-www-form-urlencoded"},
+          ),
+        );
+
+        if (response.statusCode != 200)
+          print("Failure");
+        else
+          print("Done");
+      } on DioError catch (e) {
+        if (e.response?.statusCode != 200) {
+          print("Failure");
+        }
+      }
+    }
+  }
+
+  void likeTenant(int tenantId) async {
+    await _networkFunction(likeUrlStr, tenantId);
+  }
+
+  void ignoreTenant(int tenantId) async {
+    await _networkFunction(ignoreUrlStr, tenantId);
+  }
+
+  Future<User> currentTenantFuture;
+//Function updateHouses;
+  @override
+  _ContentPage createState() => _ContentPage();
+  ContentPage({
+    required this.currentTenantFuture,
+  });
+}
+
+class _ContentPage extends State<ContentPage> {
+  User currentTenant = User.temp(
+      000,
+      "Caricamento in corso...",
+      "Caricamento in corso...",
+      "Caricamento in corso...",
+      DateTime(2022),
+      Gender.NB,
+      [],
+      [],
+      "Caricamento in corso...",
+      "Caricamento in corso...",
+      Month.July,
+      "Caricamento in corso...",
+      "Caricamento in corso...",
+      "Caricamento in corso...",
+      "Caricamento in corso...");
+
+  late Future<User> nextTenantFuture;
+  bool tenantLoaded = false;
+
+  bool firstDrag = true;
+  double initialCoord = 0.0;
+  double finalCoord = 0.0;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    nextTenantFuture = UserHandler().getNewUser((User user) {
+      for (final Image im in user.images) {
+        precacheImage(im.image, context);
+      }
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    widget.currentTenantFuture.then((value) {
+      tenantLoaded = true;
+      setState(() {
+        currentTenant = value;
+      });
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Navigator(
+      onGenerateRoute: (RouteSettings settings) {
+        return MaterialPageRoute(
+            settings: settings,
+            builder: (BuildContext context) {
+              return DismissiblePage(
+                  //backgroundColor: Colors.white,
+                  onDismissed: () {
+                    if (finalCoord < initialCoord) {
+                      widget.likeTenant(currentTenant.id);
+                    } else {
+                      widget.ignoreTenant(currentTenant.id);
+                    }
+
+                    Navigator.of(context).pop();
+
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ContentPage(
+                                  currentTenantFuture: nextTenantFuture,
+                                )));
+                  },
+                  direction: DismissiblePageDismissDirection.horizontal,
+                  onDragUpdate: (double value) {
+                    if (firstDrag) {
+                      initialCoord = value;
+                      firstDrag = false;
+                    } else {
+                      finalCoord = value;
+                    }
+                  },
+                  dragSensitivity: 0.5,
+                  disabled: !tenantLoaded,
+                  child: TenantViewer(
+                    tenantLoaded: tenantLoaded,
+                    currentTenant: currentTenant,
+                  ));
+            });
+      },
+    );
+  }
+}

@@ -1,5 +1,3 @@
-import 'package:appartapp/classes/apartment.dart';
-import 'package:appartapp/widgets/display_text.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -8,12 +6,12 @@ class TabWidgetLoading extends StatelessWidget {
     Key? key,
   }) : super(key: key);
 
-  final double parentPadding=16;
+  final double parentPadding = 16;
 
   @override
-  Widget build(BuildContext context) =>
-      Container(
-        padding: EdgeInsets.fromLTRB(30+parentPadding, 10+parentPadding, 10+parentPadding, 30+parentPadding),
+  Widget build(BuildContext context) => Container(
+        padding: EdgeInsets.fromLTRB(30 + parentPadding, 10 + parentPadding,
+            10 + parentPadding, 30 + parentPadding),
         child: Text(
           "Caricamento in corso...",
           //textAlign: TextAlign.center,

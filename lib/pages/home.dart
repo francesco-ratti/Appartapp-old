@@ -2,9 +2,11 @@
 
 import 'package:appartapp/classes/User.dart';
 import 'package:appartapp/classes/apartment.dart';
+import 'package:appartapp/classes/first_arguments.dart';
 import 'package:appartapp/pages/edit_profile.dart';
 import 'package:appartapp/pages/empty_page.dart';
 import 'package:appartapp/pages/houses.dart';
+import 'package:appartapp/pages/tenants.dart';
 import 'package:flutter/material.dart';
 
 import '../classes/runtime_store.dart';
@@ -22,8 +24,8 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     Color bgColor = Colors.yellowAccent;
 
-    User? user=RuntimeStore().getUser();
-    if (user!=null) {
+    User? user = RuntimeStore().getUser();
+    if (user != null) {
       for (final Image im in user.images) {
         precacheImage(im.image, context);
       }
@@ -38,9 +40,16 @@ class _HomeState extends State<Home> {
           index: _pageIndex,
           children: <Widget>[
             Houses(
-              child: Text('Esplora'),
-                firstApartmentFuture: (ModalRoute.of(context)!.settings.arguments) as Future<Apartment>
-            ),
+                child: Text('Esplora'),
+                firstApartmentFuture: ((ModalRoute.of(context)!
+                        .settings
+                        .arguments) as FirstArguments)
+                    .firstApartmentFuture),
+            Tenants(
+                child: Text('Esplora'),
+                firstTenantFuture: ((ModalRoute.of(context)!.settings.arguments)
+                        as FirstArguments)
+                    .firstTenantFuture),
             EmptyPage(
               child: Text('Filtri'),
             ),
@@ -62,6 +71,10 @@ class _HomeState extends State<Home> {
             label: 'Esplora',
             backgroundColor: Colors.white,
           ),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.people_sharp, color: Colors.black),
+              label: "Tenants",
+              backgroundColor: Colors.white),
           BottomNavigationBarItem(
             icon: Icon(
               Icons.filter_list_rounded,

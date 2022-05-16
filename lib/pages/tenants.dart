@@ -1,7 +1,7 @@
-import 'dart:ui';
 import 'package:appartapp/classes/User.dart';
 import 'package:appartapp/classes/enum%20Gender.dart';
 import 'package:appartapp/classes/enum%20Month.dart';
+import 'package:appartapp/classes/like_from_user.dart';
 import 'package:appartapp/classes/user_handler.dart';
 
 import 'package:appartapp/classes/credentials.dart';
@@ -12,7 +12,7 @@ import 'package:dismissible_page/dismissible_page.dart';
 import 'package:flutter/material.dart';
 
 class Tenants extends StatefulWidget {
-  Future<User> firstTenantFuture;
+  Future<LikeFromUser> firstTenantFuture;
 
   Tenants({required this.child, required this.firstTenantFuture});
 
@@ -94,7 +94,7 @@ class ContentPage extends StatefulWidget {
     await _networkFunction(ignoreUrlStr, tenantId);
   }
 
-  Future<User> currentTenantFuture;
+  Future<LikeFromUser> currentTenantFuture;
 //Function updateHouses;
   @override
   _ContentPage createState() => _ContentPage();
@@ -104,7 +104,7 @@ class ContentPage extends StatefulWidget {
 }
 
 class _ContentPage extends State<ContentPage> {
-  User currentTenant = User.temp(
+  LikeFromUser currentTenant = LikeFromUser(null, User.temp(
       000,
       "Caricamento in corso...",
       "Caricamento in corso...",
@@ -119,9 +119,9 @@ class _ContentPage extends State<ContentPage> {
       "Caricamento in corso...",
       "Caricamento in corso...",
       "Caricamento in corso...",
-      "Caricamento in corso...");
+      "Caricamento in corso..."));
 
-  late Future<User> nextTenantFuture;
+  late Future<LikeFromUser> nextTenantFuture;
   bool tenantLoaded = false;
 
   bool firstDrag = true;
@@ -131,8 +131,8 @@ class _ContentPage extends State<ContentPage> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    nextTenantFuture = UserHandler().getNewUser((User user) {
-      for (final Image im in user.images) {
+    nextTenantFuture = UserHandler().getNewLikeFromUser((LikeFromUser likeFromUser) {
+      for (final Image im in likeFromUser.user.images) {
         precacheImage(im.image, context);
       }
     });
@@ -161,9 +161,9 @@ class _ContentPage extends State<ContentPage> {
                   //backgroundColor: Colors.white,
                   onDismissed: () {
                     if (finalCoord < initialCoord) {
-                      widget.likeTenant(currentTenant.id);
+                      widget.likeTenant(currentTenant.user.id);
                     } else {
-                      widget.ignoreTenant(currentTenant.id);
+                      widget.ignoreTenant(currentTenant.user.id);
                     }
 
                     Navigator.of(context).pop();
@@ -188,7 +188,7 @@ class _ContentPage extends State<ContentPage> {
                   disabled: !tenantLoaded,
                   child: TenantViewer(
                     tenantLoaded: tenantLoaded,
-                    currentTenant: currentTenant,
+                    currentTenant: currentTenant.user,
                   ));
             });
       },

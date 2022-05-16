@@ -17,7 +17,7 @@ class User {
   String bio; //User profile bio
   String reason; //Why are you looking for a new place to live?
   Month month; //What date would you want to move in?
-  String work; //What kind of work do you do?
+  String job; //What kind of work do you do?
   String income; //What is a rough estimate of your income?
   String smoker; //Do you smoke?
   String pets; //Do you have pets?
@@ -73,7 +73,7 @@ class User {
         this.bio = "",
         this.reason = "Vivo a Roma e ho intenzione di studiare al Polimi",
         this.month = Month.September,
-        this.work = "Student",
+        this.job = "Student",
         this.income = "About 1000€ per month",
         this.smoker = "Yes, occasionally",
         this.pets = "No";
@@ -90,7 +90,7 @@ class User {
       this.bio,
       this.reason,
       this.month,
-      this.work,
+      this.job,
       this.income,
       this.smoker,
       this.pets);

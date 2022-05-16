@@ -2,6 +2,8 @@ import 'package:appartapp/classes/User.dart';
 import 'package:appartapp/classes/apartment.dart';
 import 'package:appartapp/classes/apartment_handler.dart';
 import 'package:appartapp/classes/first_arguments.dart';
+import 'package:appartapp/classes/like_from_user.dart';
+import 'package:appartapp/classes/login_handler.dart';
 import 'package:appartapp/classes/user_handler.dart';
 import 'package:appartapp/classes/credentials.dart';
 import 'package:appartapp/classes/enum%20LoginResult.dart';
@@ -10,7 +12,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../classes/login_handler.dart';
 
 class Loading extends StatefulWidget {
   @override
@@ -59,13 +60,13 @@ class _LoadingState extends State<Loading> {
               // Navigator.pushReplacementNamed(context, '/home',
               //     arguments: firstApartmentFuture);
 
-              User firstTenant = await UserHandler().getNewUser((User user) {
-                for (final Image im in user.images) {
+              LikeFromUser firstTenant = await UserHandler().getNewLikeFromUser((LikeFromUser likeFromUser) {
+                for (final Image im in likeFromUser.user.images) {
                   precacheImage(im.image, context);
                 }
               });
 
-              Future<User> firstTenantFuture = Future(() {
+              Future<LikeFromUser> firstTenantFuture = Future(() {
                 return firstTenant;
               });
 

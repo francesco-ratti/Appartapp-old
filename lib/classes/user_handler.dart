@@ -1,7 +1,9 @@
 import 'package:appartapp/classes/User.dart';
+import 'package:appartapp/classes/apartment.dart';
 import '../exceptions/unauthorized_exception.dart';
 import 'package:dio/dio.dart';
 import '../exceptions/network_exception.dart';
+import 'like_from_user.dart';
 import 'runtime_store.dart';
 
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
@@ -26,7 +28,7 @@ class UserHandler {
 
   UserHandler._internal();
 
-  Future<User> getNewUser(Function(User) callback) async {
+  Future<LikeFromUser> getNewLikeFromUser(Function(LikeFromUser) callback) async {
     //TODO test
 
     var dio = Dio();
@@ -48,9 +50,14 @@ class UserHandler {
       if (response.statusCode == 401)
         throw new UnauthorizedException();
       else if (response.statusCode == 200) {
-        User user = User.fromMap(response.data as Map);
-        callback(user);
-        return user;
+        Map responseMap=response.data as Map;
+
+        User user = User.fromMap(responseMap["user"]);
+        Apartment apartment = Apartment.fromMap(responseMap["apartment"]);
+
+        LikeFromUser likeFromUser=LikeFromUser(apartment, user);
+        callback(likeFromUser);
+        return likeFromUser;
       } else
         throw new NetworkException();
     } on DioError catch (e) {

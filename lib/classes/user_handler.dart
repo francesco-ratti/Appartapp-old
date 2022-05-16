@@ -50,12 +50,7 @@ class UserHandler {
       if (response.statusCode == 401)
         throw new UnauthorizedException();
       else if (response.statusCode == 200) {
-        Map responseMap=response.data as Map;
-
-        User user = User.fromMap(responseMap["user"]);
-        Apartment apartment = Apartment.fromMap(responseMap["apartment"]);
-
-        LikeFromUser likeFromUser=LikeFromUser(apartment, user);
+        LikeFromUser likeFromUser=LikeFromUser.fromMap(response.data as Map);
         callback(likeFromUser);
         return likeFromUser;
       } else

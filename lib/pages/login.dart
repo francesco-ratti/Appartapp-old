@@ -1,11 +1,10 @@
-import 'package:appartapp/classes/User.dart';
+import 'package:appartapp/classes/user.dart';
 import 'package:appartapp/classes/apartment.dart';
 import 'package:appartapp/classes/credentials.dart';
-import 'package:appartapp/classes/enum%20LoginResult.dart';
+import 'package:appartapp/classes/enum_loginresult.dart';
 import 'package:flutter/material.dart';
 import 'package:appartapp/classes/apartment_handler.dart';
 
-//import './../SimpleTextField.dart';
 import 'package:appartapp/classes/runtime_store.dart';
 
 import '../classes/login_handler.dart';

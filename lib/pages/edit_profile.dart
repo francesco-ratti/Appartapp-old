@@ -1,11 +1,10 @@
-import 'package:appartapp/classes/User.dart';
-import 'package:appartapp/classes/enum%20Gender.dart';
+import 'package:appartapp/classes/user.dart';
+import 'package:appartapp/classes/enum_gender.dart';
 import 'package:appartapp/classes/runtime_store.dart';
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:flutter/material.dart';
 import 'package:appartapp/classes/apartment_handler.dart';
 
-//import './../SimpleTextField.dart';
 import 'package:dio/dio.dart';
 
 class EditProfile extends StatefulWidget {

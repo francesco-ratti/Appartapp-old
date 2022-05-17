@@ -1,4 +1,4 @@
-import 'package:appartapp/classes/User.dart';
+import 'package:appartapp/classes/user.dart';
 import 'package:flutter/material.dart';
 
 class TenantModel extends StatefulWidget {

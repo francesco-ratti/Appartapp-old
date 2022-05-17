@@ -1,4 +1,4 @@
-import 'package:appartapp/classes/User.dart';
+import 'package:appartapp/classes/user.dart';
 import 'package:appartapp/classes/apartment.dart';
 import '../exceptions/unauthorized_exception.dart';
 import 'package:dio/dio.dart';

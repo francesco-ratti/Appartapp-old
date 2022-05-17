@@ -1,4 +1,4 @@
-import 'package:appartapp/classes/User.dart';
+import 'package:appartapp/classes/user.dart';
 import 'package:appartapp/classes/apartment.dart';
 import 'package:appartapp/classes/apartment_handler.dart';
 import 'package:appartapp/classes/first_arguments.dart';
@@ -6,7 +6,7 @@ import 'package:appartapp/classes/like_from_user.dart';
 import 'package:appartapp/classes/login_handler.dart';
 import 'package:appartapp/classes/user_handler.dart';
 import 'package:appartapp/classes/credentials.dart';
-import 'package:appartapp/classes/enum%20LoginResult.dart';
+import 'package:appartapp/classes/enum_loginresult.dart';
 import 'package:appartapp/classes/runtime_store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';

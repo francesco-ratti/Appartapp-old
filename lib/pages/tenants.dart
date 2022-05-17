@@ -1,6 +1,8 @@
-import 'package:appartapp/classes/User.dart';
-import 'package:appartapp/classes/enum%20Gender.dart';
-import 'package:appartapp/classes/enum%20Month.dart';
+import 'package:appartapp/classes/enum_month.dart';
+import 'package:appartapp/classes/enum_temporalq.dart';
+import 'package:appartapp/classes/user.dart';
+import 'package:appartapp/classes/enum_gender.dart';
+import 'package:appartapp/classes/enum_loginresult.dart';
 import 'package:appartapp/classes/like_from_user.dart';
 import 'package:appartapp/classes/user_handler.dart';
 
@@ -115,10 +117,10 @@ class _ContentPage extends State<ContentPage> {
       [],
       "Caricamento in corso...",
       "Caricamento in corso...",
-      Month.July,
+      Month.Luglio,
       "Caricamento in corso...",
       "Caricamento in corso...",
-      "Caricamento in corso...",
+      TemporalQ.Sometimes,
       "Caricamento in corso..."));
 
   late Future<LikeFromUser> nextTenantFuture;

@@ -1,4 +1,4 @@
-import 'package:appartapp/classes/User.dart';
+import 'package:appartapp/classes/user.dart';
 import 'package:appartapp/classes/runtime_store.dart';
 import 'package:appartapp/widgets/tenant_model.dart';
 import 'package:appartapp/widgets/tab_widget_tenant.dart';

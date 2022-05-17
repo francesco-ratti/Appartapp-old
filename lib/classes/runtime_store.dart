@@ -1,7 +1,7 @@
 
 import 'dart:ui';
 
-import 'package:appartapp/classes/User.dart';
+import 'package:appartapp/classes/user.dart';
 import 'package:appartapp/classes/apartment.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

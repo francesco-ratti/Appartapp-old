@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:appartapp/classes/enum Gender.dart';
-import 'package:appartapp/classes/enum Month.dart';
+import 'package:appartapp/classes/enum_gender.dart';
+import 'package:appartapp/classes/enum_month.dart';
+
+import 'enum_temporalq.dart';
 
 class User {
   int id;
@@ -19,7 +20,7 @@ class User {
   Month month; //What date would you want to move in?
   String job; //What kind of work do you do?
   String income; //What is a rough estimate of your income?
-  String smoker; //Do you smoke?
+  TemporalQ smoker; //Do you smoke?
   String pets; //Do you have pets?
 
   static List<Image> fromImagesDetailsToImages(List imagesDetails) {
@@ -60,24 +61,27 @@ class User {
 
         //TO UNCOMMENT WHEN THIS DATA WILL BE ORESENT ALSO ON THE SERVER
 
-        // this.bio = map['bio'],
-        // this.reason = map['reason'],
-        // this.month = map['month'],
-        // this.work = map['work'],
-        // this.income = map['income'],
-        // this.smoker = map['smoker'],
-        // this.pets = map['pets'];
+        this.bio = map['bio'],
+        this.reason = map['reason'],
+        this.month = Month.values
+             .firstWhere((e) => e.toString() == 'Month.' + map['month']),
+        this.job = map['job'],
+        this.income = map['income'],
+        this.smoker = TemporalQ.values
+            .firstWhere((e) => e.toString() == 'TemporalQ.' + map['smoker']),
+        this.pets = map['pets'];
 
         //TO DELETE WHEN THE PREVIOUS BLOCK WILL BE UNCOMMENTED
         //FAKE INITIALISATION
+  /*
         this.bio = "",
         this.reason = "Vivo a Roma e ho intenzione di studiare al Polimi",
-        this.month = Month.September,
+        this.month = Month.Settembre,
         this.job = "Student",
         this.income = "About 1000€ per month",
         this.smoker = "Yes, occasionally",
         this.pets = "No";
-
+*/
   User.temp(
       this.id,
       this.email,

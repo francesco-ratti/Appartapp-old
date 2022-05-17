@@ -1,9 +1,7 @@
-import 'package:appartapp/classes/User.dart';
+import 'package:appartapp/classes/user.dart';
 import 'package:appartapp/classes/credentials.dart';
-import 'package:appartapp/classes/enum%20LoginResult.dart';
-import 'package:appartapp/classes/runtime_store.dart';
+import 'package:appartapp/classes/enum_loginresult.dart';
 import 'package:dio/dio.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginHandler {
   static String urlStr = "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/login";

@@ -1,4 +1,4 @@
-import 'package:appartapp/classes/User.dart';
+import 'package:appartapp/classes/user.dart';
 import 'package:appartapp/widgets/display_text.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -42,10 +42,10 @@ class TabWidgetTenant extends StatelessWidget {
               title: "Perché cerco casa", content: currentTenant.reason),
           DisplayText(title: "A partire da", content: "${currentTenant.month}"),
           DisplayText(
-              title: "Cosa faccio nella vita", content: currentTenant.work),
+              title: "Cosa faccio nella vita", content: currentTenant.job),
           DisplayText(
               title: "Le mie entrate mensili", content: currentTenant.bio),
-          DisplayText(title: "Fumatore", content: currentTenant.smoker),
+          DisplayText(title: "Fumatore", content: currentTenant.smoker.toString()),
           DisplayText(title: "Animali", content: currentTenant.pets),
           //PRIVATE INFORMATION
           DisplayText(title: "Sesso", content: "${currentTenant.gender}"),

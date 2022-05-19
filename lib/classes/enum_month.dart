@@ -11,5 +11,4 @@ enum Month {
   Ottobre,
   Novembre,
   Dicembre,
-  undefined
 }

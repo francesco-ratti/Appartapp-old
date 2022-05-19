@@ -17,10 +17,10 @@ class User {
   ///// TO ADD IN THE SERVER //////////
   String bio; //User profile bio
   String reason; //Why are you looking for a new place to live?
-  Month month; //What date would you want to move in?
+  Month? month; //What date would you want to move in?
   String job; //What kind of work do you do?
   String income; //What is a rough estimate of your income?
-  TemporalQ smoker; //Do you smoke?
+  TemporalQ? smoker; //Do you smoke?
   String pets; //Do you have pets?
 
   static List<Image> fromImagesDetailsToImages(List imagesDetails) {
@@ -101,17 +101,17 @@ class User {
       this.smoker,
       this.pets);
 
-  static Month mapMonth(String month) {
+  static Month? mapMonth(String month) {
     if (month.trim().isEmpty)
-      return Month.undefined;
+      return null;
 
     return Month.values
         .firstWhere((e) => e.toString() == 'Month.' + month);
   }
 
-  static TemporalQ mapTemporalQ(String temporalQ) {
+  static TemporalQ? mapTemporalQ(String temporalQ) {
     if (temporalQ.trim().isEmpty)
-      return TemporalQ.undefined;
+      return null;
 
     return TemporalQ.values
         .firstWhere((e) => e.toString() == 'TemporalQ.' + temporalQ);

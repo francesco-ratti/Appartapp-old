@@ -76,7 +76,7 @@ class _EditProfileState extends State<EditProfile> {
   GenderForList genderNB=GenderForList("Non binario", "NB");
 
   late List<GenderForList> _genders; // Option 2
-  var _selectedGender=null; // Option 2
+  GenderForList? _selectedGender=null; // Option 2
 
   @override
   void initState() {
@@ -178,7 +178,7 @@ class _EditProfileState extends State<EditProfile> {
                 padding: EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 8.0),
                 child: Row(children: [
                   Expanded(
-                      child: DropdownButton(
+                      child: DropdownButton<GenderForList>(
                         hint: Text("Scegli il tuo genere"),
                         // Not necessary for Option 1
                         value: _selectedGender,
@@ -226,7 +226,7 @@ class _EditProfileState extends State<EditProfile> {
                           setState(() {
                             status = toWrite;
                           });
-                        }, RuntimeStore().getEmail() ?? email, email, password, name, surname, _birthday, _selectedGender);
+                        }, RuntimeStore().getEmail() ?? email, email, password, name, surname, _birthday, _selectedGender as GenderForList);
                   } else {
                     setState(() {
                       status = "Incompleto. Compila tutti i campi";

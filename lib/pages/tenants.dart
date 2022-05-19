@@ -58,7 +58,7 @@ class ContentPage extends StatefulWidget {
   final ignoreUrlStr =
       "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/ignoreuser";
 //------------------------
-  Future<void> _networkFunction(String urlString, int userId) async {
+  Future<void> _networkFunction(String urlString, int userId, int apartmentId) async {
     Credentials? credentials = RuntimeStore().getCredentials();
     if (credentials != null) {
       var dio = Dio();
@@ -69,6 +69,7 @@ class ContentPage extends StatefulWidget {
             "email": credentials.email,
             "password": credentials.password,
             "userid": userId, //the tenant I like or ignore
+            "apartmentid": apartmentId
           },
           options: Options(
             contentType: Headers.formUrlEncodedContentType,
@@ -88,12 +89,12 @@ class ContentPage extends StatefulWidget {
     }
   }
 
-  void likeTenant(int tenantId) async {
-    //await _networkFunction(likeUrlStr, tenantId);
+  void likeTenant(int tenantId, int apartmentId) async {
+    await _networkFunction(likeUrlStr, tenantId, apartmentId);
   }
 
-  void ignoreTenant(int tenantId) async {
-    //await _networkFunction(ignoreUrlStr, tenantId);
+  void ignoreTenant(int tenantId, int apartmentId) async {
+    await _networkFunction(ignoreUrlStr, tenantId, apartmentId);
   }
 
   Future<LikeFromUser?> currentTenantFuture;
@@ -165,9 +166,9 @@ class _ContentPage extends State<ContentPage> {
                   onDismissed: () {
                     if (currentTenant!=null) {
                       if (finalCoord < initialCoord) {
-                        widget.likeTenant(currentTenant!.user.id);
+                        widget.likeTenant(currentTenant!.user.id, currentTenant!.apartment!.id);
                       } else {
-                        widget.ignoreTenant(currentTenant!.user.id);
+                        widget.ignoreTenant(currentTenant!.user.id, currentTenant!.apartment!.id);
                       }
                     }
                     Navigator.of(context).pop();

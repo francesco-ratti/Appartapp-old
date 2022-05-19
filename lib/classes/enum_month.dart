@@ -12,3 +12,9 @@ enum Month {
   Novembre,
   Dicembre,
 }
+
+extension ParseToString on Month {
+  String toShortString() {
+    return this.toString().split('.').last;
+  }
+}

@@ -1,6 +1,7 @@
 import 'package:appartapp/classes/enum_month.dart';
 import 'package:appartapp/classes/runtime_store.dart';
 import 'package:appartapp/classes/user.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:appartapp/classes/enum_temporalq.dart';
 
@@ -15,10 +16,10 @@ class EditTenant extends StatefulWidget {
 }
 
 class TemporalQItem {
-  const TemporalQItem(this.name, this.code);
+  const TemporalQItem(this.name, this.value);
 
   final String name;
-  final String code;
+  final TemporalQ value;
 }
 
 class YesNoForList{
@@ -29,8 +30,51 @@ class YesNoForList{
 }
 
 class _EditTenantState extends State<EditTenant> {
+
+  void doUpdate(Function(String) updateUi, String bio, String reason, String job,
+      String income, String pets, Month? month, TemporalQ? smoker) async {
+
+    var dio = Dio();
+    try {
+      Response response = await dio.post(
+        widget.urlStr,
+        data: {
+          "email": RuntimeStore().getEmail(),
+          "password": RuntimeStore().getPassword(),
+          "bio": bio,
+          "reason": reason,
+          "job": job,
+          "income": income,
+          "pets": pets,
+          "month": month==null ? "" : month.toShortString(),
+          "smoker": smoker==null ? "" : smoker.toShortString()
+        },
+        options: Options(
+          contentType: Headers.formUrlEncodedContentType,
+          headers: {"Content-Type": "application/x-www-form-urlencoded"},
+        ),
+      );
+
+      if (response.statusCode != 200)
+        updateUi("Failure");
+      else {
+        updateUi("Updated");
+        Map responseMap = response.data;
+        RuntimeStore().setUser(User.fromMap(responseMap));
+        Navigator.pop(context);
+      }
+    } on DioError catch (e) {
+      if (e.response?.statusCode != 200) {
+        updateUi("Failure");
+      }
+    }
+  }
+
   final bioController = TextEditingController();
   final reasonController = TextEditingController();
+  final jobController=TextEditingController();
+  final incomeController=TextEditingController();
+  final petsController=TextEditingController();
 
   static YesNoForList yesYN=YesNoForList("Sì", true);
   static YesNoForList noYN=YesNoForList("No", false);
@@ -43,9 +87,9 @@ class _EditTenantState extends State<EditTenant> {
     noYN
   ];
 
-  TemporalQItem yesT=TemporalQItem("Sì", "Yes");
-  TemporalQItem noT=TemporalQItem("No", "No");
-  TemporalQItem sometimesT=TemporalQItem("Saltuariamente", "Sometimes");
+  TemporalQItem yesT=TemporalQItem("Sì", TemporalQ.Yes);
+  TemporalQItem noT=TemporalQItem("No", TemporalQ.No);
+  TemporalQItem sometimesT=TemporalQItem("Saltuariamente", TemporalQ.Sometimes);
 
   late List<TemporalQItem> temporalQValues;
 
@@ -55,6 +99,27 @@ class _EditTenantState extends State<EditTenant> {
   void initState() {
     // TODO: implement initState
     super.initState();
+
+    if (widget.user.bio.isNotEmpty)
+      bioController.text=widget.user.bio;
+
+    if (widget.user.reason.isNotEmpty)
+      reasonController.text=widget.user.reason;
+
+    if (widget.user.job.isNotEmpty)
+      jobController.text=widget.user.job;
+
+    _month=widget.user.month;
+
+    if (widget.user.hasPets()) {
+      petsController.text = widget.user.pets;
+      _petsItem=yesYN;
+    } else {
+      _petsItem=noYN;
+    }
+
+    if (widget.user.income.isNotEmpty)
+      incomeController.text=widget.user.income;
 
     temporalQValues=<TemporalQItem> [
       yesT,
@@ -137,7 +202,7 @@ class _EditTenantState extends State<EditTenant> {
                   border: OutlineInputBorder(),
                   labelText: 'Che lavoro fai?',
                 ),
-                controller: reasonController,
+                controller: jobController,
               )),
           Padding(
               padding: EdgeInsets.all(8.0),
@@ -145,9 +210,9 @@ class _EditTenantState extends State<EditTenant> {
                 obscureText: false,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
-                  labelText: 'Stipendio medio mensile',
+                  labelText: 'Introito medio mensile',
                 ),
-                controller: reasonController,
+                controller: incomeController,
               )),
           Padding(
               padding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 0.0),
@@ -182,6 +247,8 @@ class _EditTenantState extends State<EditTenant> {
                 onChanged: (newValue) {
                   setState(() {
                     if (newValue!=null) {
+                      if (!newValue.value)
+                        petsController.text="";
                       setState(() {
                         _petsItem = newValue;
                       });
@@ -203,11 +270,18 @@ class _EditTenantState extends State<EditTenant> {
                   border: OutlineInputBorder(),
                   labelText: 'Quali?',
                 ),
-                controller: reasonController,
+                controller: petsController,
               )) : SizedBox(),
           ElevatedButton(
               child: Text("Modifica"),
               onPressed: () {
+                String bio=bioController.text.trim();
+                String reason=reasonController.text.trim();
+                String job=jobController.text.trim();
+                String income=incomeController.text.trim();
+                String pets=petsController.text.trim();
+
+                doUpdate((p0) => null, bio, reason, job, income, pets, _month, _smokertQItem == null ? null : _smokertQItem?.value as TemporalQ);
               }),
         ],
       ),

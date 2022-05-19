@@ -9,7 +9,7 @@ import 'package:sliding_up_panel/sliding_up_panel.dart';
 class ApartmentViewer extends StatelessWidget {
 
   bool apartmentLoaded;
-  Apartment currentApartment;
+  Apartment? currentApartment;
 
   ApartmentViewer({Key? key, required this.apartmentLoaded, required this.currentApartment}) : super(key: key);
 
@@ -17,7 +17,12 @@ class ApartmentViewer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container (
       color: RuntimeStore.backgroundColor,
-      child: SlidingUpPanel(
+      child: currentApartment==null ? (Center(
+          child: Text("no apartments",
+            style: TextStyle(
+                color: Colors.white
+            ),)
+      )) : SlidingUpPanel(
         color: Colors.transparent.withOpacity(0.7),
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(24.0),
@@ -27,8 +32,8 @@ class ApartmentViewer extends StatelessWidget {
         panelBuilder: (scrollController) =>
         apartmentLoaded ? TabWidget(
             scrollController: scrollController,
-            currentApartment: currentApartment) : TabWidgetLoading(),
-        body: apartmentLoaded ? ApartmentModel(currentApartment: currentApartment) : Center(
+            currentApartment: currentApartment as Apartment) : TabWidgetLoading(),
+        body: apartmentLoaded ? ApartmentModel(currentApartment: currentApartment as Apartment) : Center(
             child: CircularProgressIndicator(
               value: null,
             )),

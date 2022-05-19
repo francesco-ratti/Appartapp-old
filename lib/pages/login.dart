@@ -33,14 +33,14 @@ class _LoginState extends State<Login> {
         RuntimeStore().getSharedPreferences()?.setString("email", credentials.email);
         RuntimeStore().getSharedPreferences()?.setString("password", credentials.password);
 
-        Apartment firstApartment = await ApartmentHandler().getNewApartment(
+        Apartment? firstApartment = await ApartmentHandler().getNewApartment(
                 (Apartment apartment) {
               for (final Image im in apartment.images) {
                 precacheImage(im.image, context);
               }
             });
 
-        Future<Apartment> firstApartmentFuture = Future (
+        Future<Apartment?> firstApartmentFuture = Future (
                 () {
               return firstApartment;
             }

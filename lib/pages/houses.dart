@@ -10,7 +10,7 @@ import 'package:dismissible_page/dismissible_page.dart';
 import 'package:flutter/material.dart';
 
 class Houses extends StatefulWidget {
-  Future<Apartment> firstApartmentFuture;
+  Future<Apartment?> firstApartmentFuture;
 
   Houses({required this.child, required this.firstApartmentFuture});
 
@@ -123,7 +123,7 @@ class ContentPage extends StatefulWidget {
   }
 
 
-  Future<Apartment> currentApartmentFuture;
+  Future<Apartment?> currentApartmentFuture;
 //Function updateHouses;
   @override
   _ContentPage createState() => _ContentPage();
@@ -134,7 +134,7 @@ class ContentPage extends StatefulWidget {
 }
 
 class _ContentPage extends State<ContentPage> {
-  Apartment currentApartment=Apartment.withLocalImages(
+  Apartment? currentApartment=Apartment.withLocalImages(
       0,
       "Caricamento in corso...",
       "Caricamento in corso...",
@@ -143,7 +143,7 @@ class _ContentPage extends State<ContentPage> {
       "Caricamento in corso...",
       <String>[]);
 
-  late Future<Apartment> nextApartmentFuture;
+  late Future<Apartment?> nextApartmentFuture;
   bool apartmentLoaded=false;
 
   bool firstDrag=true;
@@ -175,7 +175,8 @@ class _ContentPage extends State<ContentPage> {
     super.initState();
 
     widget.currentApartmentFuture.then((value) {
-      apartmentLoaded=true;
+      if (value!=null)
+        apartmentLoaded=true;
       setState(() {
         currentApartment=value;
       });
@@ -192,12 +193,13 @@ class _ContentPage extends State<ContentPage> {
               return DismissiblePage(
                 //backgroundColor: Colors.white,
                 onDismissed: () {
-                  if (finalCoord<initialCoord) {
-                    widget.likeApartment(currentApartment.id);
-                  } else {
-                    widget.ignoreApartment(currentApartment.id);
+                  if (currentApartment!=null) {
+                    if (finalCoord < initialCoord) {
+                      widget.likeApartment(currentApartment!.id);
+                    } else {
+                      widget.ignoreApartment(currentApartment!.id);
+                    }
                   }
-
                   Navigator.of(context).pop();
 
                   Navigator.push(

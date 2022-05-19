@@ -62,7 +62,7 @@ class ApartmentHandler {
     }
   }
 
-  Future<Apartment> getNewApartment(Function(Apartment) callback) async {
+  Future<Apartment?> getNewApartment(Function(Apartment) callback) async {
     //TODO test
 
     var dio = Dio();
@@ -81,6 +81,8 @@ class ApartmentHandler {
       if (response.statusCode == 401)
         throw new UnauthorizedException();
       else if (response.statusCode == 200) {
+        if (response.data == null)
+          return null;
         Apartment apartment=Apartment.fromMap(response.data as Map);
         callback(apartment);
         return apartment;

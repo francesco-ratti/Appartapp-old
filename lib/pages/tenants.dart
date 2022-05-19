@@ -163,12 +163,13 @@ class _ContentPage extends State<ContentPage> {
               return DismissiblePage(
                   //backgroundColor: Colors.white,
                   onDismissed: () {
-                    if (finalCoord < initialCoord) {
-                      widget.likeTenant(currentTenant!.user.id);
-                    } else {
-                      widget.ignoreTenant(currentTenant!.user.id);
+                    if (currentTenant!=null) {
+                      if (finalCoord < initialCoord) {
+                        widget.likeTenant(currentTenant!.user.id);
+                      } else {
+                        widget.ignoreTenant(currentTenant!.user.id);
+                      }
                     }
-
                     Navigator.of(context).pop();
 
                     Navigator.push(

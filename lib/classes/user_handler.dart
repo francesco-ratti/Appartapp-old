@@ -28,7 +28,7 @@ class UserHandler {
 
   UserHandler._internal();
 
-  Future<LikeFromUser> getNewLikeFromUser(Function(LikeFromUser) callback) async {
+  Future<LikeFromUser?> getNewLikeFromUser(Function(LikeFromUser) callback) async {
     //TODO test
 
     var dio = Dio();
@@ -50,6 +50,8 @@ class UserHandler {
       if (response.statusCode == 401)
         throw new UnauthorizedException();
       else if (response.statusCode == 200) {
+        if (response.data == null)
+          return null;
         LikeFromUser likeFromUser=LikeFromUser.fromMap(response.data as Map);
         callback(likeFromUser);
         return likeFromUser;

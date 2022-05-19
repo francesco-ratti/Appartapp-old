@@ -1,5 +1,6 @@
 enum TemporalQ {
   Yes,
   No,
-  Sometimes
+  Sometimes,
+  undefined
 }

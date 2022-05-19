@@ -14,7 +14,7 @@ import 'package:dismissible_page/dismissible_page.dart';
 import 'package:flutter/material.dart';
 
 class Tenants extends StatefulWidget {
-  Future<LikeFromUser> firstTenantFuture;
+  Future<LikeFromUser?> firstTenantFuture;
 
   Tenants({required this.child, required this.firstTenantFuture});
 
@@ -89,14 +89,14 @@ class ContentPage extends StatefulWidget {
   }
 
   void likeTenant(int tenantId) async {
-    await _networkFunction(likeUrlStr, tenantId);
+    //await _networkFunction(likeUrlStr, tenantId);
   }
 
   void ignoreTenant(int tenantId) async {
-    await _networkFunction(ignoreUrlStr, tenantId);
+    //await _networkFunction(ignoreUrlStr, tenantId);
   }
 
-  Future<LikeFromUser> currentTenantFuture;
+  Future<LikeFromUser?> currentTenantFuture;
 //Function updateHouses;
   @override
   _ContentPage createState() => _ContentPage();
@@ -106,7 +106,7 @@ class ContentPage extends StatefulWidget {
 }
 
 class _ContentPage extends State<ContentPage> {
-  LikeFromUser currentTenant = LikeFromUser(null, User.temp(
+  LikeFromUser? currentTenant = LikeFromUser(null, User.temp(
       000,
       "Caricamento in corso...",
       "Caricamento in corso...",
@@ -123,7 +123,7 @@ class _ContentPage extends State<ContentPage> {
       TemporalQ.Sometimes,
       "Caricamento in corso..."));
 
-  late Future<LikeFromUser> nextTenantFuture;
+  late Future<LikeFromUser?> nextTenantFuture;
   bool tenantLoaded = false;
 
   bool firstDrag = true;
@@ -145,7 +145,8 @@ class _ContentPage extends State<ContentPage> {
     super.initState();
 
     widget.currentTenantFuture.then((value) {
-      tenantLoaded = true;
+      if (value!=null)
+        tenantLoaded = true;
       setState(() {
         currentTenant = value;
       });
@@ -163,9 +164,9 @@ class _ContentPage extends State<ContentPage> {
                   //backgroundColor: Colors.white,
                   onDismissed: () {
                     if (finalCoord < initialCoord) {
-                      widget.likeTenant(currentTenant.user.id);
+                      widget.likeTenant(currentTenant!.user.id);
                     } else {
-                      widget.ignoreTenant(currentTenant.user.id);
+                      widget.ignoreTenant(currentTenant!.user.id);
                     }
 
                     Navigator.of(context).pop();
@@ -190,7 +191,7 @@ class _ContentPage extends State<ContentPage> {
                   disabled: !tenantLoaded,
                   child: TenantViewer(
                     tenantLoaded: tenantLoaded,
-                    currentTenant: currentTenant.user,
+                    currentLikeFromUser: currentTenant,
                   ));
             });
       },

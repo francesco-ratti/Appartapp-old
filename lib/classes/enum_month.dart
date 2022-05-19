@@ -10,5 +10,6 @@ enum Month {
   Settembre,
   Ottobre,
   Novembre,
-  Dicembre
+  Dicembre,
+  undefined
 }

@@ -48,6 +48,10 @@ class User {
     return images;
   }
 
+  bool hasPets() {
+    return pets.isNotEmpty;
+  }
+
   User.fromMap(Map map)
       : this.id = map['id'],
         this.email = map["email"],
@@ -63,12 +67,10 @@ class User {
 
         this.bio = map['bio'],
         this.reason = map['reason'],
-        this.month = Month.values
-             .firstWhere((e) => e.toString() == 'Month.' + map['month']),
+        this.month = mapMonth(map['month']),
         this.job = map['job'],
         this.income = map['income'],
-        this.smoker = TemporalQ.values
-            .firstWhere((e) => e.toString() == 'TemporalQ.' + map['smoker']),
+        this.smoker = mapTemporalQ(map['smoker']),
         this.pets = map['pets'];
 
         //TO DELETE WHEN THE PREVIOUS BLOCK WILL BE UNCOMMENTED
@@ -98,4 +100,20 @@ class User {
       this.income,
       this.smoker,
       this.pets);
+
+  static Month mapMonth(String month) {
+    if (month.trim().isEmpty)
+      return Month.undefined;
+
+    return Month.values
+        .firstWhere((e) => e.toString() == 'Month.' + month);
+  }
+
+  static TemporalQ mapTemporalQ(String temporalQ) {
+    if (temporalQ.trim().isEmpty)
+      return TemporalQ.undefined;
+
+    return TemporalQ.values
+        .firstWhere((e) => e.toString() == 'TemporalQ.' + temporalQ);
+  }
 }

@@ -246,6 +246,11 @@ class _EditProfileState extends State<EditProfile> {
                   Navigator.pushNamed(context, "/editpassword");
                 }),
             ElevatedButton(
+                child: Text("Modifica informazioni locatario"),
+                onPressed: () {
+                  Navigator.pushNamed(context, "/edittenants");
+                }),
+            ElevatedButton(
                 child: Text("Esci"),
                 style: ElevatedButton.styleFrom(primary: Colors.red),
                 onPressed: () {

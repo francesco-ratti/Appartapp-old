@@ -115,11 +115,11 @@ class ContentPage extends StatefulWidget {
   }
 
   void likeApartment(int apartmentId) async {
-    await _networkFunction(likeUrlStr, apartmentId);
+    //await _networkFunction(likeUrlStr, apartmentId);
   }
 
   void ignoreApartment (int apartmentId) async {
-    await _networkFunction(ignoreUrlStr, apartmentId);
+    //await _networkFunction(ignoreUrlStr, apartmentId);
   }
 
 

@@ -60,13 +60,13 @@ class _LoadingState extends State<Loading> {
               // Navigator.pushReplacementNamed(context, '/home',
               //     arguments: firstApartmentFuture);
 
-              LikeFromUser firstTenant = await UserHandler().getNewLikeFromUser((LikeFromUser likeFromUser) {
+              LikeFromUser? firstTenant = await UserHandler().getNewLikeFromUser((LikeFromUser likeFromUser) {
                 for (final Image im in likeFromUser.user.images) {
                   precacheImage(im.image, context);
                 }
               });
 
-              Future<LikeFromUser> firstTenantFuture = Future(() {
+              Future<LikeFromUser?> firstTenantFuture = Future(() {
                 return firstTenant;
               });
 

@@ -1,4 +1,5 @@
 import 'package:appartapp/classes/runtime_store.dart';
+import 'package:appartapp/pages/edit_tenant.dart';
 import 'package:appartapp/pages/login.dart';
 import 'package:flutter/material.dart';
 
@@ -26,6 +27,7 @@ void main() {
       '/login': (context) => Login(),
       '/signup': (context) => Signup(),
       '/editpassword': (context) => EditPassword(),
+      '/edittenants': (context) => EditTenant(),
     },
   ));
 }

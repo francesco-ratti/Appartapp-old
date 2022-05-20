@@ -41,8 +41,11 @@ class _ApartmentModel extends State<ApartmentModel> {
   Widget build(BuildContext context) => Stack(
       fit: StackFit.expand,
       children: <Widget>[
-        widget.currentApartment.images[currentIndex],
-        GestureDetector(
+        widget.currentApartment.images.isNotEmpty ? widget.currentApartment.images[currentIndex] :
+        Center(
+          child: Text("No images",
+            style: TextStyle(color: Colors.white),),
+        ),        GestureDetector(
           onTapUp: (TapUpDetails details) {
             final RenderBox? box = context.findRenderObject() as RenderBox;
             final localOffset = box!.globalToLocal(details.globalPosition);

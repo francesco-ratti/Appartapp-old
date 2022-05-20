@@ -1,6 +1,7 @@
 import 'package:appartapp/classes/user.dart';
 import 'package:appartapp/classes/enum_gender.dart';
 import 'package:appartapp/classes/runtime_store.dart';
+import 'package:appartapp/pages/signup.dart';
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:flutter/material.dart';
 import 'package:appartapp/classes/apartment_handler.dart';
@@ -14,15 +15,10 @@ class EditProfile extends StatefulWidget {
   @override
   _EditProfileState createState() => _EditProfileState();
 }
-class GenderForList {
-  const GenderForList(this.name, this.code);
 
-  final String name;
-  final String code;
-}
 class _EditProfileState extends State<EditProfile> {
   void doUpdate(Function(String) updateUi, String oldemail, String email, String oldpassword,
-      String name, String surname, DateTime birthday, GenderForList gender) async {
+      String name, String surname, DateTime birthday, Gender gender) async {
     var dio = Dio();
     try {
       Response response = await dio.post(
@@ -35,7 +31,7 @@ class _EditProfileState extends State<EditProfile> {
           "name": name,
           "surname": surname,
           "birthday": birthday.millisecondsSinceEpoch.toString(),
-          "gender": gender.code
+          "gender": gender.toShortString()
         },
         options: Options(
           contentType: Headers.formUrlEncodedContentType,
@@ -71,36 +67,14 @@ class _EditProfileState extends State<EditProfile> {
 
   late DateTime _birthday=new DateTime.now();
 
-  GenderForList genderM=GenderForList("Maschile", "M");
-  GenderForList genderF=GenderForList("Femminile", "F");
-  GenderForList genderNB=GenderForList("Non binario", "NB");
-
-  late List<GenderForList> _genders; // Option 2
-  GenderForList? _selectedGender=null; // Option 2
+  Gender? _gender;
 
   @override
   void initState() {
     super.initState();
 
-    _genders=<GenderForList>[
-      genderM,
-      genderF,
-      genderNB
-    ];
-
     _birthday = user!.birthday;
-
-    switch (user!.gender) {
-      case Gender.M:
-        _selectedGender=genderM;
-        break;
-      case Gender.F:
-        _selectedGender=genderM;
-        break;
-      case Gender.NB:
-        _selectedGender=genderNB;
-        break;
-    }
+    _gender = user!.gender;
 
     emailController.text=user!.email;
     nameController.text=user!.name;
@@ -178,18 +152,18 @@ class _EditProfileState extends State<EditProfile> {
                 padding: EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 8.0),
                 child: Row(children: [
                   Expanded(
-                      child: DropdownButton<GenderForList>(
+                      child: DropdownButton<Gender>(
                         hint: Text("Scegli il tuo genere"),
                         // Not necessary for Option 1
-                        value: _selectedGender,
+                        value: _gender,
                         onChanged: (newValue) {
                           setState(() {
-                            _selectedGender = newValue;
+                            _gender = newValue;
                           });
                         },
-                        items: _genders.map((gender) {
+                        items: Gender.values.map((gender) {
                           return DropdownMenuItem(
-                            child: new Text(gender.name),
+                            child: Text(gender.toItalianString()),
                             value: gender,
                           );
                         }).toList(),
@@ -220,13 +194,13 @@ class _EditProfileState extends State<EditProfile> {
                       password.length > 0 &&
                       name.length > 0 &&
                       surname.length > 0 &&
-                      _selectedGender != null)) {
+                      _gender != null)) {
 
                     doUpdate((String toWrite) {
                           setState(() {
                             status = toWrite;
                           });
-                        }, RuntimeStore().getEmail() ?? email, email, password, name, surname, _birthday, _selectedGender as GenderForList);
+                        }, RuntimeStore().getEmail() ?? email, email, password, name, surname, _birthday, _gender as Gender);
                   } else {
                     setState(() {
                       status = "Incompleto. Compila tutti i campi";

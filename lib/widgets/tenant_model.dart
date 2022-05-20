@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:appartapp/classes/user.dart';
 import 'package:flutter/material.dart';
 
@@ -33,7 +35,11 @@ class _TenantModel extends State<TenantModel> {
   @override
   Widget build(BuildContext context) =>
       Stack(fit: StackFit.expand, children: <Widget>[
-        widget.currentTenant.images[currentIndex],
+        widget.currentTenant.images.isNotEmpty ? widget.currentTenant.images[currentIndex] :
+        Center(
+          child: Text("No images",
+          style: TextStyle(color: Colors.white),),
+        ),
         GestureDetector(
           onTapUp: (TapUpDetails details) {
             final RenderBox? box = context.findRenderObject() as RenderBox;

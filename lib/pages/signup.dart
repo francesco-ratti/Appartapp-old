@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:appartapp/classes/enum_gender.dart';
 import 'package:flutter/material.dart';
 
 //import './../SimpleTextField.dart';
@@ -10,13 +11,6 @@ class Signup extends StatefulWidget {
 
   @override
   _SignupState createState() => _SignupState();
-}
-
-class Gender {
-  const Gender(this.name, this.code);
-
-  final String name;
-  final String code;
 }
 
 class _SignupState extends State<Signup> {
@@ -32,7 +26,7 @@ class _SignupState extends State<Signup> {
           "name": name,
           "surname": surname,
           "birthday": birthday.millisecondsSinceEpoch.toString(),
-          "gender": gender.code
+          "gender": gender.toShortString()
         },
         options: Options(
           contentType: Headers.formUrlEncodedContentType,
@@ -61,12 +55,7 @@ class _SignupState extends State<Signup> {
 
   DateTime _birthday = new DateTime.now();
 
-  List<Gender> _genders = <Gender>[
-    Gender("Maschile", "M"),
-    Gender("Femminile", "F"),
-    Gender("Non binario", "NB")
-  ]; // Option 2
-  var _selectedGender = null; // Option 2
+  Gender? _gender=null;
 
   @override
   Widget build(BuildContext context) {
@@ -150,18 +139,18 @@ class _SignupState extends State<Signup> {
                     padding: EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 8.0),
                     child: Row(children: [
                       Expanded(
-                          child: DropdownButton(
+                          child: DropdownButton<Gender>(
                         hint: Text("Scegli il tuo genere"),
                         // Not necessary for Option 1
-                        value: _selectedGender,
+                        value: _gender,
                         onChanged: (newValue) {
                           setState(() {
-                            _selectedGender = newValue;
+                            _gender = newValue;
                           });
                         },
-                        items: _genders.map((gender) {
+                        items: Gender.values.map((gender) {
                           return DropdownMenuItem(
-                            child: new Text(gender.name),
+                            child: Text(gender.toItalianString()),
                             value: gender,
                           );
                         }).toList(),
@@ -179,13 +168,13 @@ class _SignupState extends State<Signup> {
                           password.length > 0 &&
                           name.length > 0 &&
                           surname.length > 0 &&
-                          _selectedGender != null)) {
+                          _gender != null)) {
                         doSignup((String toWrite) {
                           setState(() {
                             status = toWrite;
                           });
                         }, email, password, name, surname, _birthday,
-                            _selectedGender);
+                            _gender as Gender);
                       } else {
                         setState(() {
                           status = "Incompleto. Compila tutti i campi";

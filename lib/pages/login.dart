@@ -1,7 +1,10 @@
+import 'package:appartapp/classes/first_arguments.dart';
+import 'package:appartapp/classes/like_from_user.dart';
 import 'package:appartapp/classes/user.dart';
 import 'package:appartapp/classes/apartment.dart';
 import 'package:appartapp/classes/credentials.dart';
 import 'package:appartapp/classes/enum_loginresult.dart';
+import 'package:appartapp/classes/user_handler.dart';
 import 'package:flutter/material.dart';
 import 'package:appartapp/classes/apartment_handler.dart';
 
@@ -46,9 +49,22 @@ class _LoginState extends State<Login> {
             }
         );
 
-        Navigator.pop(context);
-        Navigator.pushReplacementNamed(context, '/home', arguments: firstApartmentFuture);
+        LikeFromUser? firstTenant = await UserHandler().getNewLikeFromUser((LikeFromUser likeFromUser) {
+          for (final Image im in likeFromUser.user.images) {
+            precacheImage(im.image, context);
+          }
+        });
 
+        Future<LikeFromUser?> firstTenantFuture = Future(() {
+          return firstTenant;
+        });
+
+        FirstArguments firstArguments =
+        FirstArguments(firstApartmentFuture, firstTenantFuture);
+
+        Navigator.pop(context);
+        Navigator.pushReplacementNamed(context, '/home',
+            arguments: firstArguments);
         break;
       case LoginResult.wrong_credentials:
         updateUi("Credenziali errate");

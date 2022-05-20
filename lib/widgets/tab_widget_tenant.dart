@@ -1,3 +1,6 @@
+import 'package:appartapp/classes/enum_gender.dart';
+import 'package:appartapp/classes/enum_month.dart';
+import 'package:appartapp/classes/enum_temporalq.dart';
 import 'package:appartapp/classes/user.dart';
 import 'package:appartapp/widgets/display_text.dart';
 import 'package:flutter/material.dart';
@@ -40,16 +43,16 @@ class TabWidgetTenant extends StatelessWidget {
           DisplayText(title: "Su di me", content: currentTenant.bio),
           DisplayText(
               title: "Perché cerco casa", content: currentTenant.reason),
-          DisplayText(title: "A partire da", content: "${currentTenant.month}"),
+          DisplayText(title: "A partire da", content: currentTenant.month!.toShortString()),
           DisplayText(
               title: "Cosa faccio nella vita", content: currentTenant.job),
           DisplayText(
               title: "Le mie entrate mensili", content: currentTenant.bio),
-          DisplayText(title: "Fumatore", content: currentTenant.smoker.toString()),
-          DisplayText(title: "Animali", content: currentTenant.pets),
+          DisplayText(title: "Fumatore", content: currentTenant.smoker!.toItalianString()),
+          DisplayText(title: "Animali", content: currentTenant.pets.isEmpty ? "No" : currentTenant.pets),
           //PRIVATE INFORMATION
-          DisplayText(title: "Sesso", content: "${currentTenant.gender}"),
-          DisplayText(title: "Compleanno", content: "${currentTenant.birthday}")
+          DisplayText(title: "Sesso", content: "${currentTenant.gender!.toItalianString()}"),
+          DisplayText(title: "Compleanno", content: "${currentTenant.birthday.day.toString().padLeft(2,'0')}-${currentTenant.birthday.month.toString().padLeft(2,'0')}-${currentTenant.birthday.year.toString()}")
         ],
       );
 }

@@ -15,13 +15,6 @@ class EditTenant extends StatefulWidget {
   _EditTenantState createState() => _EditTenantState();
 }
 
-class TemporalQItem {
-  const TemporalQItem(this.name, this.value);
-
-  final String name;
-  final TemporalQ value;
-}
-
 class YesNoForList{
   String name;
   bool value;
@@ -80,20 +73,13 @@ class _EditTenantState extends State<EditTenant> {
   static YesNoForList noYN=YesNoForList("No", false);
 
   Month? _month=null;
+  TemporalQ? _smokerTQ=null;
 
   YesNoForList? _petsItem=null;
   List<YesNoForList> _petsEntries=<YesNoForList>[
     yesYN,
     noYN
   ];
-
-  TemporalQItem yesT=TemporalQItem("Sì", TemporalQ.Yes);
-  TemporalQItem noT=TemporalQItem("No", TemporalQ.No);
-  TemporalQItem sometimesT=TemporalQItem("Saltuariamente", TemporalQ.Sometimes);
-
-  late List<TemporalQItem> temporalQValues;
-
-  TemporalQItem? _smokertQItem=null;
 
   @override
   void initState() {
@@ -110,6 +96,7 @@ class _EditTenantState extends State<EditTenant> {
       jobController.text=widget.user.job;
 
     _month=widget.user.month;
+    _smokerTQ=widget.user.smoker;
 
     if (widget.user.hasPets()) {
       petsController.text = widget.user.pets;
@@ -121,24 +108,6 @@ class _EditTenantState extends State<EditTenant> {
     if (widget.user.income.isNotEmpty)
       incomeController.text=widget.user.income;
 
-    temporalQValues=<TemporalQItem> [
-      yesT,
-      noT,
-      sometimesT
-    ];
-
-    switch (widget.user.smoker) {
-      case TemporalQ.Yes:
-        _smokertQItem=yesT;
-        break;
-      case TemporalQ.No:
-        _smokertQItem=noT;
-        break;
-      case TemporalQ.Sometimes:
-        _smokertQItem=sometimesT;
-        break;
-      default: {}
-    }
   }
 
   @override
@@ -219,18 +188,18 @@ class _EditTenantState extends State<EditTenant> {
               child: Text("Fumi?")),
           Padding(
               padding: EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 8.0),
-              child: DropdownButton<TemporalQItem>(
-                value: _smokertQItem,
+              child: DropdownButton<TemporalQ>(
+                value: _smokerTQ,
                 hint: Text("Fumi?"),
                 // Not necessary for Option 1
                 onChanged: (newValue) {
                   setState(() {
-                    _smokertQItem = newValue!;
+                    _smokerTQ = newValue!;
                   });
                 },
-                items: temporalQValues.map((temporalQv) {
+                items: TemporalQ.values.map((temporalQv) {
                   return DropdownMenuItem(
-                    child: new Text(temporalQv.name),
+                    child: Text(temporalQv.toItalianString()),
                     value: temporalQv,
                   );
                 }).toList(),
@@ -281,7 +250,7 @@ class _EditTenantState extends State<EditTenant> {
                 String income=incomeController.text.trim();
                 String pets=petsController.text.trim();
 
-                doUpdate((p0) => null, bio, reason, job, income, pets, _month, _smokertQItem == null ? null : _smokertQItem?.value as TemporalQ);
+                doUpdate((p0) => null, bio, reason, job, income, pets, _month, _smokerTQ);
               }),
         ],
       ),

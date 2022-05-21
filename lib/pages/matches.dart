@@ -50,10 +50,17 @@ class _MatchesState extends State<Matches> {
                 title: Text(currentMatch.apartment.listingTitle),
                 subtitle: Text("${currentMatch.apartment.description} - ${currentMatch.time}"),
                 onTap: () {
+                  for (final Image im in currentMatches![index].apartment.images) {
+                    precacheImage(im.image, context);
+                  }
+
                   Navigator.push(
                       context,
                       MaterialPageRoute(
                           builder: (context) => Scaffold(
+                              appBar: AppBar(
+                                  title: Text(currentMatches![index].apartment.listingTitle)
+                              ),
                               body: ApartmentViewer(
                                 apartmentLoaded: true,
                                 currentApartment: currentMatches![index].apartment,

@@ -66,10 +66,17 @@ class _OwnedApartments extends State<OwnedApartments> {
               title: Text(currentApartment.listingTitle),
               subtitle: Text(currentApartment.description),
               onTap: () {
+                for (final Image im in ownedApartments[index].images) {
+                  precacheImage(im.image, context);
+                }
+
                 Navigator.push(
                     context,
                     MaterialPageRoute(
                         builder: (context) => Scaffold(
+                          appBar: AppBar(
+                            title: Text(ownedApartments[index].listingTitle),
+                          ),
                             body: ApartmentViewer(
                               apartmentLoaded: true,
                               currentApartment: ownedApartments[index],

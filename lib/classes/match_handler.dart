@@ -8,7 +8,7 @@ class MatchHandler {
 
   static final urlStr="http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/getmatchedapartments";
   List<LessorMatch>? _currentMatches=null;
-  String? oldResData=null;
+  List? oldResData=null;
 
   List<Function(List<LessorMatch>?)> updateCallbacks=<Function(List<LessorMatch>?)>[];
 
@@ -31,19 +31,19 @@ class MatchHandler {
           return [null,null,LoginResult.server_error];*/
       }
       else {
-        List responseMap = response.data;
-
-        String newResData=response.data as String;
+        List newResData=response.data as List;
         if (oldResData==null || oldResData!=newResData) {
           _currentMatches = [];
-          for (final el in responseMap) {
-            _currentMatches?.add(LessorMatch.fromMap(el));
-          }
-          oldResData=newResData;
+          if (newResData!=null) {
+            for (final el in newResData) {
+              _currentMatches?.add(LessorMatch.fromMap(el));
+            }
+            oldResData = newResData;
 
-          callback(_currentMatches);
-          for (final Function(List<LessorMatch>?) cbk in updateCallbacks) {
-            cbk(_currentMatches);
+            callback(_currentMatches);
+            for (final Function(List<LessorMatch>?) cbk in updateCallbacks) {
+              cbk(_currentMatches);
+            }
           }
         }
       }

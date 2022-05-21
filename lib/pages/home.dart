@@ -46,12 +46,12 @@ class _HomeState extends State<Home> {
                         .settings
                         .arguments) as FirstArguments)
                     .firstApartmentFuture),
+            Matches(),
             Tenants(
                 child: Text('Esplora'),
                 firstTenantFuture: ((ModalRoute.of(context)!.settings.arguments)
-                        as FirstArguments)
+                as FirstArguments)
                     .firstTenantFuture),
-            Matches(),
             OwnedApartments(),
             EditProfile(),
           ],
@@ -71,16 +71,16 @@ class _HomeState extends State<Home> {
             backgroundColor: Colors.white,
           ),
           BottomNavigationBarItem(
-              icon: Icon(Icons.people_sharp, color: Colors.black),
-              label: "Tenants",
-              backgroundColor: Colors.white),
-          BottomNavigationBarItem(
             icon: Icon(
               Icons.filter_list_rounded,
               color: Colors.black,
             ),
             label: 'Matches',
           ),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.people_sharp, color: Colors.black),
+              label: "Tenants",
+              backgroundColor: Colors.white),
           BottomNavigationBarItem(
             icon: Icon(
               Icons.chat_bubble_rounded,

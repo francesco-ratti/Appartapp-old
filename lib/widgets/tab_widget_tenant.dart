@@ -51,7 +51,7 @@ class TabWidgetTenant extends StatelessWidget {
           DisplayText(title: "Fumatore", content: currentTenant.smoker!.toItalianString()),
           DisplayText(title: "Animali", content: currentTenant.pets.isEmpty ? "No" : currentTenant.pets),
           //PRIVATE INFORMATION
-          DisplayText(title: "Sesso", content: "${currentTenant.gender!.toItalianString()}"),
+          DisplayText(title: "Sesso", content: "${currentTenant.gender.toItalianString()}"),
           DisplayText(title: "Compleanno", content: "${currentTenant.birthday.day.toString().padLeft(2,'0')}-${currentTenant.birthday.month.toString().padLeft(2,'0')}-${currentTenant.birthday.year.toString()}")
         ],
       );

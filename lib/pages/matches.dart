@@ -1,3 +1,4 @@
+import 'package:appartapp/widgets/apartment_viewer.dart';
 import 'package:flutter/material.dart';
 
 import 'package:appartapp/classes/match_handler.dart';
@@ -34,23 +35,33 @@ class _MatchesState extends State<Matches> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: currentMatches==null ? Center(
-      child: Text("Updating... please wait"),
-    ) :
-    ListView.builder(
-        itemCount: currentMatches?.length,
-        itemBuilder: (BuildContext context,int index) {
-          LessorMatch currentMatch=currentMatches![index];
+    return Scaffold(
+        appBar: AppBar(
+            title: const Text('I tuoi match')),
+        body: currentMatches==null ? Center(
+          child: Text("Updating... please wait"),
+        ) :
+        ListView.builder(
+            itemCount: currentMatches?.length,
+            itemBuilder: (BuildContext context,int index) {
+              LessorMatch currentMatch=currentMatches![index];
 
-          return ListTile(
-            title: Text(currentMatch.apartment.listingTitle),
-            subtitle: Text("${currentMatch.apartment.description} - ${currentMatch.time}"),
-            onTap: () {
-
-            },
-          );
-        }
-    )
+              return ListTile(
+                title: Text(currentMatch.apartment.listingTitle),
+                subtitle: Text("${currentMatch.apartment.description} - ${currentMatch.time}"),
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => Scaffold(
+                              body: ApartmentViewer(
+                                apartmentLoaded: true,
+                                currentApartment: currentMatches![index].apartment,
+                              ))));
+                },
+              );
+            }
+        )
     );
   }
 }

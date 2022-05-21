@@ -7,6 +7,6 @@ class LessorMatch {
   LessorMatch(this.apartment, this.time);
 
   LessorMatch.fromMap(Map map)
-      : this.apartment = map['apartment'],
+      : this.apartment = Apartment.fromMap(map['apartment']),
         this.time = DateTime.fromMillisecondsSinceEpoch(map['matchDate']);
 }

@@ -1,6 +1,6 @@
-import 'package:appartapp/classes/runtime_store.dart';
 import 'package:appartapp/pages/edit_tenant.dart';
 import 'package:appartapp/pages/login.dart';
+import 'package:appartapp/pages/matches.dart';
 import 'package:flutter/material.dart';
 
 import 'package:appartapp/pages/loading.dart';
@@ -28,6 +28,7 @@ void main() {
       '/signup': (context) => Signup(),
       '/editpassword': (context) => EditPassword(),
       '/edittenants': (context) => EditTenant(),
+      '/matches': (context) => Matches(),
     },
   ));
 }

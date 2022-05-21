@@ -15,6 +15,49 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../classes/match_handler.dart';
 
 
+void doInitialisation(BuildContext context, Credentials credentials, User user, SharedPreferences prefs) async {
+  RuntimeStore().setCredentials(credentials);
+  RuntimeStore().setUser(user);
+
+  prefs.setString("email", credentials.email);
+  prefs.setString("password", credentials.password);
+
+  MatchHandler().startPeriodicUpdate();
+
+  Apartment? firstApartment = await ApartmentHandler()
+      .getNewApartment((Apartment apartment) {
+    for (final Image im in apartment.images) {
+      precacheImage(im.image, context);
+    }
+  });
+
+  Future<Apartment?> firstApartmentFuture = Future(() {
+    return firstApartment;
+  });
+
+  RuntimeStore().setOwnedApartmentsFuture(
+      ApartmentHandler().getOwnedApartments());
+
+// Navigator.pushReplacementNamed(context, '/home',
+//     arguments: firstApartmentFuture);
+
+  LikeFromUser? firstTenant = await UserHandler().getNewLikeFromUser((LikeFromUser likeFromUser) {
+    for (final Image im in likeFromUser.user.images) {
+      precacheImage(im.image, context);
+    }
+  });
+
+  Future<LikeFromUser?> firstTenantFuture = Future(() {
+    return firstTenant;
+  });
+
+  FirstArguments firstArguments =
+  FirstArguments(firstApartmentFuture, firstTenantFuture);
+
+  Navigator.pushReplacementNamed(context, '/home',
+      arguments: firstArguments);
+}
+
 class Loading extends StatefulWidget {
   @override
   _LoadingState createState() => _LoadingState();
@@ -39,47 +82,7 @@ class _LoadingState extends State<Loading> {
           LoginResult loginResult = res[2];
           switch (loginResult) {
             case LoginResult.ok:
-              RuntimeStore().setCredentials(credentials);
-              RuntimeStore().setUser(user);
-
-              prefs.setString("email", credentials.email);
-              prefs.setString("password", credentials.password);
-
-              MatchHandler().startPeriodicUpdate();
-
-              Apartment? firstApartment = await ApartmentHandler()
-                  .getNewApartment((Apartment apartment) {
-                for (final Image im in apartment.images) {
-                  precacheImage(im.image, context);
-                }
-              });
-
-              Future<Apartment?> firstApartmentFuture = Future(() {
-                return firstApartment;
-              });
-
-              RuntimeStore().setOwnedApartmentsFuture(
-                  ApartmentHandler().getOwnedApartments());
-
-              // Navigator.pushReplacementNamed(context, '/home',
-              //     arguments: firstApartmentFuture);
-
-              LikeFromUser? firstTenant = await UserHandler().getNewLikeFromUser((LikeFromUser likeFromUser) {
-                for (final Image im in likeFromUser.user.images) {
-                  precacheImage(im.image, context);
-                }
-              });
-
-              Future<LikeFromUser?> firstTenantFuture = Future(() {
-                return firstTenant;
-              });
-
-              FirstArguments firstArguments =
-                  FirstArguments(firstApartmentFuture, firstTenantFuture);
-
-              Navigator.pushReplacementNamed(context, '/home',
-                  arguments: firstArguments);
-
+              doInitialisation(context, credentials, user, prefs);
               break;
             case LoginResult.wrong_credentials:
               Navigator.pushReplacementNamed(context, '/loginorsignup');

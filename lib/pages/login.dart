@@ -1,14 +1,10 @@
-import 'package:appartapp/classes/first_arguments.dart';
-import 'package:appartapp/classes/like_from_user.dart';
+import 'package:appartapp/pages/loading.dart';
 import 'package:appartapp/classes/user.dart';
-import 'package:appartapp/classes/apartment.dart';
 import 'package:appartapp/classes/credentials.dart';
 import 'package:appartapp/classes/enum_loginresult.dart';
-import 'package:appartapp/classes/user_handler.dart';
 import 'package:flutter/material.dart';
-import 'package:appartapp/classes/apartment_handler.dart';
-
 import 'package:appartapp/classes/runtime_store.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../classes/login_handler.dart';
 
@@ -30,41 +26,7 @@ class _LoginState extends State<Login> {
     LoginResult loginResult = res[2];
     switch (loginResult) {
       case LoginResult.ok:
-        RuntimeStore().setCredentials(credentials);
-        RuntimeStore().setUser(user);
-
-        RuntimeStore().getSharedPreferences()?.setString("email", credentials.email);
-        RuntimeStore().getSharedPreferences()?.setString("password", credentials.password);
-
-        Apartment? firstApartment = await ApartmentHandler().getNewApartment(
-                (Apartment apartment) {
-              for (final Image im in apartment.images) {
-                precacheImage(im.image, context);
-              }
-            });
-
-        Future<Apartment?> firstApartmentFuture = Future (
-                () {
-              return firstApartment;
-            }
-        );
-
-        LikeFromUser? firstTenant = await UserHandler().getNewLikeFromUser((LikeFromUser likeFromUser) {
-          for (final Image im in likeFromUser.user.images) {
-            precacheImage(im.image, context);
-          }
-        });
-
-        Future<LikeFromUser?> firstTenantFuture = Future(() {
-          return firstTenant;
-        });
-
-        FirstArguments firstArguments =
-        FirstArguments(firstApartmentFuture, firstTenantFuture);
-
-        Navigator.pop(context);
-        Navigator.pushReplacementNamed(context, '/home',
-            arguments: firstArguments);
+        doInitialisation(context, credentials, user, RuntimeStore().getSharedPreferences() as SharedPreferences);
         break;
       case LoginResult.wrong_credentials:
         updateUi("Credenziali errate");
@@ -153,6 +115,7 @@ class _LoginState extends State<Login> {
 
   @override
   void dispose() {
+    super.dispose();
     emailController.dispose();
     passwordController.dispose();
   }

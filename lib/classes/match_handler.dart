@@ -1,0 +1,82 @@
+import 'package:appartapp/classes/runtime_store.dart';
+import 'package:dio/dio.dart';
+import 'package:appartapp/classes/lessor_match.dart';
+
+class MatchHandler {
+  //SINGLETON PATTERN
+  static final MatchHandler _matchHandler = MatchHandler._internal();
+
+  static final urlStr="http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/getmatchedapartments";
+  List<LessorMatch>? _currentMatches=null;
+  String? oldResData=null;
+
+  List<Function(List<LessorMatch>?)> updateCallbacks=<Function(List<LessorMatch>?)>[];
+
+  Future<void> doUpdate(Function(List<LessorMatch>?) callback) async { //TODO make it return user instead of credentials
+    var dio = Dio();
+    try {
+      Response response = await dio.post(
+        urlStr,
+        data: {"email": RuntimeStore().getEmail(), "password": RuntimeStore().getPassword()},
+        options: Options(
+          contentType: Headers.formUrlEncodedContentType,
+          headers: {"Content-Type": "application/x-www-form-urlencoded"},
+        ),
+      );
+
+      if (response.statusCode != 200) {
+        /*if (response.statusCode == 401)
+          return [null,null,LoginResult.wrong_credentials];
+        else
+          return [null,null,LoginResult.server_error];*/
+      }
+      else {
+        List responseMap = response.data;
+
+        String newResData=response.data as String;
+        if (oldResData==null || oldResData!=newResData) {
+          _currentMatches = [];
+          for (final el in responseMap) {
+            _currentMatches?.add(LessorMatch.fromMap(el));
+          }
+          oldResData=newResData;
+
+          callback(_currentMatches);
+          for (final Function(List<LessorMatch>?) cbk in updateCallbacks) {
+            cbk(_currentMatches);
+          }
+        }
+      }
+    } on DioError catch (e) {
+      /*if (e.response?.statusCode == 401)
+        return [null, null, LoginResult.wrong_credentials];
+      else
+        return [null, null, LoginResult.server_error];*/
+    }
+  }
+
+  void addUpdateCallback(Function(List<LessorMatch>?) callback) {
+    updateCallbacks.add(callback);
+  }
+
+  void removeUpdateCallback(Function(List<LessorMatch>?) callback) {
+    updateCallbacks.remove(callback);
+  }
+
+  void startPeriodicUpdate () async {
+    while (true) {
+      await doUpdate((res) {});
+      await Future.delayed(Duration(seconds: 30));
+    }
+  }
+
+  factory MatchHandler() {
+    return _matchHandler;
+  }
+
+  MatchHandler._internal();
+
+  getMatches() {
+    return _currentMatches;
+  }
+}

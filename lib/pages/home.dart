@@ -6,6 +6,7 @@ import 'package:appartapp/classes/first_arguments.dart';
 import 'package:appartapp/pages/edit_profile.dart';
 import 'package:appartapp/pages/empty_page.dart';
 import 'package:appartapp/pages/houses.dart';
+import 'package:appartapp/pages/matches.dart';
 import 'package:appartapp/pages/tenants.dart';
 import 'package:flutter/material.dart';
 
@@ -50,9 +51,7 @@ class _HomeState extends State<Home> {
                 firstTenantFuture: ((ModalRoute.of(context)!.settings.arguments)
                         as FirstArguments)
                     .firstTenantFuture),
-            EmptyPage(
-              child: Text('Filtri'),
-            ),
+            Matches(),
             OwnedApartments(),
             EditProfile(),
           ],
@@ -80,14 +79,14 @@ class _HomeState extends State<Home> {
               Icons.filter_list_rounded,
               color: Colors.black,
             ),
-            label: 'Filtri',
+            label: 'Matches',
           ),
           BottomNavigationBarItem(
             icon: Icon(
               Icons.chat_bubble_rounded,
               color: Colors.black,
             ),
-            label: 'Chat',
+            label: 'I miei appartamenti',
           ),
           BottomNavigationBarItem(
             icon: Icon(

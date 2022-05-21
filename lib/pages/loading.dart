@@ -12,6 +12,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../classes/match_handler.dart';
+
 
 class Loading extends StatefulWidget {
   @override
@@ -42,6 +44,8 @@ class _LoadingState extends State<Loading> {
 
               prefs.setString("email", credentials.email);
               prefs.setString("password", credentials.password);
+
+              MatchHandler().startPeriodicUpdate();
 
               Apartment? firstApartment = await ApartmentHandler()
                   .getNewApartment((Apartment apartment) {

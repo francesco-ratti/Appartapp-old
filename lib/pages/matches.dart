@@ -64,6 +64,7 @@ class _MatchesState extends State<Matches> {
                               body: ApartmentViewer(
                                 apartmentLoaded: true,
                                 currentApartment: currentMatches![index].apartment,
+                                owner: currentMatches![index].apartment.owner
                               ))));
                 },
               );

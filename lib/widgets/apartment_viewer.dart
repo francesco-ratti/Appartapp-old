@@ -1,5 +1,6 @@
 import 'package:appartapp/classes/apartment.dart';
 import 'package:appartapp/classes/runtime_store.dart';
+import 'package:appartapp/classes/user.dart';
 import 'package:appartapp/widgets/apartment_model.dart';
 import 'package:appartapp/widgets/tab_widget.dart';
 import 'package:appartapp/widgets/tab_widget_loading.dart';
@@ -10,8 +11,9 @@ class ApartmentViewer extends StatelessWidget {
 
   bool apartmentLoaded;
   Apartment? currentApartment;
+  User? owner;
 
-  ApartmentViewer({Key? key, required this.apartmentLoaded, required this.currentApartment}) : super(key: key);
+  ApartmentViewer({Key? key, required this.apartmentLoaded, required this.currentApartment, this.owner}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +34,9 @@ class ApartmentViewer extends StatelessWidget {
         panelBuilder: (scrollController) =>
         apartmentLoaded ? TabWidget(
             scrollController: scrollController,
-            currentApartment: currentApartment as Apartment) : TabWidgetLoading(),
+            currentApartment: currentApartment as Apartment,
+            owner: owner,
+        ) : TabWidgetLoading(),
         body: apartmentLoaded ? ApartmentModel(currentApartment: currentApartment as Apartment) : Center(
             child: CircularProgressIndicator(
               value: null,

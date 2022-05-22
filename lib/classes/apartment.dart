@@ -1,4 +1,5 @@
 import 'package:appartapp/classes/runtime_store.dart';
+import 'package:appartapp/classes/user.dart';
 import 'package:appartapp/exceptions/network_exception.dart';
 import 'package:appartapp/exceptions/unauthorized_exception.dart';
 import 'package:dio/dio.dart';
@@ -24,6 +25,7 @@ class Apartment {
   late List imagesDetails;
   final List<Image> images;
 
+  User? owner;
 
   Apartment({
     required this.id,
@@ -78,7 +80,9 @@ class Apartment {
         this.address=map['address'],
         this.additionalExpenseDetail=map['additionalExpenseDetail'],
         this.imagesDetails=map['images'],
-        this.images=fromImagesDetailsToImages(map['images']);
+        this.images=fromImagesDetailsToImages(map['images'])
+        //this.owner=map['owner'] == null ? null : User.fromMap(map['owner'])
+  ;
 
   Apartment.withLocalImages(this.id,
       this.listingTitle,

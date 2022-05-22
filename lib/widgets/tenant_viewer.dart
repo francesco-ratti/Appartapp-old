@@ -12,7 +12,7 @@ import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class TenantViewer extends StatelessWidget {
   bool tenantLoaded;
-  bool lessor = false;
+  bool lessor; //if you want to visualize a lessor set true,
   LikeFromUser? currentLikeFromUser;
 
   TenantViewer(

@@ -14,30 +14,38 @@ class AddApartment extends StatefulWidget {
   @override
   State<AddApartment> createState() => _AddApartment();
 
-  final String urlStr = "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/createapartment";
+  final String urlStr =
+      "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/createapartment";
 }
 
 class _AddApartment extends State<AddApartment> {
-
-  void doCreateApartmentPost(Function(String) updateUi, String listingTitle, String description, String additionalExpenseDetail, int price, String address, List<CroppedFile> files) async {
+  void doCreateApartmentPost(
+      Function(String) updateUi,
+      String listingTitle,
+      String description,
+      String additionalExpenseDetail,
+      int price,
+      String address,
+      List<CroppedFile> files) async {
     var dio = Dio();
     try {
       var formData = FormData();
 
-      Credentials? credentials=RuntimeStore().getCredentials();
-      if (credentials!=null) {
+      Credentials? credentials = RuntimeStore().getCredentials();
+      if (credentials != null) {
         formData.fields.add(MapEntry("email", credentials.email));
         formData.fields.add(MapEntry("password", credentials.password));
 
         formData.fields.add(MapEntry("listingtitle", listingTitle));
         formData.fields.add(MapEntry("description", description));
-        formData.fields.add(MapEntry("additionalexpensedetail", additionalExpenseDetail));
+        formData.fields
+            .add(MapEntry("additionalexpensedetail", additionalExpenseDetail));
         formData.fields.add(MapEntry("price", price.toString()));
         formData.fields.add(MapEntry("address", address));
 
         for (final CroppedFile file in files) {
-          MultipartFile mpfile = await MultipartFile.fromFile(
-              file.path, filename: "image.jpg");
+          MultipartFile mpfile =
+              await MultipartFile.fromFile(file.path, filename: "image.jpg");
           formData.files.add(MapEntry("images", mpfile));
         }
 
@@ -54,33 +62,30 @@ class _AddApartment extends State<AddApartment> {
           if (response.statusCode == 401) {
             updateUi("Non autorizzato");
             throw new UnauthorizedException();
-          }
-          else {
+          } else {
             updateUi("Errore interno");
             return;
           }
-        }
-        else {
-//          print("added");
+        } else {
+          print("added");
           Navigator.pop(context);
         }
-      } else throw new UnauthorizedException();
+      } else
+        throw new UnauthorizedException();
     } on DioError catch (e) {
       if (e.response?.statusCode == 401) {
         updateUi("Non autorizzato");
         throw new UnauthorizedException();
-      }
-      else {
+      } else {
         updateUi("Errore interno");
       }
     }
   }
 
-
   List<CroppedFile> _images = [];
   List<Widget> imageSliders = [];
 
-  String status="";
+  String status = "";
 
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descController = TextEditingController();
@@ -123,6 +128,7 @@ class _AddApartment extends State<AddApartment> {
         IOSUiSettings(
           title: 'Cropper',
         ),
+
         /// this settings is required for Web
         /*WebUiSettings(
           context: context,
@@ -143,7 +149,7 @@ class _AddApartment extends State<AddApartment> {
       ],
     );
 
-    if (croppedFile!=null) {
+    if (croppedFile != null) {
       _images.add(croppedFile);
       croppedFile.readAsBytes().then((byteStream) {
         setState(() {
@@ -158,7 +164,7 @@ class _AddApartment extends State<AddApartment> {
     }
   }
 
-  bool uploading=false;
+  bool uploading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -217,29 +223,32 @@ class _AddApartment extends State<AddApartment> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Container(
-                child: ElevatedButton(
+                child: FloatingActionButton(
+                  child: const Icon(Icons.add_a_photo),
+                  backgroundColor: Colors.brown,
                   onPressed: () => getImage(ImgSource.Both),
-                  style: ElevatedButton.styleFrom(primary: Colors.black38),
-                  child: Text(
-                    'Aggiungi una foto'.toUpperCase(),
-                    style: const TextStyle(color: Colors.white),
-                  ),
+                  //style: ElevatedButton.styleFrom(primary: Colors.black38),
+                  // child: Text(
+                  //   'Aggiungi una foto'.toUpperCase(),
+                  //   style: const TextStyle(color: Colors.white),
+                  // ),
                 ),
               ),
               if (_images.isNotEmpty)
                 Padding(
                   padding: const EdgeInsets.only(top: 15.0),
                   child: Container(
+                      //color: Colors.amber,
                       child: CarouselSlider(
-                        options: CarouselOptions(
-                          aspectRatio: 2.0,
-                          enlargeCenterPage: true,
-                          enableInfiniteScroll: false,
-                          initialPage: 2,
-                          autoPlay: true,
-                        ),
-                        items: imageSliders,
-                      )),
+                    options: CarouselOptions(
+                      aspectRatio: 2.0,
+                      enlargeCenterPage: true,
+                      enableInfiniteScroll: false,
+                      initialPage: 2,
+                      autoPlay: true,
+                    ),
+                    items: imageSliders,
+                  )),
 
                   // Container(
                   //   child: Image.file(File(_image!.path)),
@@ -343,27 +352,28 @@ class _AddApartment extends State<AddApartment> {
       padding: const EdgeInsets.only(top: 20.0),
       child: Container(
         child: ElevatedButton(
-          onPressed: !uploading ? () {
-            if (isReady()) {
-              setState(() {
-                uploading = true;
-                status = "Caricamento in corso...";
-              });
-              doCreateApartmentPost(
-                      (String toWrite) {
+          onPressed: !uploading
+              ? () {
+                  if (isReady()) {
                     setState(() {
-                      status = toWrite;
+                      uploading = true;
+                      status = "Caricamento in corso...";
                     });
-                  },
-                  _titleController.text,
-                  _descController.text,
-                  _aedController.text,
-                  int.parse(_priceController.text),
-                  _addressController.text,
-                  _images
-              );
-            }
-          }: null,
+                    doCreateApartmentPost((String toWrite) {
+                      setState(() {
+                        status = toWrite;
+                        print(status);
+                      });
+                    },
+                        _titleController.text,
+                        _descController.text,
+                        _aedController.text,
+                        int.parse(_priceController.text),
+                        _addressController.text,
+                        _images);
+                  }
+                }
+              : null,
           style: ElevatedButton.styleFrom(primary: Colors.black87),
           child: Text(
             'Pubblica'.toUpperCase(),
@@ -380,7 +390,8 @@ class _AddApartment extends State<AddApartment> {
         _priceController.text.isNotEmpty &&
         _addressController.text.isNotEmpty &&
         _aedController.text.isNotEmpty &&
-        _images != null && _images.length>0)
+        _images != null &&
+        _images.length > 0)
       return true;
     else
       return false;

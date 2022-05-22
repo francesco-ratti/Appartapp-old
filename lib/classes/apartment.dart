@@ -80,8 +80,8 @@ class Apartment {
         this.address=map['address'],
         this.additionalExpenseDetail=map['additionalExpenseDetail'],
         this.imagesDetails=map['images'],
-        this.images=fromImagesDetailsToImages(map['images'])
-        //this.owner=map['owner'] == null ? null : User.fromMap(map['owner'])
+        this.images=fromImagesDetailsToImages(map['images']),
+        this.owner=map['owner'] == null ? null : User.fromMap(map['owner'])
   ;
 
   Apartment.withLocalImages(this.id,

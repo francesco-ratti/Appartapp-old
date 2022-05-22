@@ -43,15 +43,15 @@ class TabWidgetTenant extends StatelessWidget {
           DisplayText(title: "Su di me", content: currentTenant.bio),
           DisplayText(
               title: "Perché cerco casa", content: currentTenant.reason),
-          DisplayText(title: "A partire da", content: currentTenant.month!.toShortString()),
+          currentTenant.month==null ? SizedBox() : DisplayText(title: "A partire da", content: currentTenant.month!.toShortString()),
           DisplayText(
               title: "Cosa faccio nella vita", content: currentTenant.job),
           DisplayText(
               title: "Le mie entrate mensili", content: currentTenant.bio),
-          DisplayText(title: "Fumatore", content: currentTenant.smoker!.toItalianString()),
+          currentTenant.smoker == null ? SizedBox() : DisplayText(title: "Fumatore", content: currentTenant.smoker!.toItalianString()),
           DisplayText(title: "Animali", content: currentTenant.pets.isEmpty ? "No" : currentTenant.pets),
           //PRIVATE INFORMATION
-          DisplayText(title: "Sesso", content: "${currentTenant.gender.toItalianString()}"),
+          currentTenant.gender == null ? SizedBox() : DisplayText(title: "Sesso", content: "${currentTenant.gender.toItalianString()}"),
           DisplayText(title: "Compleanno", content: "${currentTenant.birthday.day.toString().padLeft(2,'0')}-${currentTenant.birthday.month.toString().padLeft(2,'0')}-${currentTenant.birthday.year.toString()}")
         ],
       );

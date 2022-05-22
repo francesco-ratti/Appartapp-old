@@ -13,78 +13,83 @@ class OwnedApartments extends StatefulWidget {
 }
 
 class _OwnedApartments extends State<OwnedApartments> {
-
-  void updateUi (List<Apartment> value) {
+  void updateUi(List<Apartment> value) {
     setState(() {
-      ownedApartments=value;
+      ownedApartments = value;
     });
   }
 
-  List<Apartment> ownedApartments=[];
+  List<Apartment> ownedApartments = [];
 
   @override
   void initState() {
-    Future<List<Apartment>>? oldOwnedApartments=RuntimeStore().getOwnedApartments();
+    Future<List<Apartment>>? oldOwnedApartments =
+        RuntimeStore().getOwnedApartments();
 
-    if (oldOwnedApartments!=null)
-      oldOwnedApartments.then(updateUi);
+    if (oldOwnedApartments != null) oldOwnedApartments.then(updateUi);
 
-    Future<List<Apartment>> newOwnedApartments=ApartmentHandler().getOwnedApartments();
+    Future<List<Apartment>> newOwnedApartments =
+        ApartmentHandler().getOwnedApartments();
     newOwnedApartments.then(updateUi);
     RuntimeStore().setOwnedApartmentsFuture(newOwnedApartments);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-          title: const Text('I tuoi appartamenti'),
-          actions: <Widget>[
-            Padding(
-                padding: EdgeInsets.only(right: 20.0),
-                child: GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => AddApartment()),
-                    );
-                  },
-                  child: Icon(
-                    Icons.add,
-                    size: 26.0,
-                  ),
-                )
-            ),]
-      ),
-      body: ListView.builder(
-          itemCount: ownedApartments.length,
-          itemBuilder: (BuildContext context,int index) {
-            Apartment currentApartment=ownedApartments[index];
-
-            return ListTile(
-              title: Text(currentApartment.listingTitle),
-              subtitle: Text(currentApartment.description),
-              onTap: () {
-                for (final Image im in ownedApartments[index].images) {
-                  precacheImage(im.image, context);
-                }
-
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => Scaffold(
-                          appBar: AppBar(
-                            title: Text(ownedApartments[index].listingTitle),
+    return Navigator(onGenerateRoute: (RouteSettings settings) {
+      return MaterialPageRoute(
+          settings: settings,
+          builder: (BuildContext context) {
+            return Scaffold(
+              appBar: AppBar(
+                  title: const Text('I tuoi appartamenti'),
+                  actions: <Widget>[
+                    Padding(
+                        padding: EdgeInsets.only(right: 20.0),
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => AddApartment()),
+                            );
+                          },
+                          child: Icon(
+                            Icons.add,
+                            size: 26.0,
                           ),
-                            body: ApartmentViewer(
-                              apartmentLoaded: true,
-                              currentApartment: ownedApartments[index],
-                        ))));
-              },
+                        )),
+                  ]),
+              body: ListView.builder(
+                  itemCount: ownedApartments.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    Apartment currentApartment = ownedApartments[index];
+
+                    return ListTile(
+                      title: Text(currentApartment.listingTitle),
+                      subtitle: Text(currentApartment.description),
+                      onTap: () {
+                        for (final Image im in ownedApartments[index].images) {
+                          precacheImage(im.image, context);
+                        }
+
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => Scaffold(
+                                    appBar: AppBar(
+                                      title: Text(
+                                          ownedApartments[index].listingTitle),
+                                    ),
+                                    body: ApartmentViewer(
+                                      apartmentLoaded: true,
+                                      currentApartment: ownedApartments[index],
+                                    ))));
+                      },
+                    );
+                  }),
             );
-          }
-      ),
-    );
+          });
+    });
   }
 }

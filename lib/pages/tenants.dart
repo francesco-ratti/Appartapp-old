@@ -58,7 +58,8 @@ class ContentPage extends StatefulWidget {
   final ignoreUrlStr =
       "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/ignoreuser";
 //------------------------
-  Future<void> _networkFunction(String urlString, int userId, int apartmentId) async {
+  Future<void> _networkFunction(
+      String urlString, int userId, int apartmentId) async {
     Credentials? credentials = RuntimeStore().getCredentials();
     if (credentials != null) {
       var dio = Dio();
@@ -107,22 +108,24 @@ class ContentPage extends StatefulWidget {
 }
 
 class _ContentPage extends State<ContentPage> {
-  LikeFromUser? currentTenant = LikeFromUser(null, User.temp(
-      000,
-      "Caricamento in corso...",
-      "Caricamento in corso...",
-      "Caricamento in corso...",
-      DateTime(2022),
-      Gender.NB,
-      [],
-      [],
-      "Caricamento in corso...",
-      "Caricamento in corso...",
-      Month.Luglio,
-      "Caricamento in corso...",
-      "Caricamento in corso...",
-      TemporalQ.Sometimes,
-      "Caricamento in corso..."));
+  LikeFromUser? currentTenant = LikeFromUser(
+      null,
+      User.temp(
+          000,
+          "Caricamento in corso...",
+          "Caricamento in corso...",
+          "Caricamento in corso...",
+          DateTime(2022),
+          Gender.NB,
+          [],
+          [],
+          "Caricamento in corso...",
+          "Caricamento in corso...",
+          Month.Luglio,
+          "Caricamento in corso...",
+          "Caricamento in corso...",
+          TemporalQ.Sometimes,
+          "Caricamento in corso..."));
 
   late Future<LikeFromUser?> nextTenantFuture;
   bool tenantLoaded = false;
@@ -134,7 +137,8 @@ class _ContentPage extends State<ContentPage> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    nextTenantFuture = UserHandler().getNewLikeFromUser((LikeFromUser likeFromUser) {
+    nextTenantFuture =
+        UserHandler().getNewLikeFromUser((LikeFromUser likeFromUser) {
       for (final Image im in likeFromUser.user.images) {
         precacheImage(im.image, context);
       }
@@ -146,8 +150,7 @@ class _ContentPage extends State<ContentPage> {
     super.initState();
 
     widget.currentTenantFuture.then((value) {
-      if (value!=null)
-        tenantLoaded = true;
+      if (value != null) tenantLoaded = true;
       setState(() {
         currentTenant = value;
       });
@@ -164,11 +167,13 @@ class _ContentPage extends State<ContentPage> {
               return DismissiblePage(
                   //backgroundColor: Colors.white,
                   onDismissed: () {
-                    if (currentTenant!=null) {
+                    if (currentTenant != null) {
                       if (finalCoord < initialCoord) {
-                        widget.likeTenant(currentTenant!.user.id, currentTenant!.apartment!.id);
+                        widget.likeTenant(currentTenant!.user.id,
+                            currentTenant!.apartment!.id);
                       } else {
-                        widget.ignoreTenant(currentTenant!.user.id, currentTenant!.apartment!.id);
+                        widget.ignoreTenant(currentTenant!.user.id,
+                            currentTenant!.apartment!.id);
                       }
                     }
                     Navigator.of(context).pop();
@@ -193,6 +198,7 @@ class _ContentPage extends State<ContentPage> {
                   disabled: !tenantLoaded,
                   child: TenantViewer(
                     tenantLoaded: tenantLoaded,
+                    lessor: false,
                     currentLikeFromUser: currentTenant,
                   ));
             });

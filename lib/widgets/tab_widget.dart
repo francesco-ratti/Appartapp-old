@@ -24,34 +24,38 @@ class TabWidget extends StatelessWidget {
         controller: scrollController,
         //physics: Scroll,
         children: [
-              Container(
-                padding: EdgeInsets.fromLTRB(30, 10, 10, 30),
-                child: Row(
-                  children: [
-                    Text(
-                      currentApartment.listingTitle,
-                      //textAlign: TextAlign.center,
-                      style: GoogleFonts.nunito(color: Colors.white70, fontSize: 30),
-                    ),
-                    this.owner==null ? SizedBox() : ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => Scaffold(
-                                    appBar: AppBar(
-                                        title: Text("${owner?.name} ${owner?.surname}")
-                                    ),
-                                    body: TenantViewer(
-                                        tenantLoaded: true,
-                                        currentLikeFromUser: LikeFromUser(null, owner!),
-                                    ))));
-                      },
-                      child: Text("PROPRIETARIO"),
-                    )
-                  ],
-                )
-          ),
+          Container(
+              padding: EdgeInsets.fromLTRB(30, 10, 10, 30),
+              child: Row(
+                children: [
+                  Text(
+                    currentApartment.listingTitle,
+                    //textAlign: TextAlign.center,
+                    style:
+                        GoogleFonts.nunito(color: Colors.white70, fontSize: 30),
+                  ),
+                  this.owner == null
+                      ? SizedBox()
+                      : ElevatedButton(
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => Scaffold(
+                                        appBar: AppBar(
+                                            title: Text(
+                                                "${owner?.name} ${owner?.surname}")),
+                                        body: TenantViewer(
+                                          tenantLoaded: true,
+                                          lessor: true,
+                                          currentLikeFromUser:
+                                              LikeFromUser(null, owner!),
+                                        ))));
+                          },
+                          child: Text("PROPRIETARIO"),
+                        )
+                ],
+              )),
           DisplayText(
               title: "Descrizione", content: currentApartment.description),
           DisplayText(title: "Prezzo", content: "${currentApartment.price}€"),

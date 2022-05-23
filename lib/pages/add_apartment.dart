@@ -3,6 +3,7 @@ import 'package:appartapp/classes/credentials.dart';
 import 'package:appartapp/classes/runtime_store.dart';
 import 'package:appartapp/exceptions/unauthorized_exception.dart';
 import 'package:dio/dio.dart';
+import 'package:dismissible_page/dismissible_page.dart';
 //import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
@@ -157,7 +158,7 @@ class _AddApartment extends State<AddApartment> {
             //child: Image.file(File(croppedFile.path)),
             child: Image.memory(byteStream),
             //child: Image.memory(croppedFile.readAsBytesSync()),
-            constraints: const BoxConstraints(maxWidth: 200),
+            //constraints: const BoxConstraints(maxWidth: 200),
           ));
         });
       });
@@ -222,41 +223,54 @@ class _AddApartment extends State<AddApartment> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Container(
-                child: FloatingActionButton(
-                  child: const Icon(Icons.add_a_photo),
-                  backgroundColor: Colors.brown,
-                  onPressed: () => getImage(ImgSource.Both),
-                  //style: ElevatedButton.styleFrom(primary: Colors.black38),
-                  // child: Text(
-                  //   'Aggiungi una foto'.toUpperCase(),
-                  //   style: const TextStyle(color: Colors.white),
-                  // ),
-                ),
-              ),
               if (_images.isNotEmpty)
                 Padding(
                   padding: const EdgeInsets.only(top: 15.0),
                   child: Container(
                       //color: Colors.amber,
-                      child: CarouselSlider(
-                    options: CarouselOptions(
-                      aspectRatio: 2.0,
-                      enlargeCenterPage: true,
-                      enableInfiniteScroll: false,
-                      initialPage: 2,
-                      autoPlay: true,
+                      child: GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).push(PageRouteBuilder(
+                        opaque: false,
+                        pageBuilder: (_, __, ___) => DismissiblePage(
+                          child: GestureDetector(
+                            onTap: () => Navigator.of(context).pop(),
+                            child: CarouselSlider(
+                                options: CarouselOptions(
+                                  aspectRatio: 1,
+                                  enableInfiniteScroll: false,
+                                  initialPage: 0,
+                                  viewportFraction: 1,
+                                ),
+                                items: imageSliders),
+                          ),
+                          onDismissed: () => Navigator.of(context).pop(),
+                          startingOpacity: 0.8,
+                          dragSensitivity: 1,
+                        ),
+                      ));
+                    },
+                    child: CarouselSlider(
+                      options: CarouselOptions(
+                        aspectRatio: 2,
+                        enableInfiniteScroll: false,
+                        autoPlay: true,
+                        viewportFraction: 0.8,
+                      ),
+                      items: imageSliders,
                     ),
-                    items: imageSliders,
                   )),
-
-                  // Container(
-                  //   child: Image.file(File(_image!.path)),
-                  //   constraints: const BoxConstraints(maxWidth: 200),
-                  //),
                 )
               else
                 Container(),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: FloatingActionButton(
+                  child: const Icon(Icons.add_a_photo),
+                  backgroundColor: Colors.brown,
+                  onPressed: () => getImage(ImgSource.Both),
+                ),
+              ),
             ],
           ),
         ),
@@ -396,17 +410,4 @@ class _AddApartment extends State<AddApartment> {
     else
       return false;
   }
-
-// void publishApartment(User user) {
-//   final ItemModel newItem = ItemModel(
-//       imagePath: _image,
-//       name: _titleController.text,
-//       description: _descController.text,
-//       price: _priceController.text,
-//       shippingFees: _fdpController.text,
-//       state: _stateController.text,
-//       author: user.name ?? 'Jack Leborgne');
-//   it.insert(0, newItem);
-//   Navigator.pop(context);
-// }
 }

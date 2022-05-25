@@ -18,8 +18,6 @@ class ApartmentHandler {
   final String urlStrGetOwnedApartments =
       "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/getownedapartments";
 
-  var cookieJar = CookieJar();
-
   static final ApartmentHandler _apartment = ApartmentHandler._internal();
 
   factory ApartmentHandler() {
@@ -66,7 +64,7 @@ class ApartmentHandler {
     //TODO test
 
     var dio = Dio();
-    dio.interceptors.add(CookieManager(cookieJar));
+    dio.interceptors.add(CookieManager(RuntimeStore().cookieJar));
 
     try {
       Response response = await dio.post(

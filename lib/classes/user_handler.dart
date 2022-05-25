@@ -1,5 +1,4 @@
 import 'package:appartapp/classes/user.dart';
-import 'package:appartapp/classes/apartment.dart';
 import '../exceptions/unauthorized_exception.dart';
 import 'package:dio/dio.dart';
 import '../exceptions/network_exception.dart';
@@ -7,7 +6,6 @@ import 'like_from_user.dart';
 import 'runtime_store.dart';
 
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
-import 'package:cookie_jar/cookie_jar.dart';
 
 class UserHandler {
   //SINGLETON PATTERN
@@ -17,8 +15,6 @@ class UserHandler {
       "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/getnextnewuser";
   final String urlStrGetAllNewUsers =
       "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/getallnewusers";
-
-  var cookieJar = CookieJar();
 
   static final UserHandler _user = UserHandler._internal();
 
@@ -32,7 +28,7 @@ class UserHandler {
     //TODO test
 
     var dio = Dio();
-    dio.interceptors.add(CookieManager(cookieJar));
+    dio.interceptors.add(CookieManager(RuntimeStore().cookieJar));
 
     try {
       Response response = await dio.post(

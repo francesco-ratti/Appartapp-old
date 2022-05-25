@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:appartapp/classes/user.dart';
 import 'package:appartapp/classes/apartment.dart';
+import 'package:cookie_jar/cookie_jar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'credentials.dart';
@@ -33,6 +34,8 @@ class RuntimeStore {
   Credentials? _credentials=null;
 
   User? _user=null;
+
+  CookieJar cookieJar=CookieJar();
 
   SharedPreferences? _sharedPreferences=null;
 

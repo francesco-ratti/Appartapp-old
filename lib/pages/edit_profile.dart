@@ -191,7 +191,7 @@ class _EditProfileState extends State<EditProfile> {
             },
             //fit: BoxFit.cover,
           ), () {
-            removeImage((p0) => null, im['id']);
+            removeImage((p0) => null, im['id'].toString());
           }));
     }
   }
@@ -356,7 +356,7 @@ class _EditProfileState extends State<EditProfile> {
                   RuntimeStore().setCredentials(null);
                   RuntimeStore().getSharedPreferences()?.remove("email");
                   RuntimeStore().getSharedPreferences()?.remove("password");
-                  ApartmentHandler().cookieJar=CookieJar();
+                  RuntimeStore().cookieJar=CookieJar();
                   Navigator.pushReplacementNamed(context, "/loginorsignup");
                 }),
             Padding(

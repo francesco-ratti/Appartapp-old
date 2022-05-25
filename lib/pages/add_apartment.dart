@@ -1,10 +1,11 @@
+import 'dart:io';
+
 import 'package:appartapp/classes/credentials.dart';
 import 'package:appartapp/classes/runtime_store.dart';
 import 'package:appartapp/exceptions/unauthorized_exception.dart';
 import 'package:appartapp/widgets/ImgGallery.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:image_cropper/image_cropper.dart';
 
 class AddApartment extends StatefulWidget {
   @override
@@ -22,7 +23,7 @@ class _AddApartment extends State<AddApartment> {
       String additionalExpenseDetail,
       int price,
       String address,
-      List<CroppedFile> files) async {
+      List<File> files) async {
     var dio = Dio();
     try {
       var formData = FormData();
@@ -39,9 +40,9 @@ class _AddApartment extends State<AddApartment> {
         formData.fields.add(MapEntry("price", price.toString()));
         formData.fields.add(MapEntry("address", address));
 
-        for (final CroppedFile file in files) {
+        for (final File file in files) {
           MultipartFile mpfile =
-              await MultipartFile.fromFile(file.path, filename: "image.jpg");
+              await MultipartFile.fromString(file.toString(), filename: "filename.jpg");
           formData.files.add(MapEntry("images", mpfile));
         }
 
@@ -91,7 +92,7 @@ class _AddApartment extends State<AddApartment> {
   static const Color colorTheme = Colors.black;
 
   bool uploading = false;
-  List<CroppedFile> _images = [];
+  List<File> _toUpload = [];
 
   @override
   Widget build(BuildContext context) {
@@ -106,7 +107,7 @@ class _AddApartment extends State<AddApartment> {
               children: <Widget>[
                 header(),
                 ImgGallery(callback: (imageList) {
-                  _images=imageList;
+                  _toUpload=imageList;
                 },),
                 title(),
                 desc(),
@@ -249,7 +250,7 @@ class _AddApartment extends State<AddApartment> {
                         _aedController.text,
                         int.parse(_priceController.text),
                         _addressController.text,
-                        _images);
+                        _toUpload);
                   }
                 }
               : null,
@@ -269,8 +270,8 @@ class _AddApartment extends State<AddApartment> {
         _priceController.text.isNotEmpty &&
         _addressController.text.isNotEmpty &&
         _aedController.text.isNotEmpty &&
-        _images != null &&
-        _images.length > 0)
+        _toUpload != null &&
+        _toUpload.length > 0)
       return true;
     else
       return false;

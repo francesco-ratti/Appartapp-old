@@ -1,12 +1,14 @@
+import 'dart:io';
+
 import 'package:appartapp/classes/user.dart';
 import 'package:appartapp/classes/enum_gender.dart';
 import 'package:appartapp/classes/runtime_store.dart';
-import 'package:appartapp/pages/signup.dart';
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:flutter/material.dart';
 import 'package:appartapp/classes/apartment_handler.dart';
 
 import 'package:dio/dio.dart';
+import '../widgets/ImgGallery.dart';
 
 class EditProfile extends StatefulWidget {
   String urlStr = "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/edituser";
@@ -17,6 +19,9 @@ class EditProfile extends StatefulWidget {
 }
 
 class _EditProfileState extends State<EditProfile> {
+
+  List<File> _images=<File>[];
+
   void doUpdate(Function(String) updateUi, String oldemail, String email, String oldpassword,
       String name, String surname, DateTime birthday, Gender gender) async {
     var dio = Dio();
@@ -93,6 +98,11 @@ class _EditProfileState extends State<EditProfile> {
         body: ListView(
           padding: EdgeInsets.all(16.0),
           children: <Widget>[
+            Padding(
+                padding: EdgeInsets.all(8.0),
+                child: ImgGallery(callback: (imgList) {
+                  _images=imgList;
+                })),
             Padding(
                 padding: EdgeInsets.all(8.0),
                 child: TextField(

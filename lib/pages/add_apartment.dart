@@ -42,7 +42,7 @@ class _AddApartment extends State<AddApartment> {
 
         for (final File file in files) {
           MultipartFile mpfile =
-              await MultipartFile.fromString(file.toString(), filename: "filename.jpg");
+          await MultipartFile.fromFile(file.path, filename: "filename.jpg");
           formData.files.add(MapEntry("images", mpfile));
         }
 
@@ -234,25 +234,25 @@ class _AddApartment extends State<AddApartment> {
         child: ElevatedButton(
           onPressed: !uploading
               ? () {
-                  if (isReady()) {
-                    setState(() {
-                      uploading = true;
-                      status = "Caricamento in corso...";
-                    });
-                    doCreateApartmentPost((String toWrite) {
-                      setState(() {
-                        status = toWrite;
-                        print(status);
-                      });
-                    },
-                        _titleController.text,
-                        _descController.text,
-                        _aedController.text,
-                        int.parse(_priceController.text),
-                        _addressController.text,
-                        _toUpload);
-                  }
-                }
+            if (isReady()) {
+              setState(() {
+                uploading = true;
+                status = "Caricamento in corso...";
+              });
+              doCreateApartmentPost((String toWrite) {
+                setState(() {
+                  status = toWrite;
+                  print(status);
+                });
+              },
+                  _titleController.text,
+                  _descController.text,
+                  _aedController.text,
+                  int.parse(_priceController.text),
+                  _addressController.text,
+                  _toUpload);
+            }
+          }
               : null,
           style: ElevatedButton.styleFrom(primary: Colors.black87),
           child: Text(

@@ -3,15 +3,18 @@ import 'dart:io';
 import 'package:appartapp/classes/user.dart';
 import 'package:appartapp/classes/enum_gender.dart';
 import 'package:appartapp/classes/runtime_store.dart';
+import 'package:appartapp/exceptions/unauthorized_exception.dart';
+import 'package:appartapp/widgets/ImgGallery.dart';
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:flutter/material.dart';
 import 'package:appartapp/classes/apartment_handler.dart';
 
 import 'package:dio/dio.dart';
-import '../widgets/ImgGallery.dart';
 
 class EditProfile extends StatefulWidget {
   String urlStr = "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/edituser";
+  String addImagesUrlStr="http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/adduserimage";
+  String removeImagesUrlStr="http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/deleteuserimage";
   Color bgColor = Colors.white;
 
   @override
@@ -21,6 +24,84 @@ class EditProfile extends StatefulWidget {
 class _EditProfileState extends State<EditProfile> {
 
   List<File> _images=<File>[];
+
+  void addImages(
+      Function(String) updateUi,
+      String oldemail,
+      String oldpassword,
+      List<File> files) async {
+    var dio = Dio();
+    try {
+      var formData = FormData();
+
+      formData.fields.add(MapEntry("email", oldemail));
+      formData.fields.add(MapEntry("password", oldpassword));
+
+      for (final File file in files) {
+        MultipartFile mpfile =
+        await MultipartFile.fromFile(file.path, filename: "filename.jpg");
+        formData.files.add(MapEntry("images", mpfile));
+      }
+
+      Response response = await dio.post(
+        widget.addImagesUrlStr,
+        data: formData,
+        options: Options(
+          contentType: Headers.formUrlEncodedContentType,
+          headers: {"Content-Type": "multipart/form-data"},
+        ),
+      );
+
+      if (response.statusCode != 200) {
+        if (response.statusCode == 401) {
+          updateUi("Non autorizzato");
+          throw new UnauthorizedException();
+        } else {
+          updateUi("Errore interno");
+          return;
+        }
+      } else {
+        print("added");
+      }
+    } on DioError catch (e) {
+      if (e.response?.statusCode == 401) {
+        updateUi("Non autorizzato");
+        throw new UnauthorizedException();
+      } else {
+        updateUi("Errore interno");
+      }
+    }
+  }
+
+  void removeImage(Function(String) updateUi, String id) async {
+    var dio = Dio();
+    try {
+      Response response = await dio.post(
+        widget.removeImagesUrlStr,
+        data: {
+          "email": RuntimeStore().getEmail(),
+          "password": RuntimeStore().getPassword(),
+
+          "id": id
+        },
+        options: Options(
+          contentType: Headers.formUrlEncodedContentType,
+          headers: {"Content-Type": "application/x-www-form-urlencoded"},
+        ),
+      );
+
+      if (response.statusCode != 200)
+        updateUi("Failure");
+      else {
+        updateUi("Updated");
+      }
+    } on DioError catch (e) {
+      if (e.response?.statusCode != 200) {
+        updateUi("Failure");
+      }
+    }
+  }
+
 
   void doUpdate(Function(String) updateUi, String oldemail, String email, String oldpassword,
       String name, String surname, DateTime birthday, Gender gender) async {
@@ -36,7 +117,8 @@ class _EditProfileState extends State<EditProfile> {
           "name": name,
           "surname": surname,
           "birthday": birthday.millisecondsSinceEpoch.toString(),
-          "gender": gender.toShortString()
+          "gender": gender.toShortString(),
+
         },
         options: Options(
           contentType: Headers.formUrlEncodedContentType,
@@ -74,6 +156,8 @@ class _EditProfileState extends State<EditProfile> {
 
   Gender? _gender;
 
+  List<GalleryImage> existingImages=[];
+
   @override
   void initState() {
     super.initState();
@@ -84,11 +168,36 @@ class _EditProfileState extends State<EditProfile> {
     emailController.text=user!.email;
     nameController.text=user!.name;
     surnameController.text=user!.surname;
+
+    for (Map im in RuntimeStore()
+        .getUser()!
+        .imagesDetails) {
+      existingImages.add(
+          GalleryImage(Image.network(
+            'http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/images/users/${im['id']}',
+            loadingBuilder: (BuildContext context, Widget child,
+                ImageChunkEvent? loadingProgress) {
+              if (loadingProgress == null) {
+                return child;
+              }
+              return Center(
+                child: CircularProgressIndicator(
+                  value: loadingProgress.expectedTotalBytes != null
+                      ? (loadingProgress.cumulativeBytesLoaded /
+                      (loadingProgress.expectedTotalBytes as int))
+                      : null,
+                ),
+              );
+            },
+            //fit: BoxFit.cover,
+          ), () {
+            removeImage((p0) => null, im['id']);
+          }));
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-
     birthdayController.text =
     "${_birthday.day}/${_birthday.month}/${_birthday.year}";
 
@@ -100,9 +209,12 @@ class _EditProfileState extends State<EditProfile> {
           children: <Widget>[
             Padding(
                 padding: EdgeInsets.all(8.0),
-                child: ImgGallery(callback: (imgList) {
+                child: ImgGallery(
+                  callback: (imgList) {
                   _images=imgList;
-                })),
+                },
+                  existingImages: existingImages,
+                ),),
             Padding(
                 padding: EdgeInsets.all(8.0),
                 child: TextField(
@@ -206,11 +318,14 @@ class _EditProfileState extends State<EditProfile> {
                       surname.length > 0 &&
                       _gender != null)) {
 
+                    if (_images.isNotEmpty)
+                      addImages((p0) => null, RuntimeStore().getEmail() ?? email, password, _images);
+
                     doUpdate((String toWrite) {
-                          setState(() {
-                            status = toWrite;
-                          });
-                        }, RuntimeStore().getEmail() ?? email, email, password, name, surname, _birthday, _gender as Gender);
+                      setState(() {
+                        status = toWrite;
+                      });
+                    }, RuntimeStore().getEmail() ?? email, email, password, name, surname, _birthday, _gender as Gender);
                   } else {
                     setState(() {
                       status = "Incompleto. Compila tutti i campi";

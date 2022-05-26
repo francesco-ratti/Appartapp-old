@@ -7,6 +7,7 @@ import 'package:cookie_jar/cookie_jar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'credentials.dart';
+import 'match_handler.dart';
 
 class RuntimeStore {
   //SINGLETON PATTERN
@@ -21,6 +22,8 @@ class RuntimeStore {
   RuntimeStore._internal();
 
   Future<List<Apartment>>? _ownedApartments;
+
+  late MatchHandler matchHandler;
 
   Future<List<Apartment>>? getOwnedApartments() {
     return _ownedApartments;

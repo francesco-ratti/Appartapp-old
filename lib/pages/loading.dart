@@ -1,3 +1,4 @@
+import 'package:appartapp/classes/match_handler.dart';
 import 'package:appartapp/classes/user.dart';
 import 'package:appartapp/classes/apartment.dart';
 import 'package:appartapp/classes/apartment_handler.dart';
@@ -12,8 +13,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../classes/match_handler.dart';
-
 
 void doInitialisation(BuildContext context, Credentials credentials, User user, SharedPreferences prefs) async {
   RuntimeStore().setCredentials(credentials);
@@ -22,7 +21,8 @@ void doInitialisation(BuildContext context, Credentials credentials, User user, 
   prefs.setString("email", credentials.email);
   prefs.setString("password", credentials.password);
 
-  MatchHandler().startPeriodicUpdate();
+  RuntimeStore().matchHandler=MatchHandler();
+  RuntimeStore().matchHandler.startPeriodicUpdate();
 
   Apartment? firstApartment = await ApartmentHandler()
       .getNewApartment((Apartment apartment) {

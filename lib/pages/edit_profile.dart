@@ -377,6 +377,7 @@ class _EditProfileState extends State<EditProfile> {
                   RuntimeStore().getSharedPreferences()?.remove("email");
                   RuntimeStore().getSharedPreferences()?.remove("password");
                   RuntimeStore().cookieJar=CookieJar();
+                  RuntimeStore().matchHandler.stopPeriodicUpdate();
                   Navigator.pushReplacementNamed(context, "/loginorsignup");
                 }),
             Padding(

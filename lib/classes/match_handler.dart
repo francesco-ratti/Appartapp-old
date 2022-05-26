@@ -4,11 +4,14 @@ import 'package:appartapp/classes/lessor_match.dart';
 
 class MatchHandler {
   //SINGLETON PATTERN
+  /*
   static final MatchHandler _matchHandler = MatchHandler._internal();
-
+   */
   static final urlStr="http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/getmatchedapartments";
   List<LessorMatch>? _currentMatches=null;
   List? oldResData=null;
+
+  bool _stop=false;
 
   List<Function(List<LessorMatch>?)> updateCallbacks=<Function(List<LessorMatch>?)>[];
 
@@ -64,17 +67,24 @@ class MatchHandler {
   }
 
   void startPeriodicUpdate () async {
-    while (true) {
+    _stop=false;
+    while (!_stop) {
       await doUpdate((res) {});
       await Future.delayed(Duration(seconds: 30));
     }
   }
 
+  void stopPeriodicUpdate () {
+    _stop=true;
+  }
+/*
   factory MatchHandler() {
     return _matchHandler;
   }
 
-  MatchHandler._internal();
+      MatchHandler._internal();
+ */
+
 
   getMatches() {
     return _currentMatches;

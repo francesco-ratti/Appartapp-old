@@ -7,7 +7,6 @@ import 'package:appartapp/exceptions/unauthorized_exception.dart';
 import 'package:appartapp/widgets/ImgGallery.dart';
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:flutter/material.dart';
-import 'package:appartapp/classes/apartment_handler.dart';
 
 import 'package:dio/dio.dart';
 
@@ -24,6 +23,7 @@ class EditProfile extends StatefulWidget {
 class _EditProfileState extends State<EditProfile> {
 
   List<File> _images=<File>[];
+  List<Function> _onSubmitCbks=<Function>[];
 
   void addImages(
       Function(String) updateUi,
@@ -169,6 +169,18 @@ class _EditProfileState extends State<EditProfile> {
     nameController.text=user!.name;
     surnameController.text=user!.surname;
 
+    for (int i=0; i<RuntimeStore().getUser()!.imagesDetails.length; i++) {
+      Map im=RuntimeStore().getUser()!.imagesDetails[i];
+      existingImages.add(
+          GalleryImage(
+              RuntimeStore().getUser()!.images[i],
+                  () => () {
+                removeImage((p0) => null, im['id'].toString()); //returns a cbk function which will be invoked at submit
+              }
+          )
+      );
+    }
+    /*
     for (Map im in RuntimeStore()
         .getUser()!
         .imagesDetails) {
@@ -194,6 +206,7 @@ class _EditProfileState extends State<EditProfile> {
             removeImage((p0) => null, im['id'].toString());
           }));
     }
+     */
   }
 
   @override
@@ -208,13 +221,16 @@ class _EditProfileState extends State<EditProfile> {
           padding: EdgeInsets.all(16.0),
           children: <Widget>[
             Padding(
-                padding: EdgeInsets.all(8.0),
-                child: ImgGallery(
-                  callback: (imgList) {
+              padding: EdgeInsets.all(8.0),
+              child: ImgGallery(
+                filesToUploadCbk: (imgList) {
                   _images=imgList;
                 },
-                  existingImages: existingImages,
-                ),),
+                onSubmitCbksCbk: (cbkList) {
+                  _onSubmitCbks=cbkList;
+                },
+                existingImages: existingImages,
+              ),),
             Padding(
                 padding: EdgeInsets.all(8.0),
                 child: TextField(
@@ -317,6 +333,10 @@ class _EditProfileState extends State<EditProfile> {
                       name.length > 0 &&
                       surname.length > 0 &&
                       _gender != null)) {
+
+                    for (Function fun in _onSubmitCbks) {
+                      fun();
+                    }
 
                     if (_images.isNotEmpty)
                       addImages((p0) => null, RuntimeStore().getEmail() ?? email, password, _images);

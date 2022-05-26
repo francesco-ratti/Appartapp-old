@@ -1,9 +1,7 @@
 import 'package:appartapp/widgets/apartment_viewer.dart';
 import 'package:flutter/material.dart';
-
-import 'package:appartapp/classes/match_handler.dart';
-
 import 'package:appartapp/classes/lessor_match.dart';
+
 
 class Matches extends StatefulWidget {
   @override
@@ -11,7 +9,7 @@ class Matches extends StatefulWidget {
 }
 
 class _MatchesState extends State<Matches> {
-  List<LessorMatch>? currentMatches = MatchHandler().getMatches();
+  List<LessorMatch>? currentMatches = RuntimeStore().matchHandler.getMatches();
 
   void callback(newMatches) {
     setState(() {
@@ -22,14 +20,14 @@ class _MatchesState extends State<Matches> {
   @override
   void initState() {
     super.initState();
-    MatchHandler().doUpdate(callback);
-    MatchHandler().addUpdateCallback(callback);
+    RuntimeStore().matchHandler.doUpdate(callback);
+    RuntimeStore().matchHandler.addUpdateCallback(callback);
   }
 
   @override
   void dispose() {
     super.dispose();
-    MatchHandler().removeUpdateCallback(callback);
+    RuntimeStore().matchHandler.removeUpdateCallback(callback);
   }
 
   @override

@@ -96,7 +96,7 @@ class Apartment {
 
   void _performRequest(String urlStr) async {
     var dio = Dio();
-    dio.interceptors.add(CookieManager(ApartmentHandler().cookieJar));
+    dio.interceptors.add(CookieManager(RuntimeStore().cookieJar));
 
     try {
       Response response = await dio.post(

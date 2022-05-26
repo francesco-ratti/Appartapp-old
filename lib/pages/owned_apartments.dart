@@ -24,12 +24,12 @@ class _OwnedApartments extends State<OwnedApartments> {
   @override
   void initState() {
     Future<List<Apartment>>? oldOwnedApartments =
-        RuntimeStore().getOwnedApartments();
+    RuntimeStore().getOwnedApartments();
 
     if (oldOwnedApartments != null) oldOwnedApartments.then(updateUi);
 
     Future<List<Apartment>> newOwnedApartments =
-        ApartmentHandler().getOwnedApartments();
+    ApartmentHandler().getOwnedApartments();
     newOwnedApartments.then(updateUi);
     RuntimeStore().setOwnedApartmentsFuture(newOwnedApartments);
   }
@@ -78,9 +78,25 @@ class _OwnedApartments extends State<OwnedApartments> {
                             MaterialPageRoute(
                                 builder: (context) => Scaffold(
                                     appBar: AppBar(
-                                      title: Text(
-                                          ownedApartments[index].listingTitle),
-                                    ),
+                                        title: Text(
+                                            ownedApartments[index].listingTitle),
+                                        actions: <Widget>[
+                                          Padding(
+                                              padding: EdgeInsets.only(right: 20.0),
+                                              child: GestureDetector(
+                                                onTap: () {
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) => AddApartment(toEdit: ownedApartments[index])),
+                                                  );
+                                                },
+                                                child: Icon(
+                                                  Icons.edit,
+                                                  size: 26.0,
+                                                ),
+                                              )),
+                                        ]),
                                     body: ApartmentViewer(
                                       apartmentLoaded: true,
                                       currentApartment: ownedApartments[index],

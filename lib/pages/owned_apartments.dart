@@ -1,6 +1,5 @@
 import 'package:appartapp/classes/apartment.dart';
 import 'package:appartapp/pages/add_apartment.dart';
-import 'package:appartapp/pages/houses.dart';
 import 'package:flutter/material.dart';
 
 import '../classes/apartment_handler.dart';
@@ -88,7 +87,11 @@ class _OwnedApartments extends State<OwnedApartments> {
                                                   Navigator.push(
                                                     context,
                                                     MaterialPageRoute(
-                                                        builder: (context) => AddApartment(toEdit: ownedApartments[index])),
+                                                        builder: (context) => AddApartment(toEdit: ownedApartments[index], callback: () {
+                                                          Future<List<Apartment>> newOwnedApartments = ApartmentHandler().getOwnedApartments();
+                                                          newOwnedApartments.then(updateUi).then((value) => Navigator.pop(context));
+                                                          RuntimeStore().setOwnedApartmentsFuture(newOwnedApartments);
+                                                        })),
                                                   );
                                                 },
                                                 child: Icon(

@@ -10,8 +10,9 @@ import 'package:flutter/material.dart';
 
 class AddApartment extends StatefulWidget {
   final Apartment? toEdit;
+  final Function? callback;
 
-  const AddApartment({Key? key, this.toEdit}) : super(key: key);
+  const AddApartment({Key? key, this.toEdit, this.callback}) : super(key: key);
 
   @override
   State<AddApartment> createState() => _AddApartment(toEdit);
@@ -169,7 +170,7 @@ class _AddApartment extends State<AddApartment> {
           }
         } else {
           print("edited");
-          Navigator.pop(context);
+          updateUi("edited");
         }
       } else
         throw new UnauthorizedException();
@@ -220,6 +221,7 @@ class _AddApartment extends State<AddApartment> {
         }
       } else {
         print("added");
+        updateUi("added");
       }
     } on DioError catch (e) {
       if (e.response?.statusCode == 401) {
@@ -249,6 +251,13 @@ class _AddApartment extends State<AddApartment> {
   List<Function> _onSubmitCbks=<Function>[];
   int _totalImages=0;
 
+  int uploadCtr=0;
+  int numUploads=0;
+  void onUploadsEnd () {
+    if (widget.callback!=null)
+      widget.callback!();
+  }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -266,7 +275,13 @@ class _AddApartment extends State<AddApartment> {
             GalleryImage(
                 toEdit!.images[i],
                     () => () {
-                  removeImage((p0) => null, im['id'].toString(), toEdit!.id.toString()); //returns a cbk function which will be invoked at submit
+                  numUploads++;
+                  removeImage((p0) {
+                    uploadCtr++;
+                    if (uploadCtr==numUploads) {
+                      onUploadsEnd();
+                    }
+                  }, im['id'].toString(), toEdit!.id.toString()); //returns a cbk function which will be invoked at submit
                 })
         );
       }
@@ -439,15 +454,25 @@ class _AddApartment extends State<AddApartment> {
                     _addressController.text,
                     _toUpload);
               } else {
+                numUploads++; //for editapartmentPost
+                if (_toUpload.isNotEmpty)
+                  numUploads++;
                 for (Function fun in _onSubmitCbks) {
                   fun();
                 }
-                addImages((p0) => null, toEdit!.id, _toUpload);
+                if (_toUpload.isNotEmpty) {
+                  addImages((p0) {
+                    uploadCtr++;
+                    if (uploadCtr == numUploads) {
+                      onUploadsEnd();
+                    }
+                  }, toEdit!.id, _toUpload);
+                }
                 doEditApartmentPost((String toWrite) {
-                  setState(() {
-                    status=toWrite;
-                    print(status);
-                  });
+                  uploadCtr++;
+                  if (uploadCtr==numUploads) {
+                    onUploadsEnd();
+                  }
                 },
                     toEdit!.id,
                     _titleController.text,

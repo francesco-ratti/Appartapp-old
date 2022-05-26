@@ -24,6 +24,10 @@ class AddApartment extends StatefulWidget {
 
   final String removeImagesUrlStr =
       "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/deleteapartmentimage";
+
+
+  final String addImagesUrlStr =
+      "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/addapartmentimage";
 }
 
 class _AddApartment extends State<AddApartment> {
@@ -127,6 +131,7 @@ class _AddApartment extends State<AddApartment> {
 
   void doEditApartmentPost(
       Function(String) updateUi,
+      int id,
       String listingTitle,
       String description,
       String additionalExpenseDetail,
@@ -134,23 +139,20 @@ class _AddApartment extends State<AddApartment> {
       String address) async {
     var dio = Dio();
     try {
-      var formData = FormData();
-
       Credentials? credentials = RuntimeStore().getCredentials();
       if (credentials != null) {
-        formData.fields.add(MapEntry("email", credentials.email));
-        formData.fields.add(MapEntry("password", credentials.password));
-
-        formData.fields.add(MapEntry("listingtitle", listingTitle));
-        formData.fields.add(MapEntry("description", description));
-        formData.fields
-            .add(MapEntry("additionalexpensedetail", additionalExpenseDetail));
-        formData.fields.add(MapEntry("price", price.toString()));
-        formData.fields.add(MapEntry("address", address));
-
         Response response = await dio.post(
           widget.editApartmentUrlStr,
-          data: formData,
+          data: {
+            "id": id,
+            "email": credentials.email,
+            "password": credentials.password,
+            "listingtitle": listingTitle,
+            "description": description,
+            "additionalexpensedetail": additionalExpenseDetail,
+            "price": price.toString(),
+            "address": address
+          },
           options: Options(
             contentType: Headers.formUrlEncodedContentType,
             headers: {"Content-Type": "application/x-www-form-urlencoded"},
@@ -166,11 +168,59 @@ class _AddApartment extends State<AddApartment> {
             return;
           }
         } else {
-          print("added");
+          print("edited");
           Navigator.pop(context);
         }
       } else
         throw new UnauthorizedException();
+    } on DioError catch (e) {
+      if (e.response?.statusCode == 401) {
+        updateUi("Non autorizzato");
+        throw new UnauthorizedException();
+      } else {
+        updateUi("Errore interno");
+      }
+    }
+  }
+
+  void addImages(
+      Function(String) updateUi,
+      int id,
+      List<File> files) async {
+    var dio = Dio();
+    try {
+      var formData = FormData();
+
+      formData.fields.add(MapEntry("email", RuntimeStore().getEmail() as String));
+      formData.fields.add(MapEntry("password", RuntimeStore().getPassword() as String));
+      formData.fields.add(MapEntry("id", id.toString()));
+
+      for (final File file in files) {
+        MultipartFile mpfile =
+        await MultipartFile.fromFile(file.path, filename: "filename.jpg");
+        formData.files.add(MapEntry("images", mpfile));
+      }
+
+      Response response = await dio.post(
+        widget.addImagesUrlStr,
+        data: formData,
+        options: Options(
+          contentType: Headers.formUrlEncodedContentType,
+          headers: {"Content-Type": "multipart/form-data"},
+        ),
+      );
+
+      if (response.statusCode != 200) {
+        if (response.statusCode == 401) {
+          updateUi("Non autorizzato");
+          throw new UnauthorizedException();
+        } else {
+          updateUi("Errore interno");
+          return;
+        }
+      } else {
+        print("added");
+      }
     } on DioError catch (e) {
       if (e.response?.statusCode == 401) {
         updateUi("Non autorizzato");
@@ -392,17 +442,20 @@ class _AddApartment extends State<AddApartment> {
                 for (Function fun in _onSubmitCbks) {
                   fun();
                 }
+                addImages((p0) => null, toEdit!.id, _toUpload);
                 doEditApartmentPost((String toWrite) {
                   setState(() {
                     status=toWrite;
                     print(status);
                   });
                 },
+                    toEdit!.id,
                     _titleController.text,
                     _descController.text,
                     _aedController.text,
                     int.parse(_priceController.text),
-                    _addressController.text);
+                    _addressController.text,
+                );
               }
             }
           }

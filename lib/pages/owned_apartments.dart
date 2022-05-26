@@ -94,9 +94,13 @@ class _OwnedApartments extends State<OwnedApartments> {
                                                         })),
                                                   );
                                                 },
-                                                child: Icon(
-                                                  Icons.edit,
-                                                  size: 26.0,
+                                                child: SizedBox (
+                                                  height: 26,
+                                                  width: 26,
+                                                  child: Icon(
+                                                    Icons.edit,
+                                                    size: 26.0,
+                                                  ),
                                                 ),
                                               )),
                                         ]),

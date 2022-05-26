@@ -2,9 +2,9 @@ import 'package:appartapp/classes/apartment.dart';
 import 'package:appartapp/pages/add_apartment.dart';
 import 'package:flutter/material.dart';
 
-import '../classes/apartment_handler.dart';
-import '../classes/runtime_store.dart';
-import '../widgets/apartment_viewer.dart';
+import 'package:appartapp/classes/apartment_handler.dart';
+import 'package:appartapp/classes/runtime_store.dart';
+import 'package:appartapp/widgets/apartment_viewer.dart';
 
 class OwnedApartments extends StatefulWidget {
   @override

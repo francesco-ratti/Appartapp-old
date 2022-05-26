@@ -1,10 +1,8 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:appartapp/classes/user.dart';
-import 'package:appartapp/classes/apartment.dart';
 import 'package:appartapp/classes/first_arguments.dart';
 import 'package:appartapp/pages/edit_profile.dart';
-import 'package:appartapp/pages/empty_page.dart';
 import 'package:appartapp/pages/houses.dart';
 import 'package:appartapp/pages/matches.dart';
 import 'package:appartapp/pages/tenants.dart';

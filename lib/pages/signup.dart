@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:appartapp/classes/enum_gender.dart';
 import 'package:flutter/material.dart';
 

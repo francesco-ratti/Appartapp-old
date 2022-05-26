@@ -1,3 +1,4 @@
+import 'package:appartapp/classes/runtime_store.dart';
 import 'package:appartapp/widgets/apartment_viewer.dart';
 import 'package:flutter/material.dart';
 import 'package:appartapp/classes/lessor_match.dart';

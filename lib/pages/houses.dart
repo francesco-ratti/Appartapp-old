@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:appartapp/classes/apartment.dart';
 import 'package:appartapp/classes/apartment_handler.dart';
 import 'package:appartapp/classes/credentials.dart';

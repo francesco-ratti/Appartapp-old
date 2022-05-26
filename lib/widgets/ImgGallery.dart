@@ -10,10 +10,13 @@ import 'package:carousel_slider/carousel_slider.dart';
 
 class ImgGallery extends StatefulWidget {
 
-  final Function(List<File>) callback; //will be called ONLY when new images are added or new images (ones which have been added during current "session", the ones which have to be uploaded) are removed
+  final Function(List<File>) filesToUploadCbk; //will be called ONLY when new images are added or new images (ones which have been added during current "session", the ones which have to be uploaded) are removed
+  Function? onSubmitCbksCbk; //will be called when online images are removed. Updates OnSubmitCallbacks list, which has to be called on submit.
+  Function? totalImagesCbk;
+
   List<GalleryImage>? existingImages=[];
 
-  ImgGallery({Key? key, required this.callback, this.existingImages}) : super(key: key);
+  ImgGallery({Key? key, required this.filesToUploadCbk, this.onSubmitCbksCbk, this.totalImagesCbk, this.existingImages}) : super(key: key);
 
   @override
   _ImgGalleryState createState() => _ImgGalleryState(
@@ -31,6 +34,7 @@ class GalleryImage {
 class _ImgGalleryState extends State<ImgGallery> {
   List<GalleryImage> imagesToShow=[];
   List<File> _toUpload=[];
+  List<Function> onSubmitCbks=[];
   int currentOpenedPage=0;
   int currentSmallImage=0;
 
@@ -94,14 +98,22 @@ class _ImgGalleryState extends State<ImgGallery> {
       croppedFile.readAsBytes().then((byteStream) {
         File file=File(croppedFile.path);
         _toUpload.add(file);
-        widget.callback(_toUpload);
+        widget.filesToUploadCbk(_toUpload);
         setState(() {
           imagesToShow.add(GalleryImage(Image.file(file), () {
             _toUpload.remove(file);
+            return null;
           }));
-        });
+          if (widget.totalImagesCbk!=null)
+            widget.totalImagesCbk!(imagesToShow.length);        });
       });
     }
+  }
+  @override
+  void initState() {
+    super.initState();
+    if (widget.totalImagesCbk!=null)
+      widget.totalImagesCbk!(imagesToShow.length);
   }
 
   @override
@@ -163,9 +175,14 @@ class _ImgGalleryState extends State<ImgGallery> {
                                           onPressed: () {
                                             Navigator.of(context).pop();
                                             setState(() {
-                                              imagesToShow[currentOpenedPage].onDelete();
+                                              Function? res=imagesToShow[currentOpenedPage].onDelete();
+                                              if (res!=null && widget.onSubmitCbksCbk!=null) {
+                                                onSubmitCbks.add(res);
+                                                widget.onSubmitCbksCbk!(onSubmitCbks);
+                                              }
                                               imagesToShow.removeAt(currentOpenedPage);
-                                            });
+                                              if (widget.totalImagesCbk!=null)
+                                                widget.totalImagesCbk!(imagesToShow.length);                                            });
                                           },
                                         )),
                                   ],

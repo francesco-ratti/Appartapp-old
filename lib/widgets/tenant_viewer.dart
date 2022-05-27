@@ -9,6 +9,7 @@ import 'package:appartapp/widgets/tab_widget_tenant.dart';
 import 'package:appartapp/widgets/tab_widget_loading.dart';
 import 'package:flutter/material.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
+import 'package:blur/blur.dart';
 
 class TenantViewer extends StatelessWidget {
   bool tenantLoaded;
@@ -49,12 +50,15 @@ class TenantViewer extends StatelessWidget {
                           scrollController: scrollController,
                           currentTenant: currentLikeFromUser!.user),
               body: tenantLoaded
-                  ? TenantModel(currentTenant: currentLikeFromUser!.user)
+                  ? TenantModel(
+                      currentTenant: currentLikeFromUser!.user,
+                      lessor: lessor,
+                    )
                   : Center(
                       child: CircularProgressIndicator(
                       value: null,
                     )),
-              defaultPanelState: PanelState.OPEN,
+              defaultPanelState: lessor ? PanelState.CLOSED : PanelState.OPEN,
             ),
     );
   }

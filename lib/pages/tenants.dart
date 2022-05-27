@@ -51,7 +51,6 @@ class _Tenants extends State<Tenants> {
 }
 
 class ContentPage extends StatefulWidget {
-//-----ARE THIS LINKS CORRECT???----------
   final likeUrlStr =
       "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/likeuser";
   final ignoreUrlStr =

@@ -3,7 +3,6 @@ import 'package:appartapp/widgets/apartment_viewer.dart';
 import 'package:flutter/material.dart';
 import 'package:appartapp/classes/lessor_match.dart';
 
-
 class Matches extends StatefulWidget {
   @override
   _MatchesState createState() => _MatchesState();

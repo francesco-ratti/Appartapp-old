@@ -54,6 +54,7 @@ class TenantViewer extends StatelessWidget {
                       child: CircularProgressIndicator(
                       value: null,
                     )),
+              defaultPanelState: PanelState.OPEN,
             ),
     );
   }

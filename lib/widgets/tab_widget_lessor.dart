@@ -18,10 +18,16 @@ class TabWidgetLessor extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => ListView(
-        padding: EdgeInsets.all(16),
+        padding: EdgeInsets.all(6),
         controller: scrollController,
         //physics: Scroll,
         children: [
+          Divider(
+            color: Colors.white,
+            indent: 180,
+            thickness: 2,
+            endIndent: 180,
+          ),
           Container(
             padding: EdgeInsets.fromLTRB(30, 10, 10, 30),
             child: Text(

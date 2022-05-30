@@ -1,3 +1,4 @@
+import 'package:appartapp/classes/apartment.dart';
 import 'package:appartapp/classes/enum_gender.dart';
 import 'package:appartapp/classes/enum_month.dart';
 import 'package:appartapp/classes/enum_temporalq.dart';
@@ -5,15 +6,18 @@ import 'package:appartapp/classes/user.dart';
 import 'package:appartapp/widgets/display_text.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:appartapp/widgets/apartment_viewer.dart';
 
 class TabWidgetTenant extends StatelessWidget {
   final User currentTenant;
   final ScrollController scrollController;
+  Apartment? apartment;
 
   TabWidgetTenant({
     Key? key,
     required this.scrollController,
     required this.currentTenant,
+    this.apartment,
   }) : super(key: key);
 
   @override
@@ -28,13 +32,39 @@ class TabWidgetTenant extends StatelessWidget {
             thickness: 2,
             endIndent: 180,
           ),
-          Container(
-            padding: EdgeInsets.fromLTRB(30, 10, 30, 10),
-            child: Text(
-              currentTenant.name,
-              //textAlign: TextAlign.center,
-              style: GoogleFonts.nunito(color: Colors.white70, fontSize: 30),
-            ),
+          Row(
+            children: [
+              Container(
+                padding: EdgeInsets.fromLTRB(30, 10, 30, 10),
+                child: Text(
+                  currentTenant.name,
+                  //textAlign: TextAlign.center,
+                  style:
+                      GoogleFonts.nunito(color: Colors.white70, fontSize: 30),
+                ),
+              ),
+              Spacer(),
+              Container(
+                padding: EdgeInsets.fromLTRB(0, 0, 30, 0),
+                child: this.apartment == null
+                    ? SizedBox()
+                    : ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => Scaffold(
+                                      appBar: AppBar(
+                                          title: Text(
+                                              "${apartment?.listingTitle} ")),
+                                      body: ApartmentViewer(
+                                          apartmentLoaded: true,
+                                          currentApartment: apartment))));
+                        },
+                        child: Text("rel a app:"),
+                      ),
+              )
+            ],
           ),
           /*
                     email;

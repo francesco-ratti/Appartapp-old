@@ -48,7 +48,9 @@ class TenantViewer extends StatelessWidget {
                           currentLessor: currentLikeFromUser!.user)
                       : TabWidgetTenant(
                           scrollController: scrollController,
-                          currentTenant: currentLikeFromUser!.user),
+                          currentTenant: currentLikeFromUser!.user,
+                          apartment: currentLikeFromUser!.apartment,
+                        ),
               body: tenantLoaded
                   ? TenantModel(
                       currentTenant: currentLikeFromUser!.user,

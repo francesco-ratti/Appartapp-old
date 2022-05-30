@@ -30,39 +30,60 @@ class TabWidget extends StatelessWidget {
             thickness: 2,
             endIndent: 180,
           ),
-          Container(
-              padding: EdgeInsets.fromLTRB(30, 10, 10, 30),
-              child: Row(
-                children: [
-                  Text(
-                    currentApartment.listingTitle,
-                    //textAlign: TextAlign.center,
-                    style:
-                        GoogleFonts.nunito(color: Colors.white70, fontSize: 30),
-                  ),
-                  Spacer(),
-                  this.owner == null
-                      ? SizedBox()
-                      : ElevatedButton(
-                          onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => Scaffold(
-                                        appBar: AppBar(
-                                            title: Text(
-                                                "${owner?.name} ${owner?.surname}")),
-                                        body: TenantViewer(
-                                          tenantLoaded: true,
-                                          lessor: true,
-                                          currentLikeFromUser:
-                                              LikeFromUser(null, owner!),
-                                        ))));
-                          },
-                          child: Text("PROPRIETARIO"),
-                        )
-                ],
-              )),
+          Row(
+            children: [
+              Container(
+                padding: EdgeInsets.fromLTRB(30, 10, 10, 30),
+                child: Text(
+                  currentApartment.listingTitle,
+                  //textAlign: TextAlign.center,
+                  style:
+                      GoogleFonts.nunito(color: Colors.white70, fontSize: 30),
+                ),
+              ),
+              Spacer(),
+              this.owner == null
+                  ? SizedBox()
+                  : Column(
+                      children: [
+                        ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              primary: Colors.brown,
+                              shape: const CircleBorder(),
+                            ),
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => Scaffold(
+                                          appBar: AppBar(
+                                              title: Text(
+                                                  "${owner?.name} ${owner?.surname}")),
+                                          body: TenantViewer(
+                                            tenantLoaded: true,
+                                            lessor: true,
+                                            currentLikeFromUser:
+                                                LikeFromUser(null, owner!),
+                                          ))));
+                            },
+                            child: Container(
+                                width: 70,
+                                height: 70,
+                                child: owner!.images[0] != null
+                                    ? CircleAvatar(
+                                        backgroundImage: owner!.images[0].image)
+                                    : Icon(
+                                        Icons.person_pin_rounded,
+                                      ))),
+                        Container(
+                          padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
+                          child: Text("${owner?.name} ",
+                              style: TextStyle(color: Colors.white)),
+                        ),
+                      ],
+                    )
+            ],
+          ),
           DisplayText(
               title: "Descrizione", content: currentApartment.description),
           DisplayText(title: "Prezzo", content: "${currentApartment.price}€"),

@@ -44,35 +44,45 @@ class TabWidgetTenant extends StatelessWidget {
                 ),
               ),
               Spacer(),
-              Container(
-                padding: EdgeInsets.fromLTRB(0, 0, 30, 0),
-                child: this.apartment == null
-                    ? SizedBox()
-                    : ElevatedButton(
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => Scaffold(
-                                      appBar: AppBar(
-                                          title: Text(
-                                              "${apartment?.listingTitle} ")),
-                                      body: ApartmentViewer(
-                                          apartmentLoaded: true,
-                                          currentApartment: apartment))));
-                        },
-                        child: Text("rel a app:"),
-                      ),
-              )
+              this.apartment == null
+                  ? SizedBox()
+                  : Column(
+                      children: [
+                        ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                                primary: Colors.brown,
+                                shape: const CircleBorder()),
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => Scaffold(
+                                          appBar: AppBar(
+                                              title: Text(
+                                                  "${apartment?.listingTitle} ")),
+                                          body: ApartmentViewer(
+                                              apartmentLoaded: true,
+                                              currentApartment: apartment))));
+                            },
+                            child: Container(
+                                width: 70,
+                                height: 70,
+                                child: apartment!.images[0] != null
+                                    ? CircleAvatar(
+                                        backgroundImage:
+                                            apartment!.images[0].image)
+                                    : Icon(
+                                        Icons.apartment_rounded,
+                                      ))),
+                        Container(
+                          padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
+                          child: Text("${apartment?.listingTitle} ",
+                              style: TextStyle(color: Colors.white)),
+                        ),
+                      ],
+                    ),
             ],
           ),
-          /*
-                    email;
-            
-            DateTime birthday;
-            Gender gender;
-      
-                    */
           DisplayText(
               title: "Nome e cognome",
               content: currentTenant.name + " " + currentTenant.surname),

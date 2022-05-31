@@ -6,16 +6,17 @@ import 'package:flutter/material.dart';
 import 'package:appartapp/classes/enum_temporalq.dart';
 
 class EditTenant extends StatefulWidget {
-  String urlStr = "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/edituser";
+  String urlStr =
+      "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/edituser";
   Color bgColor = Colors.white;
 
-  User user=RuntimeStore().getUser() as User;
+  User user = RuntimeStore().getUser() as User;
 
   @override
   _EditTenantState createState() => _EditTenantState();
 }
 
-class YesNoForList{
+class YesNoForList {
   String name;
   bool value;
 
@@ -23,10 +24,15 @@ class YesNoForList{
 }
 
 class _EditTenantState extends State<EditTenant> {
-
-  void doUpdate(Function(String) updateUi, String bio, String reason, String job,
-      String income, String pets, Month? month, TemporalQ? smoker) async {
-
+  void doUpdate(
+      Function(String) updateUi,
+      String bio,
+      String reason,
+      String job,
+      String income,
+      String pets,
+      Month? month,
+      TemporalQ? smoker) async {
     var dio = Dio();
     try {
       Response response = await dio.post(
@@ -39,8 +45,8 @@ class _EditTenantState extends State<EditTenant> {
           "job": job,
           "income": income,
           "pets": pets,
-          "month": month==null ? "" : month.toShortString(),
-          "smoker": smoker==null ? "" : smoker.toShortString()
+          "month": month == null ? "" : month.toShortString(),
+          "smoker": smoker == null ? "" : smoker.toShortString()
         },
         options: Options(
           contentType: Headers.formUrlEncodedContentType,
@@ -65,61 +71,61 @@ class _EditTenantState extends State<EditTenant> {
 
   final bioController = TextEditingController();
   final reasonController = TextEditingController();
-  final jobController=TextEditingController();
-  final incomeController=TextEditingController();
-  final petsController=TextEditingController();
+  final jobController = TextEditingController();
+  final incomeController = TextEditingController();
+  final petsController = TextEditingController();
 
-  static YesNoForList yesYN=YesNoForList("Sì", true);
-  static YesNoForList noYN=YesNoForList("No", false);
+  static YesNoForList yesYN = YesNoForList("Sì", true);
+  static YesNoForList noYN = YesNoForList("No", false);
 
-  Month? _month=null;
-  TemporalQ? _smokerTQ=null;
+  Month? _month = null;
+  TemporalQ? _smokerTQ = null;
 
-  YesNoForList? _petsItem=null;
-  List<YesNoForList> _petsEntries=<YesNoForList>[
-    yesYN,
-    noYN
-  ];
+  YesNoForList? _petsItem = null;
+  List<YesNoForList> _petsEntries = <YesNoForList>[yesYN, noYN];
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
 
-    if (widget.user.bio.isNotEmpty)
-      bioController.text=widget.user.bio;
+    if (widget.user.bio.isNotEmpty) bioController.text = widget.user.bio;
 
     if (widget.user.reason.isNotEmpty)
-      reasonController.text=widget.user.reason;
+      reasonController.text = widget.user.reason;
 
-    if (widget.user.job.isNotEmpty)
-      jobController.text=widget.user.job;
+    if (widget.user.job.isNotEmpty) jobController.text = widget.user.job;
 
-    _month=widget.user.month;
-    _smokerTQ=widget.user.smoker;
+    _month = widget.user.month;
+    _smokerTQ = widget.user.smoker;
 
     if (widget.user.hasPets()) {
       petsController.text = widget.user.pets;
-      _petsItem=yesYN;
+      _petsItem = yesYN;
     } else {
-      _petsItem=noYN;
+      _petsItem = noYN;
     }
 
     if (widget.user.income.isNotEmpty)
-      incomeController.text=widget.user.income;
-
+      incomeController.text = widget.user.income;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Le tue info da locatario')),
+      appBar: AppBar(
+        title: const Text('Le tue info da locatario'),
+        backgroundColor: Colors.brown,
+      ),
       body: ListView(
         padding: EdgeInsets.all(16.0),
         children: <Widget>[
           Padding(
-            padding: EdgeInsets.all(8.0),
-            child: Text("Queste informazioni verranno visualizzate nel tuo profilo dai proprietari degli appartamenti a cui metti like. Finchè non fornisci queste informazioni non potrai cercare appartamenti."),
+            padding: EdgeInsets.all(10.0),
+            child: Text(
+              "Queste informazioni verranno visualizzate nel tuo profilo dai proprietari degli appartamenti a cui metti like. Finchè non fornisci queste informazioni non potrai cercare appartamenti.",
+              style: TextStyle(color: Colors.black54),
+            ),
           ),
           Padding(
               padding: EdgeInsets.all(8.0),
@@ -162,14 +168,13 @@ class _EditTenantState extends State<EditTenant> {
                   );
                 }).toList(),
               )),
-
           Padding(
               padding: EdgeInsets.all(8.0),
               child: TextField(
                 obscureText: false,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
-                  labelText: 'Che lavoro fai?',
+                  labelText: 'Che fai nella vita?',
                 ),
                 controller: jobController,
               )),
@@ -215,9 +220,8 @@ class _EditTenantState extends State<EditTenant> {
                 // Not necessary for Option 1
                 onChanged: (newValue) {
                   setState(() {
-                    if (newValue!=null) {
-                      if (!newValue.value)
-                        petsController.text="";
+                    if (newValue != null) {
+                      if (!newValue.value) petsController.text = "";
                       setState(() {
                         _petsItem = newValue;
                       });
@@ -231,30 +235,33 @@ class _EditTenantState extends State<EditTenant> {
                   );
                 }).toList(),
               )),
-          (_petsItem != null && _petsItem!.value==true) ? Padding(
-              padding: EdgeInsets.all(8.0),
-              child: TextField(
-                obscureText: false,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Quali?',
-                ),
-                controller: petsController,
-              )) : SizedBox(),
+          (_petsItem != null && _petsItem!.value == true)
+              ? Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: TextField(
+                    obscureText: false,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Quali?',
+                    ),
+                    controller: petsController,
+                  ))
+              : SizedBox(),
           ElevatedButton(
               child: Text("Modifica"),
+              style: ElevatedButton.styleFrom(primary: Colors.brown),
               onPressed: () {
-                String bio=bioController.text.trim();
-                String reason=reasonController.text.trim();
-                String job=jobController.text.trim();
-                String income=incomeController.text.trim();
-                String pets=petsController.text.trim();
+                String bio = bioController.text.trim();
+                String reason = reasonController.text.trim();
+                String job = jobController.text.trim();
+                String income = incomeController.text.trim();
+                String pets = petsController.text.trim();
 
-                doUpdate((p0) => null, bio, reason, job, income, pets, _month, _smokerTQ);
+                doUpdate((p0) => null, bio, reason, job, income, pets, _month,
+                    _smokerTQ);
               }),
         ],
       ),
     );
   }
-
 }

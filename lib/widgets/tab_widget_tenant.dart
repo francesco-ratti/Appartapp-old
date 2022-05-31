@@ -58,8 +58,10 @@ class TabWidgetTenant extends StatelessWidget {
                                   MaterialPageRoute(
                                       builder: (context) => Scaffold(
                                           appBar: AppBar(
-                                              title: Text(
-                                                  "${apartment?.listingTitle} ")),
+                                            title: Text(
+                                                "${apartment?.listingTitle} "),
+                                            backgroundColor: Colors.brown,
+                                          ),
                                           body: ApartmentViewer(
                                               apartmentLoaded: true,
                                               currentApartment: apartment))));

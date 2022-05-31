@@ -23,12 +23,12 @@ class _OwnedApartments extends State<OwnedApartments> {
   @override
   void initState() {
     Future<List<Apartment>>? oldOwnedApartments =
-    RuntimeStore().getOwnedApartments();
+        RuntimeStore().getOwnedApartments();
 
     if (oldOwnedApartments != null) oldOwnedApartments.then(updateUi);
 
     Future<List<Apartment>> newOwnedApartments =
-    ApartmentHandler().getOwnedApartments();
+        ApartmentHandler().getOwnedApartments();
     newOwnedApartments.then(updateUi);
     RuntimeStore().setOwnedApartmentsFuture(newOwnedApartments);
   }
@@ -42,6 +42,7 @@ class _OwnedApartments extends State<OwnedApartments> {
             return Scaffold(
               appBar: AppBar(
                   title: const Text('I tuoi appartamenti'),
+                  backgroundColor: Colors.brown,
                   actions: <Widget>[
                     Padding(
                         padding: EdgeInsets.only(right: 20.0),
@@ -77,24 +78,41 @@ class _OwnedApartments extends State<OwnedApartments> {
                             MaterialPageRoute(
                                 builder: (context) => Scaffold(
                                     appBar: AppBar(
-                                        title: Text(
-                                            ownedApartments[index].listingTitle),
+                                        title: Text(ownedApartments[index]
+                                            .listingTitle),
+                                        backgroundColor: Colors.brown,
                                         actions: <Widget>[
                                           Padding(
-                                              padding: EdgeInsets.only(right: 20.0),
+                                              padding:
+                                                  EdgeInsets.only(right: 20.0),
                                               child: GestureDetector(
                                                 onTap: () {
                                                   Navigator.push(
                                                     context,
                                                     MaterialPageRoute(
-                                                        builder: (context) => AddApartment(toEdit: ownedApartments[index], callback: () {
-                                                          Future<List<Apartment>> newOwnedApartments = ApartmentHandler().getOwnedApartments();
-                                                          newOwnedApartments.then(updateUi).then((value) => Navigator.pop(context));
-                                                          RuntimeStore().setOwnedApartmentsFuture(newOwnedApartments);
-                                                        })),
+                                                        builder: (context) =>
+                                                            AddApartment(
+                                                                toEdit:
+                                                                    ownedApartments[
+                                                                        index],
+                                                                callback: () {
+                                                                  Future<List<Apartment>>
+                                                                      newOwnedApartments =
+                                                                      ApartmentHandler()
+                                                                          .getOwnedApartments();
+                                                                  newOwnedApartments
+                                                                      .then(
+                                                                          updateUi)
+                                                                      .then((value) =>
+                                                                          Navigator.pop(
+                                                                              context));
+                                                                  RuntimeStore()
+                                                                      .setOwnedApartmentsFuture(
+                                                                          newOwnedApartments);
+                                                                })),
                                                   );
                                                 },
-                                                child: SizedBox (
+                                                child: SizedBox(
                                                   height: 26,
                                                   width: 26,
                                                   child: Icon(

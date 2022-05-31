@@ -57,8 +57,10 @@ class TabWidget extends StatelessWidget {
                                   MaterialPageRoute(
                                       builder: (context) => Scaffold(
                                           appBar: AppBar(
-                                              title: Text(
-                                                  "${owner?.name} ${owner?.surname}")),
+                                            title: Text(
+                                                "${owner?.name} ${owner?.surname}"),
+                                            backgroundColor: Colors.brown,
+                                          ),
                                           body: TenantViewer(
                                             tenantLoaded: true,
                                             lessor: true,

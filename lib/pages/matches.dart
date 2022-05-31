@@ -37,7 +37,10 @@ class _MatchesState extends State<Matches> {
           settings: settings,
           builder: (BuildContext context) {
             return Scaffold(
-                appBar: AppBar(title: const Text('I tuoi match')),
+                appBar: AppBar(
+                  title: const Text('I tuoi match'),
+                  backgroundColor: Colors.brown,
+                ),
                 body: currentMatches == null
                     ? Center(
                         child: Text("Updating... please wait"),
@@ -62,9 +65,11 @@ class _MatchesState extends State<Matches> {
                                   MaterialPageRoute(
                                       builder: (context) => Scaffold(
                                           appBar: AppBar(
-                                              title: Text(currentMatches![index]
-                                                  .apartment
-                                                  .listingTitle)),
+                                            title: Text(currentMatches![index]
+                                                .apartment
+                                                .listingTitle),
+                                            backgroundColor: Colors.brown,
+                                          ),
                                           body: ApartmentViewer(
                                               apartmentLoaded: true,
                                               currentApartment:

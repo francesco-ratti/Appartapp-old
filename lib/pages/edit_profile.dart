@@ -11,9 +11,12 @@ import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 
 class EditProfile extends StatefulWidget {
-  String urlStr = "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/edituser";
-  String addImagesUrlStr="http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/adduserimage";
-  String removeImagesUrlStr="http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/deleteuserimage";
+  String urlStr =
+      "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/edituser";
+  String addImagesUrlStr =
+      "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/adduserimage";
+  String removeImagesUrlStr =
+      "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/deleteuserimage";
   Color bgColor = Colors.white;
 
   @override
@@ -21,14 +24,10 @@ class EditProfile extends StatefulWidget {
 }
 
 class _EditProfileState extends State<EditProfile> {
+  List<File> _images = <File>[];
+  List<Function> _onSubmitCbks = <Function>[];
 
-  List<File> _images=<File>[];
-  List<Function> _onSubmitCbks=<Function>[];
-
-  void addImages(
-      Function(String) updateUi,
-      String oldemail,
-      String oldpassword,
+  void addImages(Function(String) updateUi, String oldemail, String oldpassword,
       List<File> files) async {
     var dio = Dio();
     try {
@@ -39,7 +38,7 @@ class _EditProfileState extends State<EditProfile> {
 
       for (final File file in files) {
         MultipartFile mpfile =
-        await MultipartFile.fromFile(file.path, filename: "filename.jpg");
+            await MultipartFile.fromFile(file.path, filename: "filename.jpg");
         formData.files.add(MapEntry("images", mpfile));
       }
 
@@ -81,7 +80,6 @@ class _EditProfileState extends State<EditProfile> {
         data: {
           "email": RuntimeStore().getEmail(),
           "password": RuntimeStore().getPassword(),
-
           "id": id
         },
         options: Options(
@@ -102,9 +100,15 @@ class _EditProfileState extends State<EditProfile> {
     }
   }
 
-
-  void doUpdate(Function(String) updateUi, String oldemail, String email, String oldpassword,
-      String name, String surname, DateTime birthday, Gender gender) async {
+  void doUpdate(
+      Function(String) updateUi,
+      String oldemail,
+      String email,
+      String oldpassword,
+      String name,
+      String surname,
+      DateTime birthday,
+      Gender gender) async {
     var dio = Dio();
     try {
       Response response = await dio.post(
@@ -112,13 +116,11 @@ class _EditProfileState extends State<EditProfile> {
         data: {
           "email": oldemail,
           "password": oldpassword,
-
           "newemail": email,
           "name": name,
           "surname": surname,
           "birthday": birthday.millisecondsSinceEpoch.toString(),
           "gender": gender.toShortString(),
-
         },
         options: Options(
           contentType: Headers.formUrlEncodedContentType,
@@ -130,9 +132,10 @@ class _EditProfileState extends State<EditProfile> {
         updateUi("Failure");
       else {
         updateUi("Updated");
-        Map responseMap=response.data;
+        Map responseMap = response.data;
 
-        RuntimeStore().setCredentialsByString(responseMap["email"], responseMap["password"]);
+        RuntimeStore().setCredentialsByString(
+            responseMap["email"], responseMap["password"]);
         RuntimeStore().setUser(User.fromMap(responseMap));
       }
     } on DioError catch (e) {
@@ -150,13 +153,13 @@ class _EditProfileState extends State<EditProfile> {
 
   String status = "";
 
-  User? user=RuntimeStore().getUser();
+  User? user = RuntimeStore().getUser();
 
-  late DateTime _birthday=new DateTime.now();
+  late DateTime _birthday = new DateTime.now();
 
   Gender? _gender;
 
-  List<GalleryImage> existingImages=[];
+  List<GalleryImage> existingImages = [];
 
   @override
   void initState() {
@@ -165,20 +168,20 @@ class _EditProfileState extends State<EditProfile> {
     _birthday = user!.birthday;
     _gender = user!.gender;
 
-    emailController.text=user!.email;
-    nameController.text=user!.name;
-    surnameController.text=user!.surname;
+    emailController.text = user!.email;
+    nameController.text = user!.name;
+    surnameController.text = user!.surname;
 
-    for (int i=0; i<RuntimeStore().getUser()!.imagesDetails.length; i++) {
-      Map im=RuntimeStore().getUser()!.imagesDetails[i];
-      existingImages.add(
-          GalleryImage(
-              RuntimeStore().getUser()!.images[i],
-                  () => () {
-                removeImage((p0) => null, im['id'].toString()); //returns a cbk function which will be invoked at submit
-              }
-          )
-      );
+    for (int i = 0; i < RuntimeStore().getUser()!.imagesDetails.length; i++) {
+      Map im = RuntimeStore().getUser()!.imagesDetails[i];
+      existingImages.add(GalleryImage(
+          RuntimeStore().getUser()!.images[i],
+          () => () {
+                removeImage(
+                    (p0) => null,
+                    im['id']
+                        .toString()); //returns a cbk function which will be invoked at submit
+              }));
     }
     /*
     for (Map im in RuntimeStore()
@@ -212,10 +215,11 @@ class _EditProfileState extends State<EditProfile> {
   @override
   Widget build(BuildContext context) {
     birthdayController.text =
-    "${_birthday.day}/${_birthday.month}/${_birthday.year}";
+        "${_birthday.day}/${_birthday.month}/${_birthday.year}";
 
     return Scaffold(
-        appBar: AppBar(title: const Text('Il tuo profilo')),
+        appBar: AppBar(
+            title: const Text('Il tuo profilo'), backgroundColor: Colors.brown),
         backgroundColor: widget.bgColor,
         body: ListView(
           padding: EdgeInsets.all(16.0),
@@ -224,13 +228,14 @@ class _EditProfileState extends State<EditProfile> {
               padding: EdgeInsets.all(8.0),
               child: ImgGallery(
                 filesToUploadCbk: (imgList) {
-                  _images=imgList;
+                  _images = imgList;
                 },
                 onSubmitCbksCbk: (cbkList) {
-                  _onSubmitCbks=cbkList;
+                  _onSubmitCbks = cbkList;
                 },
                 existingImages: existingImages,
-              ),),
+              ),
+            ),
             Padding(
                 padding: EdgeInsets.all(8.0),
                 child: TextField(
@@ -266,10 +271,10 @@ class _EditProfileState extends State<EditProfile> {
                   readOnly: true,
                   onTap: () {
                     showDatePicker(
-                        context: context,
-                        initialDate: _birthday,
-                        lastDate: DateTime.now(),
-                        firstDate: DateTime(1900))
+                            context: context,
+                            initialDate: _birthday,
+                            lastDate: DateTime.now(),
+                            firstDate: DateTime(1900))
                         .then((value) {
                       if (value != null) {
                         setState(() {
@@ -291,25 +296,26 @@ class _EditProfileState extends State<EditProfile> {
                 child: Row(children: [
                   Expanded(
                       child: DropdownButton<Gender>(
-                        hint: Text("Scegli il tuo genere"),
-                        // Not necessary for Option 1
-                        value: _gender,
-                        onChanged: (newValue) {
-                          setState(() {
-                            _gender = newValue;
-                          });
-                        },
-                        items: Gender.values.map((gender) {
-                          return DropdownMenuItem(
-                            child: Text(gender.toItalianString()),
-                            value: gender,
-                          );
-                        }).toList(),
-                      ))
+                    hint: Text("Scegli il tuo genere"),
+                    // Not necessary for Option 1
+                    value: _gender,
+                    onChanged: (newValue) {
+                      setState(() {
+                        _gender = newValue;
+                      });
+                    },
+                    items: Gender.values.map((gender) {
+                      return DropdownMenuItem(
+                        child: Text(gender.toItalianString()),
+                        value: gender,
+                      );
+                    }).toList(),
+                  ))
                 ])),
             Padding(
                 padding: EdgeInsets.all(8.0),
-                child: Text("Reinserisci la tua password per modificare i dati")),
+                child:
+                    Text("Reinserisci la tua password per modificare i dati")),
             Padding(
                 padding: EdgeInsets.all(8.0),
                 child: TextField(
@@ -322,6 +328,7 @@ class _EditProfileState extends State<EditProfile> {
                 )),
             ElevatedButton(
                 child: Text("Modifica"),
+                style: ElevatedButton.styleFrom(primary: Colors.brown),
                 onPressed: () {
                   String email = emailController.text;
                   String password = passwordController.text;
@@ -333,19 +340,23 @@ class _EditProfileState extends State<EditProfile> {
                       name.length > 0 &&
                       surname.length > 0 &&
                       _gender != null)) {
-
                     for (Function fun in _onSubmitCbks) {
                       fun();
                     }
 
                     if (_images.isNotEmpty)
-                      addImages((p0) => null, RuntimeStore().getEmail() ?? email, password, _images);
+                      addImages(
+                          (p0) => null,
+                          RuntimeStore().getEmail() ?? email,
+                          password,
+                          _images);
 
                     doUpdate((String toWrite) {
                       setState(() {
                         status = toWrite;
                       });
-                    }, RuntimeStore().getEmail() ?? email, email, password, name, surname, _birthday, _gender as Gender);
+                    }, RuntimeStore().getEmail() ?? email, email, password,
+                        name, surname, _birthday, _gender as Gender);
                   } else {
                     setState(() {
                       status = "Incompleto. Compila tutti i campi";
@@ -361,11 +372,13 @@ class _EditProfileState extends State<EditProfile> {
             ),
             ElevatedButton(
                 child: Text("Aggiorna la password"),
+                style: ElevatedButton.styleFrom(primary: Colors.brown),
                 onPressed: () {
                   Navigator.pushNamed(context, "/editpassword");
                 }),
             ElevatedButton(
                 child: Text("Modifica informazioni locatario"),
+                style: ElevatedButton.styleFrom(primary: Colors.brown),
                 onPressed: () {
                   Navigator.pushNamed(context, "/edittenants");
                 }),
@@ -376,7 +389,7 @@ class _EditProfileState extends State<EditProfile> {
                   RuntimeStore().setCredentials(null);
                   RuntimeStore().getSharedPreferences()?.remove("email");
                   RuntimeStore().getSharedPreferences()?.remove("password");
-                  RuntimeStore().cookieJar=CookieJar();
+                  RuntimeStore().cookieJar = CookieJar();
                   RuntimeStore().matchHandler.stopPeriodicUpdate();
                   Navigator.pushReplacementNamed(context, "/loginorsignup");
                 }),

@@ -40,26 +40,16 @@ class _OwnedApartments extends State<OwnedApartments> {
           settings: settings,
           builder: (BuildContext context) {
             return Scaffold(
-              appBar: AppBar(
-                  title: const Text('I tuoi appartamenti'),
-                  backgroundColor: Colors.brown,
-                  actions: <Widget>[
-                    Padding(
-                        padding: EdgeInsets.only(right: 20.0),
-                        child: GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => AddApartment()),
-                            );
-                          },
-                          child: Icon(
-                            Icons.add,
-                            size: 26.0,
-                          ),
-                        )),
-                  ]),
+              floatingActionButton: FloatingActionButton(
+                backgroundColor: Colors.brown,
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => AddApartment()),
+                  );
+                },
+                child: Icon(Icons.add),
+              ),
               body: ListView.builder(
                   itemCount: ownedApartments.length,
                   itemBuilder: (BuildContext context, int index) {

@@ -217,194 +217,187 @@ class _EditProfileState extends State<EditProfile> {
     birthdayController.text =
         "${_birthday.day}/${_birthday.month}/${_birthday.year}";
 
-    return Scaffold(
-        appBar: AppBar(
-            title: const Text('Il tuo profilo'), backgroundColor: Colors.brown),
-        backgroundColor: widget.bgColor,
-        body: ListView(
-          padding: EdgeInsets.all(16.0),
-          children: <Widget>[
-            Padding(
-              padding: EdgeInsets.all(8.0),
-              child: ImgGallery(
-                filesToUploadCbk: (imgList) {
-                  _images = imgList;
-                },
-                onSubmitCbksCbk: (cbkList) {
-                  _onSubmitCbks = cbkList;
-                },
-                existingImages: existingImages,
+    return ListView(
+      padding: EdgeInsets.all(16.0),
+      children: <Widget>[
+        Padding(
+          padding: EdgeInsets.all(8.0),
+          child: ImgGallery(
+            filesToUploadCbk: (imgList) {
+              _images = imgList;
+            },
+            onSubmitCbksCbk: (cbkList) {
+              _onSubmitCbks = cbkList;
+            },
+            existingImages: existingImages,
+          ),
+        ),
+        Padding(
+            padding: EdgeInsets.all(8.0),
+            child: TextField(
+              obscureText: false,
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: 'E-Mail',
               ),
-            ),
-            Padding(
-                padding: EdgeInsets.all(8.0),
-                child: TextField(
-                  obscureText: false,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'E-Mail',
-                  ),
-                  controller: emailController,
-                )),
-            Padding(
-                padding: EdgeInsets.all(8.0),
-                child: TextField(
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Nome',
-                  ),
-                  controller: nameController,
-                )),
-            Padding(
-                padding: EdgeInsets.all(8.0),
-                child: TextField(
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Cognome',
-                  ),
-                  controller: surnameController,
-                )),
-            Padding(
-                padding: EdgeInsets.all(8.0),
-                child: TextField(
-                  controller: birthdayController,
-                  readOnly: true,
-                  onTap: () {
-                    showDatePicker(
-                            context: context,
-                            initialDate: _birthday,
-                            lastDate: DateTime.now(),
-                            firstDate: DateTime(1900))
-                        .then((value) {
-                      if (value != null) {
-                        setState(() {
-                          _birthday = value;
-                        });
-                      }
-                    });
-                  },
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Data di nascita',
-                  ),
-                )),
-            Padding(
-                padding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 0.0),
-                child: Text("Genere")),
-            Padding(
-                padding: EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 8.0),
-                child: Row(children: [
-                  Expanded(
-                      child: DropdownButton<Gender>(
-                    hint: Text("Scegli il tuo genere"),
-                    // Not necessary for Option 1
-                    value: _gender,
-                    onChanged: (newValue) {
-                      setState(() {
-                        _gender = newValue;
-                      });
-                    },
-                    items: Gender.values.map((gender) {
-                      return DropdownMenuItem(
-                        child: Text(gender.toItalianString()),
-                        value: gender,
-                      );
-                    }).toList(),
-                  ))
-                ])),
-            Padding(
-                padding: EdgeInsets.all(8.0),
-                child:
-                    Text("Reinserisci la tua password per modificare i dati")),
-            Padding(
-                padding: EdgeInsets.all(8.0),
-                child: TextField(
-                  obscureText: true,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Password',
-                  ),
-                  controller: passwordController,
-                )),
-            ElevatedButton(
-                child: Text("Modifica"),
-                style: ElevatedButton.styleFrom(primary: Colors.brown),
-                onPressed: () {
-                  String email = emailController.text;
-                  String password = passwordController.text;
-                  String name = nameController.text;
-                  String surname = surnameController.text;
-
-                  if ((email.length > 0 &&
-                      password.length > 0 &&
-                      name.length > 0 &&
-                      surname.length > 0 &&
-                      _gender != null)) {
-                    for (Function fun in _onSubmitCbks) {
-                      fun();
-                    }
-
-                    if (_images.isNotEmpty)
-                      addImages(
-                          (p0) => null,
-                          RuntimeStore().getEmail() ?? email,
-                          password,
-                          _images);
-
-                    doUpdate((String toWrite) {
-                      setState(() {
-                        status = toWrite;
-                      });
-                    }, RuntimeStore().getEmail() ?? email, email, password,
-                        name, surname, _birthday, _gender as Gender);
-                  } else {
+              controller: emailController,
+            )),
+        Padding(
+            padding: EdgeInsets.all(8.0),
+            child: TextField(
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: 'Nome',
+              ),
+              controller: nameController,
+            )),
+        Padding(
+            padding: EdgeInsets.all(8.0),
+            child: TextField(
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: 'Cognome',
+              ),
+              controller: surnameController,
+            )),
+        Padding(
+            padding: EdgeInsets.all(8.0),
+            child: TextField(
+              controller: birthdayController,
+              readOnly: true,
+              onTap: () {
+                showDatePicker(
+                        context: context,
+                        initialDate: _birthday,
+                        lastDate: DateTime.now(),
+                        firstDate: DateTime(1900))
+                    .then((value) {
+                  if (value != null) {
                     setState(() {
-                      status = "Incompleto. Compila tutti i campi";
+                      _birthday = value;
                     });
                   }
-                }),
-            const Divider(
-              height: 20,
-              thickness: 1,
-              indent: 20,
-              endIndent: 20,
-              color: Colors.grey,
-            ),
-            ElevatedButton(
-                child: Text("Aggiorna la password"),
-                style: ElevatedButton.styleFrom(primary: Colors.brown),
-                onPressed: () {
-                  Navigator.pushNamed(context, "/editpassword");
-                }),
-            ElevatedButton(
-                child: Text("Modifica informazioni locatario"),
-                style: ElevatedButton.styleFrom(primary: Colors.brown),
-                onPressed: () {
-                  Navigator.pushNamed(context, "/edittenants");
-                }),
-            ElevatedButton(
-                child: Text("Esci"),
-                style: ElevatedButton.styleFrom(primary: Colors.red),
-                onPressed: () {
-                  RuntimeStore().setCredentials(null);
-                  RuntimeStore().getSharedPreferences()?.remove("email");
-                  RuntimeStore().getSharedPreferences()?.remove("password");
-                  RuntimeStore().cookieJar = CookieJar();
-                  RuntimeStore().matchHandler.stopPeriodicUpdate();
-                  Navigator.pushReplacementNamed(context, "/loginorsignup");
-                }),
-            Padding(
-                padding: EdgeInsets.all(16.0),
-                child: Text(
-                  status,
-                  style: TextStyle(fontSize: 20),
-                )),
-          ],
-        ));
+                });
+              },
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: 'Data di nascita',
+              ),
+            )),
+        Padding(
+            padding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 0.0),
+            child: Text("Genere")),
+        Padding(
+            padding: EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 8.0),
+            child: Row(children: [
+              Expanded(
+                  child: DropdownButton<Gender>(
+                hint: Text("Scegli il tuo genere"),
+                // Not necessary for Option 1
+                value: _gender,
+                onChanged: (newValue) {
+                  setState(() {
+                    _gender = newValue;
+                  });
+                },
+                items: Gender.values.map((gender) {
+                  return DropdownMenuItem(
+                    child: Text(gender.toItalianString()),
+                    value: gender,
+                  );
+                }).toList(),
+              ))
+            ])),
+        Padding(
+            padding: EdgeInsets.all(8.0),
+            child: Text("Reinserisci la tua password per modificare i dati")),
+        Padding(
+            padding: EdgeInsets.all(8.0),
+            child: TextField(
+              obscureText: true,
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: 'Password',
+              ),
+              controller: passwordController,
+            )),
+        ElevatedButton(
+            child: Text("Modifica"),
+            style: ElevatedButton.styleFrom(primary: Colors.brown),
+            onPressed: () {
+              String email = emailController.text;
+              String password = passwordController.text;
+              String name = nameController.text;
+              String surname = surnameController.text;
+
+              if ((email.length > 0 &&
+                  password.length > 0 &&
+                  name.length > 0 &&
+                  surname.length > 0 &&
+                  _gender != null)) {
+                for (Function fun in _onSubmitCbks) {
+                  fun();
+                }
+
+                if (_images.isNotEmpty)
+                  addImages((p0) => null, RuntimeStore().getEmail() ?? email,
+                      password, _images);
+
+                doUpdate((String toWrite) {
+                  setState(() {
+                    status = toWrite;
+                  });
+                }, RuntimeStore().getEmail() ?? email, email, password, name,
+                    surname, _birthday, _gender as Gender);
+              } else {
+                setState(() {
+                  status = "Incompleto. Compila tutti i campi";
+                });
+              }
+            }),
+        const Divider(
+          height: 20,
+          thickness: 1,
+          indent: 20,
+          endIndent: 20,
+          color: Colors.grey,
+        ),
+        ElevatedButton(
+            child: Text("Aggiorna la password"),
+            style: ElevatedButton.styleFrom(primary: Colors.brown),
+            onPressed: () {
+              Navigator.pushNamed(context, "/editpassword");
+            }),
+        ElevatedButton(
+            child: Text("Modifica informazioni locatario"),
+            style: ElevatedButton.styleFrom(primary: Colors.brown),
+            onPressed: () {
+              Navigator.pushNamed(context, "/edittenants");
+            }),
+        ElevatedButton(
+            child: Text("Esci"),
+            style: ElevatedButton.styleFrom(primary: Colors.red),
+            onPressed: () {
+              RuntimeStore().setCredentials(null);
+              RuntimeStore().getSharedPreferences()?.remove("email");
+              RuntimeStore().getSharedPreferences()?.remove("password");
+              RuntimeStore().cookieJar = CookieJar();
+              RuntimeStore().matchHandler.stopPeriodicUpdate();
+              Navigator.pushReplacementNamed(context, "/loginorsignup");
+            }),
+        Padding(
+            padding: EdgeInsets.all(16.0),
+            child: Text(
+              status,
+              style: TextStyle(fontSize: 20),
+            )),
+      ],
+    );
   }
 
   @override
   void dispose() {
+    super.dispose();
     emailController.dispose();
     nameController.dispose();
     surnameController.dispose();

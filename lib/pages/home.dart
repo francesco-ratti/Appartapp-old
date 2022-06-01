@@ -3,8 +3,10 @@
 import 'package:appartapp/classes/user.dart';
 import 'package:appartapp/classes/first_arguments.dart';
 import 'package:appartapp/pages/edit_profile.dart';
+import 'package:appartapp/pages/empty_page.dart';
 import 'package:appartapp/pages/houses.dart';
 import 'package:appartapp/pages/matches.dart';
+import 'package:appartapp/pages/profile_apartments.dart';
 import 'package:appartapp/pages/tenants.dart';
 import 'package:flutter/material.dart';
 
@@ -48,10 +50,11 @@ class _HomeState extends State<Home> {
             Tenants(
                 child: Text('Esplora'),
                 firstTenantFuture: ((ModalRoute.of(context)!.settings.arguments)
-                as FirstArguments)
+                        as FirstArguments)
                     .firstTenantFuture),
-            OwnedApartments(),
-            EditProfile(),
+            EmptyPage(child: Text('Chat')),
+            ProfileApartments()
+            //EditProfile(),
           ],
         ),
       ),

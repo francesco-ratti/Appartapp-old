@@ -27,30 +27,17 @@ class _EmptyPage extends State<EmptyPage> {
           builder: (BuildContext context) {
             return Scaffold(
               appBar: AppBar(
+                backgroundColor: Colors.brown,
                 title: widget.child,
                 centerTitle: true,
               ),
               body: Container(
-                  margin: EdgeInsets.symmetric(
-                    vertical: 10.0,
-                    horizontal: 20.0,
-                  ),
-                  child: Column(
-                    children: [
-                      Text("this is an empty page"),
-                      ElevatedButton(
-                        onPressed: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => AddApartment()),
-                        ),
-                        child: Text(
-                          'Aggiungi un appartamento'.toUpperCase(),
-                          style: const TextStyle(color: Colors.white),
-                        ),
-                      ),
-                    ],
-                  )),
+                margin: EdgeInsets.symmetric(
+                  vertical: 10.0,
+                  horizontal: 20.0,
+                ),
+                child: Text("This is an empty CHAT page"),
+              ),
             );
           },
         );

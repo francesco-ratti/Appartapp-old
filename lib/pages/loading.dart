@@ -13,19 +13,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-
-void doInitialisation(BuildContext context, Credentials credentials, User user, SharedPreferences prefs) async {
+void doInitialisation(BuildContext context, Credentials credentials, User user,
+    SharedPreferences prefs) async {
   RuntimeStore().setCredentials(credentials);
   RuntimeStore().setUser(user);
 
   prefs.setString("email", credentials.email);
   prefs.setString("password", credentials.password);
 
-  RuntimeStore().matchHandler=MatchHandler();
+  RuntimeStore().matchHandler = MatchHandler();
   RuntimeStore().matchHandler.startPeriodicUpdate();
 
-  Apartment? firstApartment = await ApartmentHandler()
-      .getNewApartment((Apartment apartment) {
+  Apartment? firstApartment =
+      await ApartmentHandler().getNewApartment((Apartment apartment) {
     for (final Image im in apartment.images) {
       precacheImage(im.image, context);
     }
@@ -35,13 +35,14 @@ void doInitialisation(BuildContext context, Credentials credentials, User user, 
     return firstApartment;
   });
 
-  RuntimeStore().setOwnedApartmentsFuture(
-      ApartmentHandler().getOwnedApartments());
+  RuntimeStore()
+      .setOwnedApartmentsFuture(ApartmentHandler().getOwnedApartments());
 
 // Navigator.pushReplacementNamed(context, '/home',
 //     arguments: firstApartmentFuture);
 
-  LikeFromUser? firstTenant = await UserHandler().getNewLikeFromUser((LikeFromUser likeFromUser) {
+  LikeFromUser? firstTenant =
+      await UserHandler().getNewLikeFromUser((LikeFromUser likeFromUser) {
     for (final Image im in likeFromUser.user.images) {
       precacheImage(im.image, context);
     }
@@ -52,10 +53,9 @@ void doInitialisation(BuildContext context, Credentials credentials, User user, 
   });
 
   FirstArguments firstArguments =
-  FirstArguments(firstApartmentFuture, firstTenantFuture);
+      FirstArguments(firstApartmentFuture, firstTenantFuture);
 
-  Navigator.pushReplacementNamed(context, '/home',
-      arguments: firstArguments);
+  Navigator.pushReplacementNamed(context, '/home', arguments: firstArguments);
 }
 
 class Loading extends StatefulWidget {
@@ -106,7 +106,7 @@ class _LoadingState extends State<Loading> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.blue[900],
+      backgroundColor: Colors.brown,
       body: Center(
         child: SpinKitSquareCircle(
           color: Colors.white,

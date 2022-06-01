@@ -60,7 +60,7 @@ class _TenantModel extends State<TenantModel> {
         child: //TODO solo se ancora senza like
             !(widget.lessor) // not a lessor = tenant -> blur
                 ? Blur(
-                    blur: 8,
+                    blur: 12,
                     child: Stack(fit: StackFit.expand, children: <Widget>[
                       widget.currentTenant.images.isNotEmpty
                           ? widget.currentTenant.images[currentIndex]

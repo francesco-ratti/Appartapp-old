@@ -1,3 +1,4 @@
+import 'package:blur/blur.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -5,12 +6,14 @@ import 'package:google_fonts/google_fonts.dart';
 class DisplayText extends StatelessWidget {
   final String title;
   final String content;
+  bool blurred;
 
-  DisplayText({
-    Key? key,
-    required this.title,
-    required this.content,
-  }) : super(key: key);
+  DisplayText(
+      {Key? key,
+      required this.title,
+      required this.content,
+      required this.blurred})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -23,10 +26,16 @@ class DisplayText extends StatelessWidget {
               title,
               style: GoogleFonts.nunito(color: Colors.white70, fontSize: 15),
             ),
-            Text(
-              content,
-              style: GoogleFonts.nunito(color: Colors.white, fontSize: 20),
-            ),
+            blurred
+                ? Blur(
+                    blur: 0.5,
+                    child: Text("Content not available"),
+                    blurColor: Colors.transparent)
+                : Text(
+                    content,
+                    style:
+                        GoogleFonts.nunito(color: Colors.white, fontSize: 20),
+                  ),
           ],
         ));
   }

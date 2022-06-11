@@ -7,6 +7,7 @@ import 'package:appartapp/widgets/display_text.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:appartapp/widgets/apartment_viewer.dart';
+import 'package:blur/blur.dart';
 
 class TabWidgetTenant extends StatelessWidget {
   final User currentTenant;
@@ -87,37 +88,51 @@ class TabWidgetTenant extends StatelessWidget {
           ),
           DisplayText(
               title: "Nome e cognome",
-              content: currentTenant.name + " " + currentTenant.surname),
-          DisplayText(title: "Su di me", content: currentTenant.bio),
+              content: currentTenant.name + " " + currentTenant.surname,
+              blurred: false),
           DisplayText(
-              title: "Perché cerco casa", content: currentTenant.reason),
+              title: "Su di me", content: currentTenant.bio, blurred: false),
+          DisplayText(
+              title: "Perché cerco casa",
+              content: currentTenant.reason,
+              blurred: false),
           currentTenant.month == null
               ? SizedBox()
               : DisplayText(
                   title: "A partire da",
-                  content: currentTenant.month!.toShortString()),
+                  content: currentTenant.month!.toShortString(),
+                  blurred: false),
           DisplayText(
-              title: "Cosa faccio nella vita", content: currentTenant.job),
+              title: "Cosa faccio nella vita",
+              content: currentTenant.job,
+              blurred: false),
           DisplayText(
-              title: "Le mie entrate mensili", content: currentTenant.income),
+              title: "Le mie entrate mensili",
+              content: currentTenant.income,
+              blurred: false),
           currentTenant.smoker == null
               ? SizedBox()
               : DisplayText(
                   title: "Fumatore",
-                  content: currentTenant.smoker!.toItalianString()),
+                  content: currentTenant.smoker!.toItalianString(),
+                  blurred: false),
           DisplayText(
               title: "Animali",
-              content: currentTenant.pets.isEmpty ? "No" : currentTenant.pets),
+              content: currentTenant.pets.isEmpty ? "No" : currentTenant.pets,
+              blurred: false),
           //PRIVATE INFORMATION
           currentTenant.gender == null
               ? SizedBox()
               : DisplayText(
                   title: "Sesso",
-                  content: "${currentTenant.gender.toItalianString()}"),
+                  content: "${currentTenant.gender.toItalianString()}",
+                  blurred: true),
           DisplayText(
-              title: "Compleanno",
-              content:
-                  "${currentTenant.birthday.day.toString().padLeft(2, '0')}-${currentTenant.birthday.month.toString().padLeft(2, '0')}-${currentTenant.birthday.year.toString()}")
+            title: "Compleanno",
+            content:
+                "${currentTenant.birthday.day.toString().padLeft(2, '0')}-${currentTenant.birthday.month.toString().padLeft(2, '0')}-${currentTenant.birthday.year.toString()}",
+            blurred: true,
+          ),
         ],
       );
 }

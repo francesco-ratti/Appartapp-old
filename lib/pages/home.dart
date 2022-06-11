@@ -72,7 +72,7 @@ class _HomeState extends State<Home> {
           BottomNavigationBarItem(
             icon: Stack(
               children: [
-                Icon(Icons.filter_list_rounded, color: Colors.black),
+                Icon(Icons.checklist_rounded, color: Colors.black),
                 MatchHandler().unseenChanges
                     ? Positioned(
                         left: 2,

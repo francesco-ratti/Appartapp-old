@@ -26,7 +26,7 @@ class TenantViewer extends StatelessWidget {
       child: (currentLikeFromUser == null)
           ? (Center(
               child: Text(
-              "no tenants",
+              "Nessun nuovo utente",
               style: TextStyle(color: Colors.white),
             )))
           : SlidingUpPanel(

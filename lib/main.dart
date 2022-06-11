@@ -1,6 +1,7 @@
 import 'package:appartapp/pages/edit_tenant.dart';
 import 'package:appartapp/pages/login.dart';
 import 'package:appartapp/pages/matches.dart';
+import 'package:appartapp/widgets/home_parent.dart';
 import 'package:flutter/material.dart';
 
 import 'package:appartapp/pages/loading.dart';
@@ -21,7 +22,7 @@ void main() {
     routes: {
       '/': (context) => Loading(),
       '/first': (context) => First(),
-      '/home': (context) => Home(),
+      '/home': (context) => HomeParent(),
       '/loginorsignup': (context) => LoginOrSignup(),
       '/login': (context) => Login(),
       '/signup': (context) => Signup(),

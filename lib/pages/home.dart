@@ -1,17 +1,15 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:appartapp/classes/match_handler.dart';
 import 'package:appartapp/classes/user.dart';
 import 'package:appartapp/classes/first_arguments.dart';
-import 'package:appartapp/pages/edit_profile.dart';
 import 'package:appartapp/pages/empty_page.dart';
 import 'package:appartapp/pages/houses.dart';
 import 'package:appartapp/pages/matches.dart';
 import 'package:appartapp/pages/profile_apartments.dart';
 import 'package:appartapp/pages/tenants.dart';
 import 'package:flutter/material.dart';
-
 import '../classes/runtime_store.dart';
-import 'owned_apartments.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -62,7 +60,7 @@ class _HomeState extends State<Home> {
       bottomNavigationBar: BottomNavigationBar(
         //backgroundColor: Colors.white, //try transparent
         type: BottomNavigationBarType.shifting,
-        items: const <BottomNavigationBarItem>[
+        items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(
               Icons.home_rounded,
@@ -72,9 +70,23 @@ class _HomeState extends State<Home> {
             backgroundColor: Colors.white,
           ),
           BottomNavigationBarItem(
-            icon: Icon(
-              Icons.filter_list_rounded,
-              color: Colors.black,
+            icon: Stack(
+              children: [
+                Icon(Icons.filter_list_rounded, color: Colors.black),
+                MatchHandler().unseenChanges
+                    ? Positioned(
+                        left: 2,
+                        bottom: 7,
+                        child: Container(
+                            padding: EdgeInsets.all(2),
+                            child: Icon(Icons.fiber_new_outlined,
+                                color: Colors.red, size: 23)),
+                      )
+                    : Container(
+                        width: 0,
+                        height: 0,
+                      )
+              ],
             ),
             label: 'Matches',
           ),
@@ -102,6 +114,10 @@ class _HomeState extends State<Home> {
           setState(
             () {
               _pageIndex = index;
+              if (index == 1) {
+                MatchHandler().unseenChanges = false;
+                //print(index);
+              }
             },
           );
         },

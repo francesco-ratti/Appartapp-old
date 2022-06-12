@@ -87,21 +87,13 @@ class TabWidget extends StatelessWidget {
             ],
           ),
           DisplayText(
-              title: "Descrizione",
-              content: currentApartment.description,
-              blurred: false),
+              title: "Descrizione", content: currentApartment.description),
+          DisplayText(title: "Prezzo", content: "${currentApartment.price}€"),
           DisplayText(
-              title: "Prezzo",
-              content: "${currentApartment.price}€",
-              blurred: false),
-          DisplayText(
-              title: "Indirizzo",
-              content: "${currentApartment.address}",
-              blurred: false),
+              title: "Indirizzo", content: "${currentApartment.address}"),
           DisplayText(
               title: "Spese aggiuntive",
-              content: "${currentApartment.additionalExpenseDetail}",
-              blurred: false),
+              content: "${currentApartment.additionalExpenseDetail}"),
         ],
       );
 }

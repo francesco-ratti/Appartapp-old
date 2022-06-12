@@ -46,6 +46,7 @@ class TenantViewer extends StatelessWidget {
                           scrollController: scrollController,
                           currentTenant: currentLikeFromUser!.user,
                           apartment: currentLikeFromUser!.apartment,
+                          locked: true,
                         ),
               body: tenantLoaded
                   ? TenantModel(

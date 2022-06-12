@@ -1,5 +1,3 @@
-// ignore_for_file: prefer_const_constructors
-
 import 'package:appartapp/classes/match_handler.dart';
 import 'package:appartapp/classes/user.dart';
 import 'package:appartapp/classes/first_arguments.dart';

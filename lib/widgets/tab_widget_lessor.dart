@@ -38,29 +38,19 @@ class TabWidgetLessor extends StatelessWidget {
           ),
 
           DisplayText(
-            title: "Nome e cognome",
-            content: currentLessor.name + " " + currentLessor.surname,
-            blurred: false,
-          ),
-          DisplayText(
-            title: "Su di me",
-            content: currentLessor.bio,
-            blurred: false,
-          ),
+              title: "Nome e cognome",
+              content: currentLessor.name + " " + currentLessor.surname),
+          DisplayText(title: "Su di me", content: currentLessor.bio),
           //PRIVATE INFORMATION
           currentLessor.gender == null
               ? SizedBox()
               : DisplayText(
                   title: "Sesso",
-                  content: "${currentLessor.gender.toItalianString()}",
-                  blurred: false,
-                ),
+                  content: "${currentLessor.gender.toItalianString()}"),
           DisplayText(
-            title: "Compleanno",
-            content:
-                "${currentLessor.birthday.day.toString().padLeft(2, '0')}-${currentLessor.birthday.month.toString().padLeft(2, '0')}-${currentLessor.birthday.year.toString()}",
-            blurred: false,
-          )
+              title: "Compleanno",
+              content:
+                  "${currentLessor.birthday.day.toString().padLeft(2, '0')}-${currentLessor.birthday.month.toString().padLeft(2, '0')}-${currentLessor.birthday.year.toString()}")
         ],
       );
 }

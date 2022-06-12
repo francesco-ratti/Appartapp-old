@@ -6,13 +6,8 @@ import 'package:google_fonts/google_fonts.dart';
 class DisplayText extends StatelessWidget {
   final String title;
   final String content;
-  bool blurred;
 
-  DisplayText(
-      {Key? key,
-      required this.title,
-      required this.content,
-      required this.blurred})
+  DisplayText({Key? key, required this.title, required this.content})
       : super(key: key);
 
   @override
@@ -26,16 +21,10 @@ class DisplayText extends StatelessWidget {
               title,
               style: GoogleFonts.nunito(color: Colors.white70, fontSize: 15),
             ),
-            blurred
-                ? Blur(
-                    blur: 0.5,
-                    child: Text("Content not available"),
-                    blurColor: Colors.transparent)
-                : Text(
-                    content,
-                    style:
-                        GoogleFonts.nunito(color: Colors.white, fontSize: 20),
-                  ),
+            Text(
+              content,
+              style: GoogleFonts.nunito(color: Colors.white, fontSize: 20),
+            ),
           ],
         ));
   }

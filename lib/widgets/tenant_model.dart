@@ -7,8 +7,10 @@ import 'package:flutter/material.dart';
 class TenantModel extends StatefulWidget {
   User currentTenant;
   bool lessor;
+  bool match;
 
-  TenantModel({required this.currentTenant, required this.lessor});
+  TenantModel(
+      {required this.currentTenant, required this.lessor, required this.match});
 
   @override
   _TenantModel createState() => _TenantModel();
@@ -57,8 +59,8 @@ class _TenantModel extends State<TenantModel> {
             }
           }
         },
-        child: //TODO solo se ancora senza like
-            !(widget.lessor) // not a lessor = tenant -> blur
+        child: //solo se ancora senza like
+            !(widget.lessor) && !widget.match // not a lessor = tenant -> blur
                 ? Blur(
                     blur: 12,
                     child: Stack(fit: StackFit.expand, children: <Widget>[

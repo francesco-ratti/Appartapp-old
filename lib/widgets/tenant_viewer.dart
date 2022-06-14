@@ -5,25 +5,35 @@ import 'package:appartapp/widgets/tenant_model.dart';
 import 'package:appartapp/widgets/tab_widget_tenant.dart';
 import 'package:appartapp/widgets/tab_widget_loading.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
-class TenantViewer extends StatelessWidget {
+class TenantViewer extends StatefulWidget {
   bool tenantLoaded;
   bool lessor; //if you want to visualize a lessor set true,
   LikeFromUser? currentLikeFromUser;
+  Function(bool value) updateUI;
+  bool match;
 
   TenantViewer(
       {Key? key,
       required this.tenantLoaded,
       required this.lessor,
-      this.currentLikeFromUser})
+      this.currentLikeFromUser,
+      required this.updateUI,
+      required this.match})
       : super(key: key);
 
+  @override
+  _TenantViewer createState() => _TenantViewer();
+}
+
+class _TenantViewer extends State<TenantViewer> {
   @override
   Widget build(BuildContext context) {
     return Container(
       color: RuntimeStore.backgroundColor,
-      child: (currentLikeFromUser == null)
+      child: (widget.currentLikeFromUser == null)
           ? (Center(
               child: Text(
               "Nessun nuovo utente",
@@ -35,29 +45,31 @@ class TenantViewer extends StatelessWidget {
                 topLeft: Radius.circular(24.0),
                 topRight: Radius.circular(24.0),
               ),
-              isDraggable: tenantLoaded,
-              panelBuilder: (scrollController) => !tenantLoaded
+              isDraggable: widget.tenantLoaded,
+              panelBuilder: (scrollController) => !widget.tenantLoaded
                   ? TabWidgetLoading()
-                  : lessor
+                  : widget.lessor
                       ? TabWidgetLessor(
                           scrollController: scrollController,
-                          currentLessor: currentLikeFromUser!.user)
+                          currentLessor: widget.currentLikeFromUser!.user)
                       : TabWidgetTenant(
                           scrollController: scrollController,
-                          currentTenant: currentLikeFromUser!.user,
-                          apartment: currentLikeFromUser!.apartment,
-                          locked: true,
+                          currentTenant: widget.currentLikeFromUser!.user,
+                          apartment: widget.currentLikeFromUser!.apartment,
+                          match: widget.match,
+                          updateUi: widget.updateUI,
                         ),
-              body: tenantLoaded
+              body: widget.tenantLoaded
                   ? TenantModel(
-                      currentTenant: currentLikeFromUser!.user,
-                      lessor: lessor,
-                    )
+                      currentTenant: widget.currentLikeFromUser!.user,
+                      lessor: widget.lessor,
+                      match: widget.match)
                   : Center(
                       child: CircularProgressIndicator(
                       value: null,
                     )),
-              defaultPanelState: lessor ? PanelState.CLOSED : PanelState.OPEN,
+              defaultPanelState:
+                  widget.lessor ? PanelState.CLOSED : PanelState.OPEN,
             ),
     );
   }

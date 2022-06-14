@@ -65,7 +65,7 @@ class MatchHandler {
             for (final Function(List<LessorMatch>?) cbk in updateCallbacks) {
               cbk(_currentMatches);
             }
-            unseenChanges = true;
+            if (newResData.isNotEmpty) unseenChanges = true;
           }
         }
       }

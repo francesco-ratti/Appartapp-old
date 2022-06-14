@@ -3,7 +3,6 @@ import 'package:appartapp/classes/enum_gender.dart';
 import 'package:appartapp/classes/enum_month.dart';
 import 'package:appartapp/classes/enum_temporalq.dart';
 import 'package:appartapp/classes/user.dart';
-import 'package:appartapp/pages/loginorsignup.dart';
 import 'package:appartapp/widgets/display_text.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -14,45 +13,31 @@ class TabWidgetTenant extends StatefulWidget {
   final User currentTenant;
   final ScrollController scrollController;
   Apartment? apartment;
-  bool locked;
+  bool match; //If there is no match, info should be locked
+  Function(bool value) updateUi;
 
   TabWidgetTenant(
       {Key? key,
       required this.scrollController,
       required this.currentTenant,
       this.apartment,
-      required this.locked});
+      required this.match,
+      required this.updateUi});
 
   @override
-  _TabWidgetTenant createState() => _TabWidgetTenant(
-      scrollController: scrollController,
-      currentTenant: currentTenant,
-      apartment: apartment,
-      locked: locked);
+  _TabWidgetTenant createState() => _TabWidgetTenant();
 }
 
 class _TabWidgetTenant extends State<TabWidgetTenant> {
-  final User currentTenant;
-  final ScrollController scrollController;
-  Apartment? apartment;
-  bool locked;
-
   int _pageIndex = 0;
-
-  _TabWidgetTenant(
-      {Key? key,
-      required this.scrollController,
-      required this.currentTenant,
-      this.apartment,
-      required this.locked});
 
   @override
   Widget build(BuildContext context) => ListView(
-        padding: EdgeInsets.all(6),
-        controller: scrollController,
+        padding: const EdgeInsets.all(6),
+        controller: widget.scrollController,
         //physics: Scroll,
         children: [
-          Divider(
+          const Divider(
             color: Colors.white,
             indent: 180,
             thickness: 2,
@@ -61,17 +46,17 @@ class _TabWidgetTenant extends State<TabWidgetTenant> {
           Row(
             children: [
               Container(
-                padding: EdgeInsets.fromLTRB(30, 10, 30, 10),
+                padding: const EdgeInsets.fromLTRB(30, 10, 30, 10),
                 child: Text(
-                  currentTenant.name,
+                  widget.currentTenant.name,
                   //textAlign: TextAlign.center,
                   style:
                       GoogleFonts.nunito(color: Colors.white70, fontSize: 30),
                 ),
               ),
-              Spacer(),
-              this.apartment == null
-                  ? SizedBox()
+              const Spacer(),
+              widget.apartment == null
+                  ? const SizedBox()
                   : Column(
                       children: [
                         ElevatedButton(
@@ -85,27 +70,28 @@ class _TabWidgetTenant extends State<TabWidgetTenant> {
                                       builder: (context) => Scaffold(
                                           appBar: AppBar(
                                             title: Text(
-                                                "${apartment?.listingTitle} "),
+                                                "${widget.apartment?.listingTitle} "),
                                             backgroundColor: Colors.brown,
                                           ),
                                           body: ApartmentViewer(
                                               apartmentLoaded: true,
-                                              currentApartment: apartment))));
+                                              currentApartment:
+                                                  widget.apartment))));
                             },
                             child: Container(
                                 width: 70,
                                 height: 70,
-                                child: apartment!.images[0] != null
+                                child: widget.apartment!.images[0] != null
                                     ? CircleAvatar(
                                         backgroundImage:
-                                            apartment!.images[0].image)
-                                    : Icon(
+                                            widget.apartment!.images[0].image)
+                                    : const Icon(
                                         Icons.apartment_rounded,
                                       ))),
                         Container(
-                          padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
-                          child: Text("${apartment?.listingTitle} ",
-                              style: TextStyle(color: Colors.white)),
+                          padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
+                          child: Text("${widget.apartment?.listingTitle} ",
+                              style: const TextStyle(color: Colors.white)),
                         ),
                       ],
                     ),
@@ -113,52 +99,59 @@ class _TabWidgetTenant extends State<TabWidgetTenant> {
           ),
           DisplayText(
               title: "Nome e cognome",
-              content: currentTenant.name + " " + currentTenant.surname),
-          DisplayText(title: "Su di me", content: currentTenant.bio),
+              content: widget.currentTenant.name +
+                  " " +
+                  widget.currentTenant.surname),
+          DisplayText(title: "Su di me", content: widget.currentTenant.bio),
           DisplayText(
-              title: "Perché cerco casa", content: currentTenant.reason),
-          currentTenant.month == null
-              ? SizedBox()
+              title: "Perché cerco casa", content: widget.currentTenant.reason),
+          widget.currentTenant.month == null
+              ? const SizedBox()
               : DisplayText(
                   title: "A partire da",
-                  content: currentTenant.month!.toShortString()),
+                  content: widget.currentTenant.month!.toShortString()),
           DisplayText(
-              title: "Cosa faccio nella vita", content: currentTenant.job),
+              title: "Cosa faccio nella vita",
+              content: widget.currentTenant.job),
           DisplayText(
-              title: "Le mie entrate mensili", content: currentTenant.income),
-          currentTenant.smoker == null
-              ? SizedBox()
+              title: "Le mie entrate mensili",
+              content: widget.currentTenant.income),
+          widget.currentTenant.smoker == null
+              ? const SizedBox()
               : DisplayText(
                   title: "Fumatore",
-                  content: currentTenant.smoker!.toItalianString()),
+                  content: widget.currentTenant.smoker!.toItalianString()),
           DisplayText(
               title: "Animali",
-              content: currentTenant.pets.isEmpty ? "No" : currentTenant.pets),
+              content: widget.currentTenant.pets.isEmpty
+                  ? "No"
+                  : widget.currentTenant.pets),
 
           //PRIVATE INFORMATION
 
-          currentTenant.gender == null
-              ? SizedBox()
-              : locked
+          widget.currentTenant.gender == null
+              ? const SizedBox()
+              : !widget.match
                   ? DisplayText(title: "Sesso", content: "Non è importante!")
                   : DisplayText(
                       title: "Sesso",
-                      content: "${currentTenant.gender.toItalianString()}"),
-          locked
+                      content:
+                          "${widget.currentTenant.gender.toItalianString()}"),
+          !widget.match
               ? DisplayText(title: "Compleanno", content: "Non è importante!")
               : DisplayText(
                   title: "Compleanno",
                   content:
-                      "${currentTenant.birthday.day.toString().padLeft(2, '0')}-${currentTenant.birthday.month.toString().padLeft(2, '0')}-${currentTenant.birthday.year.toString()}"),
-          locked
+                      "${widget.currentTenant.birthday.day.toString().padLeft(2, '0')}-${widget.currentTenant.birthday.month.toString().padLeft(2, '0')}-${widget.currentTenant.birthday.year.toString()}"),
+          !widget.match
               ? Wrap(
                   alignment: WrapAlignment.center,
                   children: [
                     Container(
-                      padding: EdgeInsets.fromLTRB(20, 40, 20, 3),
+                      padding: const EdgeInsets.fromLTRB(20, 40, 20, 3),
                       child: Text(
                         "Sblocca questo profilo, diremo a " +
-                            currentTenant.name +
+                            widget.currentTenant.name +
                             " che il suo profilo ti interessa!",
                         style: GoogleFonts.nunito(
                             color: Colors.white70, fontSize: 15),
@@ -166,22 +159,21 @@ class _TabWidgetTenant extends State<TabWidgetTenant> {
                     ),
                     FloatingActionButton(
                         backgroundColor: Colors.brown,
-                        child: Icon(Icons.lock_open_rounded),
-                        onPressed: () {
-                          setState(() {
-                            locked = false;
-                          });
+                        child: const Icon(Icons.lock_open_rounded),
+                        onPressed: () async {
+                          //LIKE
+                          widget.updateUi(true); //match true
                         }),
-                    SizedBox(height: 130),
+                    const SizedBox(height: 130),
                   ],
                 )
               : Container(
-                  child: Icon(
+                  child: const Icon(
                     Icons.check,
                     color: Colors.green,
                     size: 50,
                   ),
-                  padding: EdgeInsets.fromLTRB(0, 40, 0, 70),
+                  padding: const EdgeInsets.fromLTRB(0, 40, 0, 70),
                 )
         ],
       );

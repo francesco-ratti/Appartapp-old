@@ -18,6 +18,10 @@ class TabWidget extends StatelessWidget {
     this.owner,
   }) : super(key: key);
 
+  void updateUI(bool value) {
+    //DO NOT DO ANYTHING HERE
+  }
+
   @override
   Widget build(BuildContext context) => ListView(
         padding: EdgeInsets.all(6),
@@ -66,6 +70,8 @@ class TabWidget extends StatelessWidget {
                                             lessor: true,
                                             currentLikeFromUser:
                                                 LikeFromUser(null, owner!),
+                                            updateUI: updateUI,
+                                            match: false,
                                           ))));
                             },
                             child: Container(

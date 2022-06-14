@@ -39,7 +39,7 @@ class _HomeParent extends State<HomeParent> {
     return Scaffold(
       body: Stack(children: <Widget>[
         Home(),
-        currentMatches != null && !pressed
+        currentMatches != null && currentMatches!.isNotEmpty && !pressed
             ? CupertinoAlertDialog(
                 title: const Text("Nuovo match!"),
                 actions: [

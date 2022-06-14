@@ -26,6 +26,14 @@ class Tenants extends StatefulWidget {
 class _Tenants extends State<Tenants> {
   int _currentRoute = 0;
 
+  bool match = false;
+
+  void updateUI(bool value) {
+    setState(() {
+      match = value;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Navigator(
@@ -42,6 +50,9 @@ class _Tenants extends State<Tenants> {
                 ),
                 child: ContentPage(
                   currentTenantFuture: widget.firstTenantFuture,
+                  updateUI: updateUI,
+                  match: match,
+                  whoCreatedMe: "Tenants creation",
                 ));
           },
         );
@@ -51,6 +62,9 @@ class _Tenants extends State<Tenants> {
 }
 
 class ContentPage extends StatefulWidget {
+  bool match;
+  String whoCreatedMe;
+
   final likeUrlStr =
       "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/likeuser";
   final ignoreUrlStr =
@@ -97,12 +111,17 @@ class ContentPage extends StatefulWidget {
   }
 
   Future<LikeFromUser?> currentTenantFuture;
+  Function(bool value) updateUI;
+
 //Function updateHouses;
+
   @override
   _ContentPage createState() => _ContentPage();
-  ContentPage({
-    required this.currentTenantFuture,
-  });
+  ContentPage(
+      {required this.currentTenantFuture,
+      required this.updateUI,
+      required this.match,
+      required this.whoCreatedMe});
 }
 
 class _ContentPage extends State<ContentPage> {
@@ -165,6 +184,7 @@ class _ContentPage extends State<ContentPage> {
               return DismissiblePage(
                   //backgroundColor: Colors.white,
                   onDismissed: () {
+                    widget.updateUI(false);
                     if (currentTenant != null) {
                       if (finalCoord < initialCoord) {
                         widget.likeTenant(currentTenant!.user.id,
@@ -181,9 +201,14 @@ class _ContentPage extends State<ContentPage> {
                         MaterialPageRoute(
                             builder: (context) => ContentPage(
                                   currentTenantFuture: nextTenantFuture,
+                                  updateUI: widget.updateUI,
+                                  match: widget.match,
+                                  whoCreatedMe: "Content creation",
                                 )));
                   },
-                  direction: DismissiblePageDismissDirection.horizontal,
+                  direction: widget.match
+                      ? DismissiblePageDismissDirection.endToStart
+                      : DismissiblePageDismissDirection.horizontal,
                   onDragUpdate: (double value) {
                     if (firstDrag) {
                       initialCoord = value;
@@ -198,6 +223,8 @@ class _ContentPage extends State<ContentPage> {
                     tenantLoaded: tenantLoaded,
                     lessor: false,
                     currentLikeFromUser: currentTenant,
+                    updateUI: widget.updateUI,
+                    match: widget.match,
                   ));
             });
       },

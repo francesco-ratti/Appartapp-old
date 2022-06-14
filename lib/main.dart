@@ -5,7 +5,6 @@ import 'package:appartapp/widgets/home_parent.dart';
 import 'package:flutter/material.dart';
 
 import 'package:appartapp/pages/loading.dart';
-import 'package:appartapp/pages/home.dart';
 import 'package:appartapp/pages/first.dart';
 
 import 'pages/edit_password.dart';

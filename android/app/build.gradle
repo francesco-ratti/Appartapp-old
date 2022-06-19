@@ -58,10 +58,12 @@ android {
 
     defaultConfig {
         applicationId "com.polimi.mrf.appartapp"
-        minSdkVersion flutter.minSdkVersion
+        //minSdkVersion flutter.minSdkVersion
+        minSdkVersion 19
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
+        multiDexEnabled true
     }
 
     buildTypes {
@@ -72,7 +74,9 @@ android {
         }
     }
 }
-
+dependencies {
+    implementation("androidx.multidex:multidex:2.0.1")
+}
 flutter {
     source '../..'
 }

@@ -1,6 +1,7 @@
 import 'package:appartapp/pages/edit_tenant.dart';
 import 'package:appartapp/pages/login.dart';
 import 'package:appartapp/pages/matches.dart';
+import 'package:appartapp/pages/sign_in_screen.dart';
 import 'package:appartapp/widgets/home_parent.dart';
 import 'package:flutter/material.dart';
 
@@ -28,6 +29,7 @@ void main() {
       '/editpassword': (context) => EditPassword(),
       '/edittenants': (context) => EditTenant(),
       '/matches': (context) => Matches(),
+      '/googlesignup': (context) => SignInScreen(),
     },
   ));
 }

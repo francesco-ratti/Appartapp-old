@@ -1,11 +1,52 @@
-import 'package:appartapp/pages/user_info_screen.dart';
+import 'package:appartapp/classes/enum_loginresult.dart';
+import 'package:appartapp/classes/runtime_store.dart';
+import 'package:appartapp/classes/user.dart' as AppUser;
+import 'package:firebase_auth/firebase_auth.dart' as Fb;
+
+import 'package:appartapp/pages/loading.dart';
 import 'package:appartapp/utils/authentication.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class GoogleSignInButton extends StatefulWidget {
+  String urlStr = "http://192.168.20.108:8080/appartapp_war_exploded/api/login";
+
   @override
   _GoogleSignInButtonState createState() => _GoogleSignInButtonState();
+
+  Future<List> signIn(Fb.User user) async {
+    String idToken=await user.getIdToken();
+    var dio = RuntimeStore().dio;
+    try {
+      Response response = await dio.post(
+        urlStr,
+        data: {"idtoken": idToken},
+        options: Options(
+          contentType: Headers.formUrlEncodedContentType,
+          headers: {"Content-Type": "application/x-www-form-urlencoded"},
+        ),
+      );
+
+      if (response.statusCode != 200) {
+        if (response.statusCode == 401)
+          return [null,LoginResult.wrong_credentials];
+        else
+          return [null,LoginResult.server_error];
+      }
+      else {
+        Map responseMap = response.data;
+        AppUser.User user=AppUser.User.fromMap(responseMap);
+
+        return [user, LoginResult.ok];
+      }
+    } on DioError catch (e) {
+      if (e.response?.statusCode == 401)
+        return [null, LoginResult.wrong_credentials];
+      else
+        return [null, LoginResult.server_error];
+    }
+  }
 }
 
 class _GoogleSignInButtonState extends State<GoogleSignInButton> {
@@ -33,21 +74,23 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
             _isSigningIn = true;
           });
 
-          User? user =
+          Fb.User? gUser =
           await Authentication.signInWithGoogle(context: context);
 
           setState(() {
             _isSigningIn = false;
           });
 
-          if (user != null) {
-            Navigator.of(context).pushReplacement(
-              MaterialPageRoute(
-                builder: (context) => UserInfoScreen(
-                  user: user,
-                ),
-              ),
-            );
+          if (gUser != null) {
+            List res=await widget.signIn(gUser);
+            AppUser.User appUser=res[0];
+            LoginResult loginResult=res[1];
+            switch (loginResult) {
+              case LoginResult.ok:
+                doInitialisation(context, appUser, RuntimeStore().getSharedPreferences() as SharedPreferences);
+                break;
+                //TODO implement other case
+            }
           }
         },
         child: Padding(

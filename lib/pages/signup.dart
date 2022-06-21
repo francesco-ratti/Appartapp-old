@@ -1,11 +1,12 @@
 import 'package:appartapp/classes/enum_gender.dart';
+import 'package:appartapp/classes/runtime_store.dart';
 import 'package:flutter/material.dart';
 
 //import './../SimpleTextField.dart';
 import 'package:dio/dio.dart';
 
 class Signup extends StatefulWidget {
-  String urlStr = "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/signup";
+  String urlStr = "http://192.168.20.108:8080/appartapp_war_exploded/api/signup";
 
   @override
   _SignupState createState() => _SignupState();
@@ -14,7 +15,7 @@ class Signup extends StatefulWidget {
 class _SignupState extends State<Signup> {
   void doSignup(Function(String) updateUi, String email, String password,
       String name, String surname, DateTime birthday, Gender gender) async {
-    var dio = Dio();
+    var dio = RuntimeStore().dio;
     try {
       Response response = await dio.post(
         widget.urlStr,

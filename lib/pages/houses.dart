@@ -78,19 +78,15 @@ class _Houses extends State<Houses> {
 
 class ContentPage extends StatefulWidget {
 
-  final likeUrlStr="http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/likeapartment";
-  final ignoreUrlStr="http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/ignoreapartment";
+  final likeUrlStr="http://192.168.20.108:8080/appartapp_war_exploded/api/reserved/likeapartment";
+  final ignoreUrlStr="http://192.168.20.108:8080/appartapp_war_exploded/api/reserved/ignoreapartment";
 
   Future<void> _networkFunction(String urlString, int apartmentId) async {
-    Credentials? credentials=RuntimeStore().getCredentials();
-    if (credentials!=null) {
-      var dio = Dio();
+    var dio = RuntimeStore().dio;
       try {
         Response response = await dio.post(
           urlString,
           data: {
-            "email": credentials.email,
-            "password": credentials.password,
             "apartmentid": apartmentId,
           },
           options: Options(
@@ -109,7 +105,6 @@ class ContentPage extends StatefulWidget {
           print("Failure");
         }
       }
-    }
   }
 
   void likeApartment(int apartmentId) async {

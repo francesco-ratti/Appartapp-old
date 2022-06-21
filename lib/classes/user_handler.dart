@@ -12,9 +12,9 @@ class UserHandler {
   //useful as singleton since network functions will store session cookie here, in cookie jar
 
   final String urlStrGetNextNewUser =
-      "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/getnextnewuser";
+      "http://192.168.20.108:8080/appartapp_war_exploded/api/reserved/getnextnewuser";
   final String urlStrGetAllNewUsers =
-      "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/getallnewusers";
+      "http://192.168.20.108:8080/appartapp_war_exploded/api/reserved/getallnewusers";
 
   static final UserHandler _user = UserHandler._internal();
 
@@ -27,16 +27,11 @@ class UserHandler {
   Future<LikeFromUser?> getNewLikeFromUser(Function(LikeFromUser) callback) async {
     //TODO test
 
-    var dio = Dio();
-    dio.interceptors.add(CookieManager(RuntimeStore().cookieJar));
+    var dio = RuntimeStore().dio;
 
     try {
       Response response = await dio.post(
         urlStrGetNextNewUser,
-        data: {
-          "email": RuntimeStore().getEmail(),
-          "password": RuntimeStore().getPassword()
-        },
         options: Options(
           contentType: Headers.formUrlEncodedContentType,
           headers: {"Content-Type": "application/x-www-form-urlencoded"},

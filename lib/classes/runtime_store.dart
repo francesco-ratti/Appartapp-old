@@ -1,9 +1,13 @@
 
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:appartapp/classes/user.dart';
 import 'package:appartapp/classes/apartment.dart';
 import 'package:cookie_jar/cookie_jar.dart';
+import 'package:dio/dio.dart';
+import 'package:dio_cookie_manager/dio_cookie_manager.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'credentials.dart';
@@ -34,11 +38,12 @@ class RuntimeStore {
   }
 
   //useful as singleton since this will be our temporary application state store
-  Credentials? _credentials=null;
 
   User? _user=null;
 
-  CookieJar cookieJar=CookieJar();
+  late CookieJar cookieJar;
+
+  Dio dio=Dio();
 
   SharedPreferences? _sharedPreferences=null;
 
@@ -58,23 +63,9 @@ class RuntimeStore {
     _sharedPreferences=sharedPreferences;
   }
 
-  void setCredentialsByString(String email, String password) {
-    _credentials=new Credentials(email: email, password: password);
-  }
-
-  void setCredentials(Credentials? credentials) {
-    _credentials=credentials;
-  }
-
-  Credentials? getCredentials() {
-    return _credentials;
-  }
-
-  String? getEmail() {
-    return _credentials?.email;
-  }
-
-  String? getPassword() {
-    return _credentials?.password;
+  Future<void> initDio() async {
+    Directory appDocDir = await getApplicationDocumentsDirectory();
+    this.cookieJar=PersistCookieJar(storage: FileStorage(appDocDir.path + '/.cookies/'));
+    dio.interceptors.add(CookieManager(RuntimeStore().cookieJar));
   }
 }

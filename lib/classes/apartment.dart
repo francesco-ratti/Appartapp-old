@@ -43,7 +43,7 @@ class Apartment {
     for (final Map im in imagesDetails) {
       images.add(
           Image.network(
-            'http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/images/apartments/${im['id']}',
+            'http://192.168.20.108:8080/appartapp_war_exploded/api/images/apartments/${im['id']}',
             loadingBuilder: (BuildContext context, Widget child,
                 ImageChunkEvent? loadingProgress) {
               if (loadingProgress == null) {
@@ -95,13 +95,12 @@ class Apartment {
 
 
   void _performRequest(String urlStr) async {
-    var dio = Dio();
-    dio.interceptors.add(CookieManager(RuntimeStore().cookieJar));
+    var dio = RuntimeStore().dio;
 
     try {
       Response response = await dio.post(
         urlStr,
-        data: {"email": RuntimeStore().getEmail(), "password": RuntimeStore().getPassword(), "apartmentid": this.id},
+        data: {"apartmentid": this.id},
         options: Options(
           contentType: Headers.formUrlEncodedContentType,
           headers: {"Content-Type": "application/x-www-form-urlencoded"},

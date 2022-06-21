@@ -15,7 +15,7 @@ class MatchHandler {
   MatchHandler._internal();
 
   static final urlStr =
-      "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/getmatchedapartments";
+      "http://192.168.20.108:8080/appartapp_war_exploded/api/reserved/getmatchedapartments";
   List<LessorMatch>? _currentMatches = null;
   List? oldResData = null;
 
@@ -31,14 +31,10 @@ class MatchHandler {
 
   Future<void> doUpdate(Function(List<LessorMatch>?) callback) async {
     //TODO make it return user instead of credentials
-    var dio = Dio();
+    var dio = RuntimeStore().dio;
     try {
       Response response = await dio.post(
         urlStr,
-        data: {
-          "email": RuntimeStore().getEmail(),
-          "password": RuntimeStore().getPassword()
-        },
         options: Options(
           contentType: Headers.formUrlEncodedContentType,
           headers: {"Content-Type": "application/x-www-form-urlencoded"},

@@ -7,7 +7,7 @@ import 'package:appartapp/classes/enum_temporalq.dart';
 
 class EditTenant extends StatefulWidget {
   String urlStr =
-      "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/edituser";
+      "http://192.168.20.108:8080/appartapp_war_exploded/api/reserved/edituser";
   Color bgColor = Colors.white;
 
   User user = RuntimeStore().getUser() as User;
@@ -33,13 +33,11 @@ class _EditTenantState extends State<EditTenant> {
       String pets,
       Month? month,
       TemporalQ? smoker) async {
-    var dio = Dio();
+    var dio = RuntimeStore().dio;
     try {
       Response response = await dio.post(
         widget.urlStr,
         data: {
-          "email": RuntimeStore().getEmail(),
-          "password": RuntimeStore().getPassword(),
           "bio": bio,
           "reason": reason,
           "job": job,
@@ -86,7 +84,6 @@ class _EditTenantState extends State<EditTenant> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
 
     if (widget.user.bio.isNotEmpty) bioController.text = widget.user.bio;

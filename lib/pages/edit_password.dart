@@ -5,7 +5,7 @@ import 'package:appartapp/classes/runtime_store.dart';
 class EditPassword extends StatefulWidget {
   Color bgColor = Colors.white;
   String urlStr =
-      "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/edituser";
+      "http://192.168.20.108:8080/appartapp_war_exploded/api/reserved/edituser";
 
   @override
   _EditPasswordState createState() => _EditPasswordState();
@@ -20,12 +20,12 @@ class _EditPasswordState extends State<EditPassword> {
 
   void doUpdate(Function(String) updateUi, String email, String oldpassword,
       String newpassword) async {
-    var dio = Dio();
+    var dio = RuntimeStore().dio;
     try {
       Response response = await dio.post(
         widget.urlStr,
         data: {
-          "email": email,
+          "email": email, //TODO
           "password": oldpassword,
           "newpassword": newpassword
         },
@@ -40,13 +40,6 @@ class _EditPasswordState extends State<EditPassword> {
       else {
         updateUi("Updated");
         Map responseMap = response.data;
-
-        RuntimeStore().setCredentialsByString(
-            responseMap["email"], responseMap["password"]);
-        RuntimeStore()
-            .getSharedPreferences()
-            ?.setString("password", responseMap["password"]);
-        //RuntimeStore().setUser(User.fromMap(responseMap));
 
         Navigator.pop(context);
       }
@@ -136,7 +129,7 @@ class _EditPasswordState extends State<EditPassword> {
                     setState(() {
                       status = toWrite;
                     });
-                  }, RuntimeStore().getEmail() ?? "", oldPassword, newPassword);
+                  }, RuntimeStore().getUser()?.email ?? "", oldPassword, newPassword);
                 }
               }),
           Padding(

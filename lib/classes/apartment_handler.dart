@@ -12,11 +12,11 @@ class ApartmentHandler {
   //useful as singleton since network functions will store session cookie here, in cookie jar
 
   final String urlStrGetNextNewApartment =
-      "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/getnextnewapartment";
+      "http://192.168.20.108:8080/appartapp_war_exploded/api/reserved/getnextnewapartment";
   final String urlStrGetAllNewApartments =
-      "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/getallnewapartments";
+      "http://192.168.20.108:8080/appartapp_war_exploded/api/reserved/getallnewapartments";
   final String urlStrGetOwnedApartments =
-      "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/getownedapartments";
+      "http://192.168.20.108:8080/appartapp_war_exploded/api/reserved/getownedapartments";
 
   static final ApartmentHandler _apartment = ApartmentHandler._internal();
 
@@ -27,12 +27,11 @@ class ApartmentHandler {
   ApartmentHandler._internal();
 
   Future<List<Apartment>> getOwnedApartments() async {
-    var dio = Dio();
+    var dio = RuntimeStore().dio;
 
     try {
       Response response = await dio.post(
         urlStrGetOwnedApartments,
-        data: {"email": RuntimeStore().getEmail(), "password": RuntimeStore().getPassword()},
         options: Options(
           contentType: Headers.formUrlEncodedContentType,
           headers: {"Content-Type": "application/x-www-form-urlencoded"},
@@ -63,13 +62,11 @@ class ApartmentHandler {
   Future<Apartment?> getNewApartment(Function(Apartment) callback) async {
     //TODO test
 
-    var dio = Dio();
-    dio.interceptors.add(CookieManager(RuntimeStore().cookieJar));
+    var dio = RuntimeStore().dio;
 
     try {
       Response response = await dio.post(
         urlStrGetNextNewApartment,
-        data: {"email": RuntimeStore().getEmail(), "password": RuntimeStore().getPassword()},
         options: Options(
           contentType: Headers.formUrlEncodedContentType,
           headers: {"Content-Type": "application/x-www-form-urlencoded"},

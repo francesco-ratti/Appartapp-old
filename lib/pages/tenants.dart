@@ -66,21 +66,17 @@ class ContentPage extends StatefulWidget {
   String whoCreatedMe;
 
   final likeUrlStr =
-      "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/likeuser";
+      "http://192.168.20.108:8080/appartapp_war_exploded/api/reserved/likeuser";
   final ignoreUrlStr =
-      "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/ignoreuser";
+      "http://192.168.20.108:8080/appartapp_war_exploded/api/reserved/ignoreuser";
 //------------------------
   Future<void> _networkFunction(
       String urlString, int userId, int apartmentId) async {
-    Credentials? credentials = RuntimeStore().getCredentials();
-    if (credentials != null) {
-      var dio = Dio();
+    var dio = RuntimeStore().dio;
       try {
         Response response = await dio.post(
           urlString,
           data: {
-            "email": credentials.email,
-            "password": credentials.password,
             "userid": userId, //the tenant I like or ignore
             "apartmentid": apartmentId
           },
@@ -98,7 +94,6 @@ class ContentPage extends StatefulWidget {
         if (e.response?.statusCode != 200) {
           print("Failure");
         }
-      }
     }
   }
 

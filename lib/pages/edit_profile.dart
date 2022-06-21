@@ -12,11 +12,11 @@ import 'package:dio/dio.dart';
 
 class EditProfile extends StatefulWidget {
   String urlStr =
-      "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/edituser";
+      "http://192.168.20.108:8080/appartapp_war_exploded/api/reserved/edituser";
   String addImagesUrlStr =
-      "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/adduserimage";
+      "http://192.168.20.108:8080/appartapp_war_exploded/api/reserved/adduserimage";
   String removeImagesUrlStr =
-      "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/deleteuserimage";
+      "http://192.168.20.108:8080/appartapp_war_exploded/api/reserved/deleteuserimage";
   Color bgColor = Colors.white;
 
   @override
@@ -27,14 +27,10 @@ class _EditProfileState extends State<EditProfile> {
   List<File> _images = <File>[];
   List<Function> _onSubmitCbks = <Function>[];
 
-  void addImages(Function(String) updateUi, String oldemail, String oldpassword,
-      List<File> files) async {
-    var dio = Dio();
+  void addImages(Function(String) updateUi, List<File> files) async {
+    var dio = RuntimeStore().dio;
     try {
       var formData = FormData();
-
-      formData.fields.add(MapEntry("email", oldemail));
-      formData.fields.add(MapEntry("password", oldpassword));
 
       for (final File file in files) {
         MultipartFile mpfile =
@@ -73,13 +69,11 @@ class _EditProfileState extends State<EditProfile> {
   }
 
   void removeImage(Function(String) updateUi, String id) async {
-    var dio = Dio();
+    var dio = RuntimeStore().dio;
     try {
       Response response = await dio.post(
         widget.removeImagesUrlStr,
         data: {
-          "email": RuntimeStore().getEmail(),
-          "password": RuntimeStore().getPassword(),
           "id": id
         },
         options: Options(
@@ -109,13 +103,14 @@ class _EditProfileState extends State<EditProfile> {
       String surname,
       DateTime birthday,
       Gender gender) async {
-    var dio = Dio();
+    var dio = RuntimeStore().dio;
     try {
       Response response = await dio.post(
         widget.urlStr,
         data: {
-          "email": oldemail,
-          "password": oldpassword,
+          //TODO
+//          "email": oldemail,
+//          "password": oldpassword,
           "newemail": email,
           "name": name,
           "surname": surname,
@@ -134,8 +129,6 @@ class _EditProfileState extends State<EditProfile> {
         updateUi("Updated");
         Map responseMap = response.data;
 
-        RuntimeStore().setCredentialsByString(
-            responseMap["email"], responseMap["password"]);
         RuntimeStore().setUser(User.fromMap(responseMap));
       }
     } on DioError catch (e) {
@@ -189,7 +182,7 @@ class _EditProfileState extends State<EditProfile> {
         .imagesDetails) {
       existingImages.add(
           GalleryImage(Image.network(
-            'http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/images/users/${im['id']}',
+            'http://192.168.20.108:8080/appartapp_war_exploded/api/images/users/${im['id']}',
             loadingBuilder: (BuildContext context, Widget child,
                 ImageChunkEvent? loadingProgress) {
               if (loadingProgress == null) {
@@ -340,14 +333,13 @@ class _EditProfileState extends State<EditProfile> {
                 }
 
                 if (_images.isNotEmpty)
-                  addImages((p0) => null, RuntimeStore().getEmail() ?? email,
-                      password, _images);
+                  addImages((p0) => null, _images);
 
                 doUpdate((String toWrite) {
                   setState(() {
                     status = toWrite;
                   });
-                }, RuntimeStore().getEmail() ?? email, email, password, name,
+                }, RuntimeStore().getUser()?.email ?? email, email, password, name,
                     surname, _birthday, _gender as Gender);
               } else {
                 setState(() {
@@ -378,10 +370,8 @@ class _EditProfileState extends State<EditProfile> {
             child: Text("Esci"),
             style: ElevatedButton.styleFrom(primary: Colors.red),
             onPressed: () {
-              RuntimeStore().setCredentials(null);
-              RuntimeStore().getSharedPreferences()?.remove("email");
-              RuntimeStore().getSharedPreferences()?.remove("password");
-              RuntimeStore().cookieJar = CookieJar();
+              RuntimeStore().getSharedPreferences()?.remove("logged");
+              RuntimeStore().cookieJar.deleteAll();
               RuntimeStore().matchHandler.stopPeriodicUpdate();
               Navigator.pushReplacementNamed(context, "/loginorsignup");
             }),

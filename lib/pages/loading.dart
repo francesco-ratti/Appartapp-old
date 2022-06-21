@@ -9,23 +9,21 @@ import 'package:appartapp/classes/user_handler.dart';
 import 'package:appartapp/classes/credentials.dart';
 import 'package:appartapp/classes/enum_loginresult.dart';
 import 'package:appartapp/classes/runtime_store.dart';
+import 'package:cookie_jar/cookie_jar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-void doInitialisation(BuildContext context, Credentials credentials, User user,
-    SharedPreferences prefs) async {
-  RuntimeStore().setCredentials(credentials);
-  RuntimeStore().setUser(user);
+void doInitialisation(BuildContext context, User user, SharedPreferences sharedPreferences) async {
+  sharedPreferences.setBool("logged", true);
 
-  prefs.setString("email", credentials.email);
-  prefs.setString("password", credentials.password);
+  RuntimeStore().setUser(user);
 
   RuntimeStore().matchHandler = MatchHandler();
   RuntimeStore().matchHandler.startPeriodicUpdate();
 
   Apartment? firstApartment =
-      await ApartmentHandler().getNewApartment((Apartment apartment) {
+  await ApartmentHandler().getNewApartment((Apartment apartment) {
     for (final Image im in apartment.images) {
       precacheImage(im.image, context);
     }
@@ -42,7 +40,7 @@ void doInitialisation(BuildContext context, Credentials credentials, User user,
 //     arguments: firstApartmentFuture);
 
   LikeFromUser? firstTenant =
-      await UserHandler().getNewLikeFromUser((LikeFromUser likeFromUser) {
+  await UserHandler().getNewLikeFromUser((LikeFromUser likeFromUser) {
     for (final Image im in likeFromUser.user.images) {
       precacheImage(im.image, context);
     }
@@ -53,7 +51,7 @@ void doInitialisation(BuildContext context, Credentials credentials, User user,
   });
 
   FirstArguments firstArguments =
-      FirstArguments(firstApartmentFuture, firstTenantFuture);
+  FirstArguments(firstApartmentFuture, firstTenantFuture);
 
   Navigator.pushReplacementNamed(context, '/home', arguments: firstArguments);
 }
@@ -69,32 +67,34 @@ class _LoadingState extends State<Loading> {
     RuntimeStore().setSharedPreferences(prefs);
     //await Future.delayed(Duration(seconds: 1));
     bool? TourCompleted = prefs.getBool('tourcompleted');
-    if (TourCompleted != null && TourCompleted) {
-      String? email = prefs.getString("email");
-      String? password = prefs.getString("password");
-
-      if (email == null || password == null) {
-        Navigator.pushReplacementNamed(context, '/loginorsignup');
+    bool? logged=prefs.getBool('logged');
+    RuntimeStore().initDio().then((value) {
+      if (TourCompleted != null && TourCompleted) {
+        if (logged==null || logged==false) {
+          Navigator.pushReplacementNamed(context, '/loginorsignup');
+        } else {
+          LoginHandler.doLoginWithCookies().then((res) async {
+            User user = res[0];
+            LoginResult loginResult = res[1];
+            switch (loginResult) {
+              case LoginResult.ok:
+                doInitialisation(context, user, prefs);
+                break;
+              case LoginResult.wrong_credentials:
+                Navigator.pushReplacementNamed(context, '/loginorsignup');
+                break;
+              case LoginResult.server_error:
+                print("internal server error");
+                break;
+              default:
+              //TODO showerror: network error
+            }
+          });
+        }
       } else {
-        LoginHandler.doLogin(email, password).then((res) async {
-          Credentials credentials = res[0];
-          User user = res[1];
-          LoginResult loginResult = res[2];
-          switch (loginResult) {
-            case LoginResult.ok:
-              doInitialisation(context, credentials, user, prefs);
-              break;
-            case LoginResult.wrong_credentials:
-              Navigator.pushReplacementNamed(context, '/loginorsignup');
-              break;
-            default:
-            //TODO showerror: network error
-          }
-        });
+        Navigator.pushReplacementNamed(context, '/first', arguments: prefs);
       }
-    } else {
-      Navigator.pushReplacementNamed(context, '/first', arguments: prefs);
-    }
+    });
   }
 
   @override

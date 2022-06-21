@@ -18,17 +18,17 @@ class AddApartment extends StatefulWidget {
   State<AddApartment> createState() => _AddApartment(toEdit);
 
   final String urlStr =
-      "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/createapartment";
+      "http://192.168.20.108:8080/appartapp_war_exploded/api/reserved/createapartment";
 
   final String editApartmentUrlStr =
-      "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/editapartment";
+      "http://192.168.20.108:8080/appartapp_war_exploded/api/reserved/editapartment";
 
   final String removeImagesUrlStr =
-      "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/deleteapartmentimage";
+      "http://192.168.20.108:8080/appartapp_war_exploded/api/reserved/deleteapartmentimage";
 
 
   final String addImagesUrlStr =
-      "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/addapartmentimage";
+      "http://192.168.20.108:8080/appartapp_war_exploded/api/reserved/addapartmentimage";
 }
 
 class _AddApartment extends State<AddApartment> {
@@ -45,51 +45,45 @@ class _AddApartment extends State<AddApartment> {
       int price,
       String address,
       List<File> files) async {
-    var dio = Dio();
+    var dio = RuntimeStore().dio;
     try {
       var formData = FormData();
 
-      Credentials? credentials = RuntimeStore().getCredentials();
-      if (credentials != null) {
-        formData.fields.add(MapEntry("email", credentials.email));
-        formData.fields.add(MapEntry("password", credentials.password));
 
-        formData.fields.add(MapEntry("listingtitle", listingTitle));
-        formData.fields.add(MapEntry("description", description));
-        formData.fields
-            .add(MapEntry("additionalexpensedetail", additionalExpenseDetail));
-        formData.fields.add(MapEntry("price", price.toString()));
-        formData.fields.add(MapEntry("address", address));
+      formData.fields.add(MapEntry("listingtitle", listingTitle));
+      formData.fields.add(MapEntry("description", description));
+      formData.fields
+          .add(MapEntry("additionalexpensedetail", additionalExpenseDetail));
+      formData.fields.add(MapEntry("price", price.toString()));
+      formData.fields.add(MapEntry("address", address));
 
-        for (final File file in files) {
-          MultipartFile mpfile =
-          await MultipartFile.fromFile(file.path, filename: "filename.jpg");
-          formData.files.add(MapEntry("images", mpfile));
-        }
+      for (final File file in files) {
+        MultipartFile mpfile =
+        await MultipartFile.fromFile(file.path, filename: "filename.jpg");
+        formData.files.add(MapEntry("images", mpfile));
+      }
 
-        Response response = await dio.post(
-          widget.urlStr,
-          data: formData,
-          options: Options(
-            contentType: Headers.formUrlEncodedContentType,
-            headers: {"Content-Type": "multipart/form-data"},
-          ),
-        );
+      Response response = await dio.post(
+        widget.urlStr,
+        data: formData,
+        options: Options(
+          contentType: Headers.formUrlEncodedContentType,
+          headers: {"Content-Type": "multipart/form-data"},
+        ),
+      );
 
-        if (response.statusCode != 200) {
-          if (response.statusCode == 401) {
-            updateUi("Non autorizzato");
-            throw new UnauthorizedException();
-          } else {
-            updateUi("Errore interno");
-            return;
-          }
+      if (response.statusCode != 200) {
+        if (response.statusCode == 401) {
+          updateUi("Non autorizzato");
+          throw new UnauthorizedException();
         } else {
-          print("added");
-          Navigator.pop(context);
+          updateUi("Errore interno");
+          return;
         }
-      } else
-        throw new UnauthorizedException();
+      } else {
+        print("added");
+        Navigator.pop(context);
+      }
     } on DioError catch (e) {
       if (e.response?.statusCode == 401) {
         updateUi("Non autorizzato");
@@ -101,14 +95,11 @@ class _AddApartment extends State<AddApartment> {
   }
 
   void removeImage(Function(String) updateUi, String imageId, String apartmentId) async {
-    var dio = Dio();
+    var dio = RuntimeStore().dio;
     try {
       Response response = await dio.post(
         widget.removeImagesUrlStr,
         data: {
-          "email": RuntimeStore().getEmail(),
-          "password": RuntimeStore().getPassword(),
-
           "imageid": imageId,
           "apartmentid": apartmentId
         },
@@ -138,42 +129,36 @@ class _AddApartment extends State<AddApartment> {
       String additionalExpenseDetail,
       int price,
       String address) async {
-    var dio = Dio();
+    var dio = RuntimeStore().dio;
     try {
-      Credentials? credentials = RuntimeStore().getCredentials();
-      if (credentials != null) {
-        Response response = await dio.post(
-          widget.editApartmentUrlStr,
-          data: {
-            "id": id,
-            "email": credentials.email,
-            "password": credentials.password,
-            "listingtitle": listingTitle,
-            "description": description,
-            "additionalexpensedetail": additionalExpenseDetail,
-            "price": price.toString(),
-            "address": address
-          },
-          options: Options(
-            contentType: Headers.formUrlEncodedContentType,
-            headers: {"Content-Type": "application/x-www-form-urlencoded"},
-          ),
-        );
+      Response response = await dio.post(
+        widget.editApartmentUrlStr,
+        data: {
+          "id": id,
+          "listingtitle": listingTitle,
+          "description": description,
+          "additionalexpensedetail": additionalExpenseDetail,
+          "price": price.toString(),
+          "address": address
+        },
+        options: Options(
+          contentType: Headers.formUrlEncodedContentType,
+          headers: {"Content-Type": "application/x-www-form-urlencoded"},
+        ),
+      );
 
-        if (response.statusCode != 200) {
-          if (response.statusCode == 401) {
-            updateUi("Non autorizzato");
-            throw new UnauthorizedException();
-          } else {
-            updateUi("Errore interno");
-            return;
-          }
+      if (response.statusCode != 200) {
+        if (response.statusCode == 401) {
+          updateUi("Non autorizzato");
+          throw new UnauthorizedException();
         } else {
-          print("edited");
-          updateUi("edited");
+          updateUi("Errore interno");
+          return;
         }
-      } else
-        throw new UnauthorizedException();
+      } else {
+        print("edited");
+        updateUi("edited");
+      }
     } on DioError catch (e) {
       if (e.response?.statusCode == 401) {
         updateUi("Non autorizzato");
@@ -188,12 +173,10 @@ class _AddApartment extends State<AddApartment> {
       Function(String) updateUi,
       int id,
       List<File> files) async {
-    var dio = Dio();
+    var dio = RuntimeStore().dio;
     try {
       var formData = FormData();
 
-      formData.fields.add(MapEntry("email", RuntimeStore().getEmail() as String));
-      formData.fields.add(MapEntry("password", RuntimeStore().getPassword() as String));
       formData.fields.add(MapEntry("id", id.toString()));
 
       for (final File file in files) {
@@ -474,12 +457,12 @@ class _AddApartment extends State<AddApartment> {
                     onUploadsEnd();
                   }
                 },
-                    toEdit!.id,
-                    _titleController.text,
-                    _descController.text,
-                    _aedController.text,
-                    int.parse(_priceController.text),
-                    _addressController.text,
+                  toEdit!.id,
+                  _titleController.text,
+                  _descController.text,
+                  _aedController.text,
+                  int.parse(_priceController.text),
+                  _addressController.text,
                 );
               }
             }

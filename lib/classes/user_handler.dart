@@ -12,9 +12,9 @@ class UserHandler {
   //useful as singleton since network functions will store session cookie here, in cookie jar
 
   final String urlStrGetNextNewUser =
-      "http://192.168.20.108:8080/appartapp_war_exploded/api/reserved/getnextnewuser";
+      "http://192.168.16.118:8080/appartapp_war_exploded/api/reserved/getnextnewuser";
   final String urlStrGetAllNewUsers =
-      "http://192.168.20.108:8080/appartapp_war_exploded/api/reserved/getallnewusers";
+      "http://192.168.16.118:8080/appartapp_war_exploded/api/reserved/getallnewusers";
 
   static final UserHandler _user = UserHandler._internal();
 

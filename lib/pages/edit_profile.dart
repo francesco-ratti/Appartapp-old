@@ -4,6 +4,7 @@ import 'package:appartapp/classes/user.dart';
 import 'package:appartapp/classes/enum_gender.dart';
 import 'package:appartapp/classes/runtime_store.dart';
 import 'package:appartapp/exceptions/unauthorized_exception.dart';
+import 'package:appartapp/pages/reinsert_password.dart';
 import 'package:appartapp/widgets/ImgGallery.dart';
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:flutter/material.dart';
@@ -12,11 +13,12 @@ import 'package:dio/dio.dart';
 
 class EditProfile extends StatefulWidget {
   String urlStr =
-      "http://192.168.20.108:8080/appartapp_war_exploded/api/reserved/edituser";
+      "http://192.168.16.118:8080/appartapp_war_exploded/api/reserved/edituser";
+  String urlPwdStr="http://192.168.16.118:8080/appartapp_war_exploded/api/reserved/editsensitive";
   String addImagesUrlStr =
-      "http://192.168.20.108:8080/appartapp_war_exploded/api/reserved/adduserimage";
+      "http://192.168.16.118:8080/appartapp_war_exploded/api/reserved/adduserimage";
   String removeImagesUrlStr =
-      "http://192.168.20.108:8080/appartapp_war_exploded/api/reserved/deleteuserimage";
+      "http://192.168.16.118:8080/appartapp_war_exploded/api/reserved/deleteuserimage";
   Color bgColor = Colors.white;
 
   @override
@@ -34,7 +36,7 @@ class _EditProfileState extends State<EditProfile> {
 
       for (final File file in files) {
         MultipartFile mpfile =
-            await MultipartFile.fromFile(file.path, filename: "filename.jpg");
+        await MultipartFile.fromFile(file.path, filename: "filename.jpg");
         formData.files.add(MapEntry("images", mpfile));
       }
 
@@ -96,9 +98,6 @@ class _EditProfileState extends State<EditProfile> {
 
   void doUpdate(
       Function(String) updateUi,
-      String oldemail,
-      String email,
-      String oldpassword,
       String name,
       String surname,
       DateTime birthday,
@@ -108,10 +107,6 @@ class _EditProfileState extends State<EditProfile> {
       Response response = await dio.post(
         widget.urlStr,
         data: {
-          //TODO
-//          "email": oldemail,
-//          "password": oldpassword,
-          "newemail": email,
           "name": name,
           "surname": surname,
           "birthday": birthday.millisecondsSinceEpoch.toString(),
@@ -139,7 +134,6 @@ class _EditProfileState extends State<EditProfile> {
   }
 
   final emailController = TextEditingController();
-  final passwordController = TextEditingController();
   final nameController = TextEditingController();
   final surnameController = TextEditingController();
   final birthdayController = TextEditingController();
@@ -169,12 +163,12 @@ class _EditProfileState extends State<EditProfile> {
       Map im = RuntimeStore().getUser()!.imagesDetails[i];
       existingImages.add(GalleryImage(
           RuntimeStore().getUser()!.images[i],
-          () => () {
-                removeImage(
+              () => () {
+            removeImage(
                     (p0) => null,
-                    im['id']
-                        .toString()); //returns a cbk function which will be invoked at submit
-              }));
+                im['id']
+                    .toString()); //returns a cbk function which will be invoked at submit
+          }));
     }
     /*
     for (Map im in RuntimeStore()
@@ -182,7 +176,7 @@ class _EditProfileState extends State<EditProfile> {
         .imagesDetails) {
       existingImages.add(
           GalleryImage(Image.network(
-            'http://192.168.20.108:8080/appartapp_war_exploded/api/images/users/${im['id']}',
+            'http://192.168.16.118:8080/appartapp_war_exploded/api/images/users/${im['id']}',
             loadingBuilder: (BuildContext context, Widget child,
                 ImageChunkEvent? loadingProgress) {
               if (loadingProgress == null) {
@@ -208,7 +202,7 @@ class _EditProfileState extends State<EditProfile> {
   @override
   Widget build(BuildContext context) {
     birthdayController.text =
-        "${_birthday.day}/${_birthday.month}/${_birthday.year}";
+    "${_birthday.day}/${_birthday.month}/${_birthday.year}";
 
     return ListView(
       padding: EdgeInsets.all(16.0),
@@ -260,10 +254,10 @@ class _EditProfileState extends State<EditProfile> {
               readOnly: true,
               onTap: () {
                 showDatePicker(
-                        context: context,
-                        initialDate: _birthday,
-                        lastDate: DateTime.now(),
-                        firstDate: DateTime(1900))
+                    context: context,
+                    initialDate: _birthday,
+                    lastDate: DateTime.now(),
+                    firstDate: DateTime(1900))
                     .then((value) {
                   if (value != null) {
                     setState(() {
@@ -285,46 +279,31 @@ class _EditProfileState extends State<EditProfile> {
             child: Row(children: [
               Expanded(
                   child: DropdownButton<Gender>(
-                hint: Text("Scegli il tuo genere"),
-                // Not necessary for Option 1
-                value: _gender,
-                onChanged: (newValue) {
-                  setState(() {
-                    _gender = newValue;
-                  });
-                },
-                items: Gender.values.map((gender) {
-                  return DropdownMenuItem(
-                    child: Text(gender.toItalianString()),
-                    value: gender,
-                  );
-                }).toList(),
-              ))
+                    hint: Text("Scegli il tuo genere"),
+                    // Not necessary for Option 1
+                    value: _gender,
+                    onChanged: (newValue) {
+                      setState(() {
+                        _gender = newValue;
+                      });
+                    },
+                    items: Gender.values.map((gender) {
+                      return DropdownMenuItem(
+                        child: Text(gender.toItalianString()),
+                        value: gender,
+                      );
+                    }).toList(),
+                  ))
             ])),
-        Padding(
-            padding: EdgeInsets.all(8.0),
-            child: Text("Reinserisci la tua password per modificare i dati")),
-        Padding(
-            padding: EdgeInsets.all(8.0),
-            child: TextField(
-              obscureText: true,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Password',
-              ),
-              controller: passwordController,
-            )),
         ElevatedButton(
             child: Text("Modifica"),
             style: ElevatedButton.styleFrom(primary: Colors.brown),
             onPressed: () {
               String email = emailController.text;
-              String password = passwordController.text;
               String name = nameController.text;
               String surname = surnameController.text;
 
               if ((email.length > 0 &&
-                  password.length > 0 &&
                   name.length > 0 &&
                   surname.length > 0 &&
                   _gender != null)) {
@@ -339,8 +318,44 @@ class _EditProfileState extends State<EditProfile> {
                   setState(() {
                     status = toWrite;
                   });
-                }, RuntimeStore().getUser()?.email ?? email, email, password, name,
+                }, name,
                     surname, _birthday, _gender as Gender);
+
+                if (email!=RuntimeStore().getUser()?.email) {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => InsertPassword((String password, Function(String) updateUi) async {
+                            var dio = RuntimeStore().dio;
+                            try {
+                              Response response = await dio.post(
+                                widget.urlPwdStr,
+                                data: {
+                                  "newemail": email,
+                                  "password": password,
+                                },
+                                options: Options(
+                                  contentType: Headers.formUrlEncodedContentType,
+                                  headers: {"Content-Type": "application/x-www-form-urlencoded"},
+                                ),
+                              );
+
+                              if (response.statusCode != 200)
+                                updateUi("Failure");
+                              else {
+                                updateUi("Updated");
+                                Map responseMap = response.data;
+                                RuntimeStore().setUser(User.fromMap(responseMap));
+                                Navigator.pop(context);
+                              }
+                            } on DioError catch (e) {
+                              if (e.response?.statusCode != 200) {
+                                updateUi("Failure");
+                              }
+                            }
+                          })));
+                }
+
               } else {
                 setState(() {
                   status = "Incompleto. Compila tutti i campi";
@@ -392,6 +407,5 @@ class _EditProfileState extends State<EditProfile> {
     nameController.dispose();
     surnameController.dispose();
     birthdayController.dispose();
-    passwordController.dispose();
   }
 }

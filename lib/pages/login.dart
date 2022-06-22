@@ -9,7 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../classes/login_handler.dart';
 
 class Login extends StatefulWidget {
-  String urlStr = "http://192.168.20.108:8080/appartapp_war_exploded/api/login";
+  String urlStr = "http://192.168.16.118:8080/appartapp_war_exploded/api/login";
   Color bgColor = Colors.white;
 
   @override
@@ -20,10 +20,10 @@ class _LoginState extends State<Login> {
   void doLogin(Function(String) updateUi, String email, String password) async {
     List res = await LoginHandler.doLogin(email, password);
 
-    User user = res[0];
     LoginResult loginResult = res[1];
     switch (loginResult) {
       case LoginResult.ok:
+        User user = res[0];
         doInitialisation(context, user, RuntimeStore().getSharedPreferences() as SharedPreferences);
         break;
       case LoginResult.wrong_credentials:

@@ -43,7 +43,7 @@ class Apartment {
     for (final Map im in imagesDetails) {
       images.add(
           Image.network(
-            'http://192.168.20.108:8080/appartapp_war_exploded/api/images/apartments/${im['id']}',
+            'http://192.168.16.118:8080/appartapp_war_exploded/api/images/apartments/${im['id']}',
             loadingBuilder: (BuildContext context, Widget child,
                 ImageChunkEvent? loadingProgress) {
               if (loadingProgress == null) {

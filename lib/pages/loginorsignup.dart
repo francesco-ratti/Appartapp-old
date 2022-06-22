@@ -12,7 +12,7 @@ import 'package:firebase_auth/firebase_auth.dart' as Fb;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginOrSignup extends StatelessWidget {
-  String urlStr = "http://192.168.20.108:8080/appartapp_war_exploded/api/login";
+  String urlStr = "http://192.168.16.118:8080/appartapp_war_exploded/api/login";
 
   Future<List> signIn(Fb.User user) async {
     String idToken = await user.getIdToken();
@@ -87,9 +87,9 @@ class LoginOrSignup extends StatelessWidget {
                 SignInButton(
                   Buttons.Google,
                   text: "Sign up with Google",
-                  onPressed: () async {
+                  onPressed: () {
                     Navigator.pushNamed(context, '/googlesignup');
-                    /*
+/*
                     Fb.User? gUser =
                     await Authentication.signInWithGoogle(context: context);
 

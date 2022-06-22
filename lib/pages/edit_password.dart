@@ -5,7 +5,7 @@ import 'package:appartapp/classes/runtime_store.dart';
 class EditPassword extends StatefulWidget {
   Color bgColor = Colors.white;
   String urlStr =
-      "http://192.168.20.108:8080/appartapp_war_exploded/api/reserved/edituser";
+      "http://192.168.16.118:8080/appartapp_war_exploded/api/reserved/editsensitive";
 
   @override
   _EditPasswordState createState() => _EditPasswordState();
@@ -25,7 +25,6 @@ class _EditPasswordState extends State<EditPassword> {
       Response response = await dio.post(
         widget.urlStr,
         data: {
-          "email": email, //TODO
           "password": oldpassword,
           "newpassword": newpassword
         },
@@ -39,8 +38,6 @@ class _EditPasswordState extends State<EditPassword> {
         updateUi("Failure");
       else {
         updateUi("Updated");
-        Map responseMap = response.data;
-
         Navigator.pop(context);
       }
     } on DioError catch (e) {

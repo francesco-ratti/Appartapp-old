@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class GoogleSignInButton extends StatefulWidget {
-  String urlStr = "http://192.168.20.108:8080/appartapp_war_exploded/api/login";
+  String urlStr = "http://192.168.16.118:8080/appartapp_war_exploded/api/login";
 
   @override
   _GoogleSignInButtonState createState() => _GoogleSignInButtonState();
@@ -83,10 +83,10 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
 
           if (gUser != null) {
             List res=await widget.signIn(gUser);
-            AppUser.User appUser=res[0];
             LoginResult loginResult=res[1];
             switch (loginResult) {
               case LoginResult.ok:
+                AppUser.User appUser=res[0];
                 doInitialisation(context, appUser, RuntimeStore().getSharedPreferences() as SharedPreferences);
                 break;
                 //TODO implement other case

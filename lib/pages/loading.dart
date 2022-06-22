@@ -74,10 +74,10 @@ class _LoadingState extends State<Loading> {
           Navigator.pushReplacementNamed(context, '/loginorsignup');
         } else {
           LoginHandler.doLoginWithCookies().then((res) async {
-            User user = res[0];
             LoginResult loginResult = res[1];
             switch (loginResult) {
               case LoginResult.ok:
+                User user = res[0];
                 doInitialisation(context, user, prefs);
                 break;
               case LoginResult.wrong_credentials:

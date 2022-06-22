@@ -7,7 +7,7 @@ import 'package:appartapp/classes/enum_temporalq.dart';
 
 class EditTenant extends StatefulWidget {
   String urlStr =
-      "http://192.168.20.108:8080/appartapp_war_exploded/api/reserved/edituser";
+      "http://192.168.16.118:8080/appartapp_war_exploded/api/reserved/edituser";
   Color bgColor = Colors.white;
 
   User user = RuntimeStore().getUser() as User;

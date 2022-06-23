@@ -9,7 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../classes/login_handler.dart';
 
 class Login extends StatefulWidget {
-  String urlStr = "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/login";
+  String urlStr = "http://http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/login";
   Color bgColor = Colors.white;
 
   @override

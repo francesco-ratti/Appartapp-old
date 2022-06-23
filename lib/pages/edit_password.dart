@@ -5,7 +5,7 @@ import 'package:appartapp/classes/runtime_store.dart';
 class EditPassword extends StatefulWidget {
   Color bgColor = Colors.white;
   String urlStr =
-      "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/editsensitive";
+      "http://http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/editsensitive";
 
   @override
   _EditPasswordState createState() => _EditPasswordState();

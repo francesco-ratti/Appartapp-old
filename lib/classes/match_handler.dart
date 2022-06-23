@@ -15,7 +15,7 @@ class MatchHandler {
   MatchHandler._internal();
 
   static final urlStr =
-      "http://172.20.10.4:8080/appartapp_war_exploded/api/reserved/getmatchedapartments";
+      "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/getmatchedapartments";
   List<LessorMatch>? _currentMatches = null;
   List? oldResData = null;
 

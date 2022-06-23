@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class GoogleSignInButton extends StatefulWidget {
-  String urlStr = "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/login";
+  String urlStr = "http://http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/login";
 
   @override
   _GoogleSignInButtonState createState() => _GoogleSignInButtonState();

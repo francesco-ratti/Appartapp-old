@@ -66,9 +66,9 @@ class ContentPage extends StatefulWidget {
   String whoCreatedMe;
 
   final likeUrlStr =
-      "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/likeuser";
+      "http://http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/likeuser";
   final ignoreUrlStr =
-      "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/ignoreuser";
+      "http://http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/ignoreuser";
 //------------------------
   Future<void> _networkFunction(
       String urlString, int userId, int apartmentId) async {

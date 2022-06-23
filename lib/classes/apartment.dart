@@ -43,7 +43,7 @@ class Apartment {
     for (final Map im in imagesDetails) {
       images.add(
           Image.network(
-            'http://172.20.10.4:8080/appartapp_war_exploded/api/images/apartments/${im['id']}',
+            'http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/images/apartments/${im['id']}',
             loadingBuilder: (BuildContext context, Widget child,
                 ImageChunkEvent? loadingProgress) {
               if (loadingProgress == null) {

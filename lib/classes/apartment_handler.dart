@@ -12,11 +12,11 @@ class ApartmentHandler {
   //useful as singleton since network functions will store session cookie here, in cookie jar
 
   final String urlStrGetNextNewApartment =
-      "http://172.20.10.4:8080/appartapp_war_exploded/api/reserved/getnextnewapartment";
+      "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/getnextnewapartment";
   final String urlStrGetAllNewApartments =
-      "http://172.20.10.4:8080/appartapp_war_exploded/api/reserved/getallnewapartments";
+      "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/getallnewapartments";
   final String urlStrGetOwnedApartments =
-      "http://172.20.10.4:8080/appartapp_war_exploded/api/reserved/getownedapartments";
+      "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/getownedapartments";
 
   static final ApartmentHandler _apartment = ApartmentHandler._internal();
 

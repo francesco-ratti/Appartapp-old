@@ -12,9 +12,9 @@ class UserHandler {
   //useful as singleton since network functions will store session cookie here, in cookie jar
 
   final String urlStrGetNextNewUser =
-      "http://172.20.10.4:8080/appartapp_war_exploded/api/reserved/getnextnewuser";
+      "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/getnextnewuser";
   final String urlStrGetAllNewUsers =
-      "http://172.20.10.4:8080/appartapp_war_exploded/api/reserved/getallnewusers";
+      "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/getallnewusers";
 
   static final UserHandler _user = UserHandler._internal();
 

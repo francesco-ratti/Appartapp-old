@@ -12,7 +12,7 @@ import 'package:firebase_auth/firebase_auth.dart' as Fb;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginOrSignup extends StatelessWidget {
-  String urlStr = "http://192.168.16.118:8080/appartapp_war_exploded/api/login";
+  String urlStr = "http://172.20.10.4:8080/appartapp_war_exploded/api/login";
 
   Future<List> signIn(Fb.User user) async {
     String idToken = await user.getIdToken();

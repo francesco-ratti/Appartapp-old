@@ -8,7 +8,7 @@ import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 
 
 class LoginHandler {
-  static String urlStr = "http://192.168.16.118:8080/appartapp_war_exploded/api/login";
+  static String urlStr = "http://172.20.10.4:8080/appartapp_war_exploded/api/login";
 
   static Future<List> doLogin(String email, String password) async { //TODO make it return user instead of credentials
     var dio = RuntimeStore().dio;

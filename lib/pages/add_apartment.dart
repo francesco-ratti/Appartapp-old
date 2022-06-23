@@ -18,17 +18,17 @@ class AddApartment extends StatefulWidget {
   State<AddApartment> createState() => _AddApartment(toEdit);
 
   final String urlStr =
-      "http://192.168.16.118:8080/appartapp_war_exploded/api/reserved/createapartment";
+      "http://172.20.10.4:8080/appartapp_war_exploded/api/reserved/createapartment";
 
   final String editApartmentUrlStr =
-      "http://192.168.16.118:8080/appartapp_war_exploded/api/reserved/editapartment";
+      "http://172.20.10.4:8080/appartapp_war_exploded/api/reserved/editapartment";
 
   final String removeImagesUrlStr =
-      "http://192.168.16.118:8080/appartapp_war_exploded/api/reserved/deleteapartmentimage";
+      "http://172.20.10.4:8080/appartapp_war_exploded/api/reserved/deleteapartmentimage";
 
 
   final String addImagesUrlStr =
-      "http://192.168.16.118:8080/appartapp_war_exploded/api/reserved/addapartmentimage";
+      "http://172.20.10.4:8080/appartapp_war_exploded/api/reserved/addapartmentimage";
 }
 
 class _AddApartment extends State<AddApartment> {

@@ -10,18 +10,21 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class GoogleSignInButton extends StatefulWidget {
-  String urlStr = "http://192.168.16.118:8080/appartapp_war_exploded/api/login";
+  String urlStr = "http://172.20.10.4:8080/appartapp_war_exploded/api/login";
 
   @override
   _GoogleSignInButtonState createState() => _GoogleSignInButtonState();
 
-  Future<List> signIn(Fb.User user) async {
+  Future<List> signIn(Fb.User user, String accessToken) async {
     String idToken=await user.getIdToken();
     var dio = RuntimeStore().dio;
     try {
       Response response = await dio.post(
         urlStr,
-        data: {"idtoken": idToken},
+        data: {
+          "idtoken": idToken,
+          "accesstoken": accessToken
+        },
         options: Options(
           contentType: Headers.formUrlEncodedContentType,
           headers: {"Content-Type": "application/x-www-form-urlencoded"},
@@ -74,15 +77,17 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
             _isSigningIn = true;
           });
 
-          Fb.User? gUser =
-          await Authentication.signInWithGoogle(context: context);
+          List? resG=await Authentication.signInWithGoogle(context: context);
 
           setState(() {
             _isSigningIn = false;
           });
 
-          if (gUser != null) {
-            List res=await widget.signIn(gUser);
+          if (resG != null) {
+            Fb.User? gUser = resG[0];
+            String accessToken=resG[1];
+
+            List res=await widget.signIn(gUser!, accessToken);
             LoginResult loginResult=res[1];
             switch (loginResult) {
               case LoginResult.ok:

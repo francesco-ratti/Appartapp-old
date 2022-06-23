@@ -14,11 +14,19 @@ class Authentication {
     return firebaseApp;
   }
 
-  static Future<User?> signInWithGoogle({required BuildContext context}) async {
+  static Future<List?> signInWithGoogle({required BuildContext context}) async {
     FirebaseAuth auth = FirebaseAuth.instance;
     User? user;
+    String? accessToken;
 
-    final GoogleSignIn googleSignIn = GoogleSignIn();
+    final GoogleSignIn googleSignIn = GoogleSignIn(
+      scopes: [
+        'https://www.googleapis.com/auth/userinfo.email',
+        'https://www.googleapis.com/auth/userinfo.profile',
+        'https://www.googleapis.com/auth/user.gender.read',
+        'https://www.googleapis.com/auth/user.birthday.read'
+      ],
+    );
 
     final GoogleSignInAccount? googleSignInAccount =
     await googleSignIn.signIn();
@@ -31,6 +39,8 @@ class Authentication {
         accessToken: googleSignInAuthentication.accessToken,
         idToken: googleSignInAuthentication.idToken,
       );
+
+      accessToken=googleSignInAuthentication.accessToken;
 
       try {
         final UserCredential userCredential =
@@ -49,7 +59,7 @@ class Authentication {
       }
     }
 
-    return user;
+    return [user, accessToken];
   }
 
   static SnackBar customSnackBar({required String content}) {

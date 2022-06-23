@@ -13,12 +13,12 @@ import 'package:dio/dio.dart';
 
 class EditProfile extends StatefulWidget {
   String urlStr =
-      "http://192.168.16.118:8080/appartapp_war_exploded/api/reserved/edituser";
-  String urlPwdStr="http://192.168.16.118:8080/appartapp_war_exploded/api/reserved/editsensitive";
+      "http://172.20.10.4:8080/appartapp_war_exploded/api/reserved/edituser";
+  String urlPwdStr="http://172.20.10.4:8080/appartapp_war_exploded/api/reserved/editsensitive";
   String addImagesUrlStr =
-      "http://192.168.16.118:8080/appartapp_war_exploded/api/reserved/adduserimage";
+      "http://172.20.10.4:8080/appartapp_war_exploded/api/reserved/adduserimage";
   String removeImagesUrlStr =
-      "http://192.168.16.118:8080/appartapp_war_exploded/api/reserved/deleteuserimage";
+      "http://172.20.10.4:8080/appartapp_war_exploded/api/reserved/deleteuserimage";
   Color bgColor = Colors.white;
 
   @override
@@ -176,7 +176,7 @@ class _EditProfileState extends State<EditProfile> {
         .imagesDetails) {
       existingImages.add(
           GalleryImage(Image.network(
-            'http://192.168.16.118:8080/appartapp_war_exploded/api/images/users/${im['id']}',
+            'http://172.20.10.4:8080/appartapp_war_exploded/api/images/users/${im['id']}',
             loadingBuilder: (BuildContext context, Widget child,
                 ImageChunkEvent? loadingProgress) {
               if (loadingProgress == null) {

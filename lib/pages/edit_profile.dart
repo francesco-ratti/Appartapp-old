@@ -222,6 +222,7 @@ class _EditProfileState extends State<EditProfile> {
         Padding(
             padding: EdgeInsets.all(8.0),
             child: TextField(
+              enabled: RuntimeStore().credentialsLogin,
               obscureText: false,
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
@@ -232,6 +233,7 @@ class _EditProfileState extends State<EditProfile> {
         Padding(
             padding: EdgeInsets.all(8.0),
             child: TextField(
+              enabled: RuntimeStore().credentialsLogin,
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
                 labelText: 'Nome',
@@ -241,6 +243,7 @@ class _EditProfileState extends State<EditProfile> {
         Padding(
             padding: EdgeInsets.all(8.0),
             child: TextField(
+              enabled: RuntimeStore().credentialsLogin,
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
                 labelText: 'Cognome',
@@ -253,18 +256,20 @@ class _EditProfileState extends State<EditProfile> {
               controller: birthdayController,
               readOnly: true,
               onTap: () {
-                showDatePicker(
-                    context: context,
-                    initialDate: _birthday,
-                    lastDate: DateTime.now(),
-                    firstDate: DateTime(1900))
-                    .then((value) {
-                  if (value != null) {
-                    setState(() {
-                      _birthday = value;
-                    });
-                  }
-                });
+                if (RuntimeStore().credentialsLogin) {
+                  showDatePicker(
+                      context: context,
+                      initialDate: _birthday,
+                      lastDate: DateTime.now(),
+                      firstDate: DateTime(1900))
+                      .then((value) {
+                    if (value != null) {
+                      setState(() {
+                        _birthday = value;
+                      });
+                    }
+                  });
+                }
               },
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
@@ -282,11 +287,11 @@ class _EditProfileState extends State<EditProfile> {
                     hint: Text("Scegli il tuo genere"),
                     // Not necessary for Option 1
                     value: _gender,
-                    onChanged: (newValue) {
+                    onChanged: RuntimeStore().credentialsLogin ? (newValue) {
                       setState(() {
                         _gender = newValue;
                       });
-                    },
+                    } : null,
                     items: Gender.values.map((gender) {
                       return DropdownMenuItem(
                         child: Text(gender.toItalianString()),
@@ -295,7 +300,7 @@ class _EditProfileState extends State<EditProfile> {
                     }).toList(),
                   ))
             ])),
-        ElevatedButton(
+        RuntimeStore().credentialsLogin ? ElevatedButton(
             child: Text("Modifica"),
             style: ElevatedButton.styleFrom(primary: Colors.brown),
             onPressed: () {
@@ -361,20 +366,19 @@ class _EditProfileState extends State<EditProfile> {
                   status = "Incompleto. Compila tutti i campi";
                 });
               }
-            }),
+            }) : const SizedBox(),
         const Divider(
           height: 20,
           thickness: 1,
           indent: 20,
           endIndent: 20,
           color: Colors.grey,
-        ),
-        ElevatedButton(
+        ), RuntimeStore().credentialsLogin ? ElevatedButton(
             child: Text("Aggiorna la password"),
             style: ElevatedButton.styleFrom(primary: Colors.brown),
             onPressed: () {
               Navigator.pushNamed(context, "/editpassword");
-            }),
+            }) : const SizedBox(),
         ElevatedButton(
             child: Text("Modifica informazioni locatario"),
             style: ElevatedButton.styleFrom(primary: Colors.brown),
@@ -386,8 +390,9 @@ class _EditProfileState extends State<EditProfile> {
             style: ElevatedButton.styleFrom(primary: Colors.red),
             onPressed: () {
               RuntimeStore().getSharedPreferences()?.remove("logged");
-              RuntimeStore().cookieJar.deleteAll();
+              RuntimeStore().getSharedPreferences()?.remove("credentialslogin");
               RuntimeStore().matchHandler.stopPeriodicUpdate();
+              RuntimeStore().cookieJar.deleteAll();
               Navigator.pushReplacementNamed(context, "/loginorsignup");
             }),
         Padding(

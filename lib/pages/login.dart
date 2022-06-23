@@ -24,7 +24,12 @@ class _LoginState extends State<Login> {
     switch (loginResult) {
       case LoginResult.ok:
         User user = res[0];
-        doInitialisation(context, user, RuntimeStore().getSharedPreferences() as SharedPreferences);
+        SharedPreferences sharedPreferences=RuntimeStore().getSharedPreferences() as SharedPreferences;
+
+        sharedPreferences.setBool("credentialslogin", true);
+        RuntimeStore().credentialsLogin=true;
+
+        doInitialisation(context, user, sharedPreferences);
         break;
       case LoginResult.wrong_credentials:
         updateUi("Credenziali errate");

@@ -29,6 +29,16 @@ class RuntimeStore {
 
   late MatchHandler matchHandler;
 
+  late bool credentialsLogin;
+
+  bool getCredentialsLogin() {
+    return credentialsLogin;
+  }
+
+  void setCredentialsLogin(bool credentialsLogin) {
+    this.credentialsLogin=credentialsLogin;
+  }
+
   Future<List<Apartment>>? getOwnedApartments() {
     return _ownedApartments;
   }

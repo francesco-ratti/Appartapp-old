@@ -78,8 +78,8 @@ class _Houses extends State<Houses> {
 
 class ContentPage extends StatefulWidget {
 
-  final likeUrlStr="http://172.20.10.4:8080/appartapp_war_exploded/api/reserved/likeapartment";
-  final ignoreUrlStr="http://172.20.10.4:8080/appartapp_war_exploded/api/reserved/ignoreapartment";
+  final likeUrlStr="http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/likeapartment";
+  final ignoreUrlStr="http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/ignoreapartment";
 
   Future<void> _networkFunction(String urlString, int apartmentId) async {
     var dio = RuntimeStore().dio;

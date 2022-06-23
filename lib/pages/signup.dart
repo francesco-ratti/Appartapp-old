@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 
 class Signup extends StatefulWidget {
-  String urlStr = "http://172.20.10.4:8080/appartapp_war_exploded/api/signup";
+  String urlStr = "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/signup";
 
   @override
   _SignupState createState() => _SignupState();

@@ -1,12 +1,13 @@
 import 'package:appartapp/classes/enum_loginresult.dart';
 import 'package:appartapp/classes/runtime_store.dart';
 import 'package:appartapp/classes/user.dart' as AppUser;
-import 'package:firebase_auth/firebase_auth.dart' as Fb;
-
 import 'package:appartapp/pages/loading.dart';
 import 'package:appartapp/utils/authentication.dart';
 import 'package:dio/dio.dart';
+import 'package:firebase_auth/firebase_auth.dart' as Fb;
 import 'package:flutter/material.dart';
+import 'package:flutter_signin_button/button_list.dart';
+import 'package:flutter_signin_button/button_view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class GoogleSignInButton extends StatefulWidget {
@@ -16,7 +17,7 @@ class GoogleSignInButton extends StatefulWidget {
   _GoogleSignInButtonState createState() => _GoogleSignInButtonState();
 
   Future<List> signIn(Fb.User user, String accessToken) async {
-    String idToken=await user.getIdToken();
+    String idToken = await user.getIdToken();
     var dio = RuntimeStore().dio;
     try {
       Response response = await dio.post(
@@ -61,29 +62,24 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
       padding: const EdgeInsets.only(bottom: 16.0),
       child: _isSigningIn
           ? CircularProgressIndicator(
-        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-      )
-          : OutlinedButton(
-        style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.all(Colors.white),
-          shape: MaterialStateProperty.all(
-            RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(40),
-            ),
-          ),
-        ),
-        onPressed: () async {
-          setState(() {
-            _isSigningIn = true;
-          });
+              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+            )
+          : SignInButton(
+              Buttons.Google,
+              text: "Accedi con Google",
+              onPressed: () async {
+                setState(() {
+                  _isSigningIn = true;
+                });
 
-          List? resG=await Authentication.signInWithGoogle(context: context);
+                List? resG =
+                    await Authentication.signInWithGoogle(context: context);
 
-          setState(() {
-            _isSigningIn = false;
-          });
+                setState(() {
+                  _isSigningIn = false;
+                });
 
-          if (resG != null) {
+                if (resG != null) {
             Fb.User? gUser = resG[0];
             String accessToken=resG[1];
 
@@ -98,30 +94,6 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
             }
           }
         },
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Image(
-                image: AssetImage("assets/google_logo.png"),
-                height: 35.0,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 10),
-                child: Text(
-                  'Sign in with Google',
-                  style: TextStyle(
-                    fontSize: 20,
-                    color: Colors.black54,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              )
-            ],
-          ),
-        ),
       ),
     );
   }

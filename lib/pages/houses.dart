@@ -1,6 +1,5 @@
 import 'package:appartapp/classes/apartment.dart';
 import 'package:appartapp/classes/apartment_handler.dart';
-import 'package:appartapp/classes/credentials.dart';
 import 'package:appartapp/classes/runtime_store.dart';
 import 'package:appartapp/widgets/apartment_viewer.dart';
 import 'package:dio/dio.dart';
@@ -15,10 +14,10 @@ class Houses extends StatefulWidget {
   final Widget child;
 
   @override
-  _Houses createState() => _Houses();
+  _HousesState createState() => _HousesState();
 }
 
-class _Houses extends State<Houses> {
+class _HousesState extends State<Houses> {
   int _currentRoute = 0;
 
   /*

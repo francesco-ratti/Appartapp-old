@@ -1,3 +1,5 @@
+/*
+
 import 'package:appartapp/pages/google_sign_in_button.dart';
 import 'package:appartapp/utils/authentication.dart';
 import 'package:flutter/material.dart';
@@ -72,3 +74,5 @@ class _SignInScreenState extends State<SignInScreen> {
     );
   }
 }
+
+ */

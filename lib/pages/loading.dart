@@ -1,21 +1,22 @@
-import 'package:appartapp/classes/match_handler.dart';
-import 'package:appartapp/classes/user.dart';
 import 'package:appartapp/classes/apartment.dart';
 import 'package:appartapp/classes/apartment_handler.dart';
+import 'package:appartapp/classes/enum_loginresult.dart';
 import 'package:appartapp/classes/first_arguments.dart';
 import 'package:appartapp/classes/like_from_user.dart';
 import 'package:appartapp/classes/login_handler.dart';
-import 'package:appartapp/classes/user_handler.dart';
-import 'package:appartapp/classes/credentials.dart';
-import 'package:appartapp/classes/enum_loginresult.dart';
+import 'package:appartapp/classes/match_handler.dart';
 import 'package:appartapp/classes/runtime_store.dart';
-import 'package:cookie_jar/cookie_jar.dart';
+import 'package:appartapp/classes/user.dart';
+import 'package:appartapp/classes/user_handler.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-void doInitialisation(BuildContext context, User user, SharedPreferences sharedPreferences) async {
+void doInitialisation(BuildContext context, User user,
+    SharedPreferences sharedPreferences) async {
   sharedPreferences.setBool("logged", true);
+  RuntimeStore().credentialsLogin =
+      sharedPreferences.getBool("credentialslogin")!;
 
   RuntimeStore().setUser(user);
 
@@ -23,7 +24,7 @@ void doInitialisation(BuildContext context, User user, SharedPreferences sharedP
   RuntimeStore().matchHandler.startPeriodicUpdate();
 
   Apartment? firstApartment =
-  await ApartmentHandler().getNewApartment((Apartment apartment) {
+      await ApartmentHandler().getNewApartment((Apartment apartment) {
     for (final Image im in apartment.images) {
       precacheImage(im.image, context);
     }

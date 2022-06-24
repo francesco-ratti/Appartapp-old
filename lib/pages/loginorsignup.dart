@@ -37,7 +37,7 @@ class _LoginOrSignupState extends State<LoginOrSignup> {
                   Buttons.Email,
                   text: "Accedi",
                   onPressed: () {
-                    Navigator.pushNamed(context, '/googlesignup');
+                    Navigator.pushNamed(context, '/login');
                   },
                 ),
                 SignInButton(

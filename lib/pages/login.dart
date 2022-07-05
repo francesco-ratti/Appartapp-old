@@ -4,7 +4,7 @@ import 'package:appartapp/classes/runtime_store.dart';
 import 'package:appartapp/classes/user.dart';
 import 'package:appartapp/pages/loading.dart';
 import 'package:flutter/material.dart';
-import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Login extends StatefulWidget {
@@ -19,12 +19,11 @@ class _LoginState extends State<Login> {
   bool _isLoading = false;
 
   void doLogin(Function(String) updateUi, String email, String password) async {
-    _isLoading = true;
+    setState(() {
+      _isLoading = true;
+    });
     List res = await LoginHandler.doLogin(email, password);
     LoginResult loginResult = res[1];
-    setState(() {
-      _isLoading = false;
-    });
     switch (loginResult) {
       case LoginResult.ok:
         User user = res[0];
@@ -37,12 +36,21 @@ class _LoginState extends State<Login> {
         doInitialisation(context, user, sharedPreferences);
         break;
       case LoginResult.wrong_credentials:
+        setState(() {
+          _isLoading = false;
+        });
         updateUi("Credenziali errate");
         break;
       case LoginResult.server_error:
+        setState(() {
+          _isLoading = false;
+        });
         updateUi("internal server error");
         break;
       default:
+        setState(() {
+          _isLoading = false;
+        });
         updateUi("Errore");
         break;
     }

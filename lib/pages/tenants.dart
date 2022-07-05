@@ -1,12 +1,10 @@
+import 'package:appartapp/classes/enum_gender.dart';
 import 'package:appartapp/classes/enum_month.dart';
 import 'package:appartapp/classes/enum_temporalq.dart';
-import 'package:appartapp/classes/user.dart';
-import 'package:appartapp/classes/enum_gender.dart';
 import 'package:appartapp/classes/like_from_user.dart';
-import 'package:appartapp/classes/user_handler.dart';
-
-import 'package:appartapp/classes/credentials.dart';
 import 'package:appartapp/classes/runtime_store.dart';
+import 'package:appartapp/classes/user.dart';
+import 'package:appartapp/classes/user_handler.dart';
 import 'package:appartapp/widgets/tenant_viewer.dart';
 import 'package:dio/dio.dart';
 import 'package:dismissible_page/dismissible_page.dart';
@@ -70,30 +68,29 @@ class ContentPage extends StatefulWidget {
   final ignoreUrlStr =
       "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/ignoreuser";
 //------------------------
-  Future<void> _networkFunction(
-      String urlString, int userId, int apartmentId) async {
+  Future<void> _networkFunction(String urlString, int userId, int apartmentId) async {
     var dio = RuntimeStore().dio;
-      try {
-        Response response = await dio.post(
-          urlString,
-          data: {
-            "userid": userId, //the tenant I like or ignore
-            "apartmentid": apartmentId
-          },
-          options: Options(
-            contentType: Headers.formUrlEncodedContentType,
-            headers: {"Content-Type": "application/x-www-form-urlencoded"},
-          ),
-        );
+    try {
+      Response response = await dio.post(
+        urlString,
+        data: {
+          "userid": userId, //the tenant I like or ignore
+          "apartmentid": apartmentId
+        },
+        options: Options(
+          contentType: Headers.formUrlEncodedContentType,
+          headers: {"Content-Type": "application/x-www-form-urlencoded"},
+        ),
+      );
 
-        if (response.statusCode != 200)
-          print("Failure");
-        else
-          print("Done");
-      } on DioError catch (e) {
-        if (e.response?.statusCode != 200) {
-          print("Failure");
-        }
+      if (response.statusCode != 200)
+        print("Failure");
+      else
+        print("Done");
+    } on DioError catch (e) {
+      if (e.response?.statusCode != 200) {
+        print("Failure");
+      }
     }
   }
 
@@ -112,11 +109,11 @@ class ContentPage extends StatefulWidget {
 
   @override
   _ContentPage createState() => _ContentPage();
-  ContentPage(
-      {required this.currentTenantFuture,
-      required this.updateUI,
-      required this.match,
-      required this.whoCreatedMe});
+
+  ContentPage({required this.currentTenantFuture,
+    required this.updateUI,
+    required this.match,
+    required this.whoCreatedMe});
 }
 
 class _ContentPage extends State<ContentPage> {
@@ -151,10 +148,10 @@ class _ContentPage extends State<ContentPage> {
     super.didChangeDependencies();
     nextTenantFuture =
         UserHandler().getNewLikeFromUser((LikeFromUser likeFromUser) {
-      for (final Image im in likeFromUser.user.images) {
-        precacheImage(im.image, context);
-      }
-    });
+          for (final Image im in likeFromUser.user.images) {
+            precacheImage(im.image, context);
+          }
+        });
   }
 
   @override
@@ -177,7 +174,7 @@ class _ContentPage extends State<ContentPage> {
             settings: settings,
             builder: (BuildContext context) {
               return DismissiblePage(
-                  //backgroundColor: Colors.white,
+                //backgroundColor: Colors.white,
                   onDismissed: () {
                     widget.updateUI(false);
                     if (currentTenant != null) {
@@ -204,7 +201,8 @@ class _ContentPage extends State<ContentPage> {
                   direction: widget.match
                       ? DismissiblePageDismissDirection.endToStart
                       : DismissiblePageDismissDirection.horizontal,
-                  onDragUpdate: (double value) {
+                  onDragUpdate: (DismissiblePageDragUpdateDetails details) {
+                    double value = details.offset.dx;
                     if (firstDrag) {
                       initialCoord = value;
                       firstDrag = false;

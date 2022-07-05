@@ -198,27 +198,31 @@ class _ContentPage extends State<ContentPage> {
                       context,
                       MaterialPageRoute(
                           builder: (context) => ContentPage(
-                            currentApartmentFuture: nextApartmentFuture,
-                          )));
+                                  currentApartmentFuture: nextApartmentFuture,
+                                )));
 
-                  // ApartmentHandler()
-                  //     .getNewApartment()
-                  //     .then((value) => setState(() {
-                  //           currentApartment = value;
-                  //         }));
-                },
-                direction: DismissiblePageDismissDirection.horizontal,
-                  onDragUpdate: (double value) {
+                    // ApartmentHandler()
+                    //     .getNewApartment()
+                    //     .then((value) => setState(() {
+                    //           currentApartment = value;
+                    //         }));
+                  },
+                  direction: DismissiblePageDismissDirection.horizontal,
+                  onDragUpdate: (DismissiblePageDragUpdateDetails details) {
+                    double value = details.offset.dx;
                     if (firstDrag) {
-                      initialCoord=value;
-                      firstDrag=false;
+                      initialCoord = value;
+                      firstDrag = false;
                     } else {
-                      finalCoord=value;
+                      finalCoord = value;
                     }
                   },
-                dragSensitivity: 0.5,
-                disabled: !apartmentLoaded,
-                child: ApartmentViewer(apartmentLoaded: apartmentLoaded, currentApartment: currentApartment,));
+                  dragSensitivity: 0.5,
+                  disabled: !apartmentLoaded,
+                  child: ApartmentViewer(
+                    apartmentLoaded: apartmentLoaded,
+                    currentApartment: currentApartment,
+                  ));
             });
       },
     );

@@ -1,12 +1,11 @@
-import 'package:appartapp/pages/loading.dart';
-import 'package:appartapp/classes/user.dart';
-import 'package:appartapp/classes/credentials.dart';
 import 'package:appartapp/classes/enum_loginresult.dart';
-import 'package:flutter/material.dart';
+import 'package:appartapp/classes/login_handler.dart';
 import 'package:appartapp/classes/runtime_store.dart';
+import 'package:appartapp/classes/user.dart';
+import 'package:appartapp/pages/loading.dart';
+import 'package:flutter/material.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import '../classes/login_handler.dart';
 
 class Login extends StatefulWidget {
   String urlStr = "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/login";
@@ -17,17 +16,23 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
-  void doLogin(Function(String) updateUi, String email, String password) async {
-    List res = await LoginHandler.doLogin(email, password);
+  bool _isLoading = false;
 
+  void doLogin(Function(String) updateUi, String email, String password) async {
+    _isLoading = true;
+    List res = await LoginHandler.doLogin(email, password);
     LoginResult loginResult = res[1];
+    setState(() {
+      _isLoading = false;
+    });
     switch (loginResult) {
       case LoginResult.ok:
         User user = res[0];
-        SharedPreferences sharedPreferences=RuntimeStore().getSharedPreferences() as SharedPreferences;
+        SharedPreferences sharedPreferences =
+            RuntimeStore().getSharedPreferences() as SharedPreferences;
 
         sharedPreferences.setBool("credentialslogin", true);
-        RuntimeStore().credentialsLogin=true;
+        RuntimeStore().credentialsLogin = true;
 
         doInitialisation(context, user, sharedPreferences);
         break;
@@ -46,17 +51,18 @@ class _LoginState extends State<Login> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
-  String status = "Not submitted yet";
+  String status = "";
 
   @override
   Widget build(BuildContext context) {
     return (Scaffold(
-        appBar: AppBar(
-          title: const Text('Accedi'),
-          backgroundColor: Colors.brown,
-        ),
-        backgroundColor: widget.bgColor,
-        body: Center(
+      appBar: AppBar(
+        title: const Text('Accedi'),
+        backgroundColor: Colors.brown,
+      ),
+      backgroundColor: widget.bgColor,
+      body: ModalProgressHUD(
+        child: Center(
             child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
@@ -120,7 +126,14 @@ class _LoginState extends State<Login> {
                       });
                     }, email, password);
                   })
-            ]))));
+            ])),
+
+        inAsyncCall: _isLoading,
+        // demo of some additional parameters
+        opacity: 0.5,
+        progressIndicator: CircularProgressIndicator(),
+      ),
+    ));
   }
 
   @override

@@ -2,15 +2,14 @@
 import 'dart:io';
 import 'dart:ui';
 
-import 'package:appartapp/classes/user.dart';
 import 'package:appartapp/classes/apartment.dart';
+import 'package:appartapp/classes/user.dart';
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'credentials.dart';
 import 'match_handler.dart';
 
 class RuntimeStore {
@@ -75,7 +74,9 @@ class RuntimeStore {
 
   Future<void> initDio() async {
     Directory appDocDir = await getApplicationDocumentsDirectory();
-    this.cookieJar=PersistCookieJar(storage: FileStorage(appDocDir.path + '/.cookies/'));
+    this.cookieJar = PersistCookieJar(
+        persistSession: false,
+        storage: FileStorage(appDocDir.path + '/.cookies/'));
     dio.interceptors.add(CookieManager(RuntimeStore().cookieJar));
   }
 }

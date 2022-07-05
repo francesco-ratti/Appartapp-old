@@ -1,15 +1,13 @@
 import 'dart:io';
 
-import 'package:appartapp/classes/user.dart';
 import 'package:appartapp/classes/enum_gender.dart';
 import 'package:appartapp/classes/runtime_store.dart';
+import 'package:appartapp/classes/user.dart';
 import 'package:appartapp/exceptions/unauthorized_exception.dart';
 import 'package:appartapp/pages/reinsert_password.dart';
 import 'package:appartapp/widgets/ImgGallery.dart';
-import 'package:cookie_jar/cookie_jar.dart';
-import 'package:flutter/material.dart';
-
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 
 class EditProfile extends StatefulWidget {
   String urlStr =

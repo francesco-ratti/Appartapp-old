@@ -49,10 +49,9 @@ class _AddApartment extends State<AddApartment> {
       int price,
       String address,
       List<File> files) async {
-    var dio = RuntimeStore().dio;
+    var dio = RuntimeStore().dio; //ok
     try {
       var formData = FormData();
-
 
       formData.fields.add(MapEntry("listingtitle", listingTitle));
       formData.fields.add(MapEntry("description", description));
@@ -87,7 +86,7 @@ class _AddApartment extends State<AddApartment> {
   }
 
   void removeImage(Function cbk, String imageId, String apartmentId) async {
-    var dio = RuntimeStore().dio;
+    var dio = RuntimeStore().dio; //ok
     try {
       Response response = await dio.post(
         widget.removeImagesUrlStr,
@@ -116,7 +115,7 @@ class _AddApartment extends State<AddApartment> {
       String additionalExpenseDetail,
       int price,
       String address) async {
-    var dio = RuntimeStore().dio;
+    var dio = RuntimeStore().dio; //ok
     try {
       Response response = await dio.post(
         widget.editApartmentUrlStr,
@@ -145,7 +144,7 @@ class _AddApartment extends State<AddApartment> {
   }
 
   void addImages(Function cbk, int id, List<File> files) async {
-    var dio = RuntimeStore().dio;
+    var dio = RuntimeStore().dio; //ok
     try {
       var formData = FormData();
 
@@ -153,7 +152,7 @@ class _AddApartment extends State<AddApartment> {
 
       for (final File file in files) {
         MultipartFile mpfile =
-        await MultipartFile.fromFile(file.path, filename: "filename.jpg");
+            await MultipartFile.fromFile(file.path, filename: "filename.jpg");
         formData.files.add(MapEntry("images", mpfile));
       }
 

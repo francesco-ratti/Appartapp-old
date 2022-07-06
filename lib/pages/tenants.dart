@@ -1,4 +1,3 @@
-import 'package:appartapp/classes/connection_exception.dart';
 import 'package:appartapp/classes/enum_gender.dart';
 import 'package:appartapp/classes/enum_month.dart';
 import 'package:appartapp/classes/enum_temporalq.dart';
@@ -6,15 +5,17 @@ import 'package:appartapp/classes/like_from_user.dart';
 import 'package:appartapp/classes/runtime_store.dart';
 import 'package:appartapp/classes/user.dart';
 import 'package:appartapp/classes/user_handler.dart';
+import 'package:appartapp/widgets/error_dialog_builder.dart';
 import 'package:appartapp/widgets/tenant_viewer.dart';
 import 'package:dio/dio.dart';
 import 'package:dismissible_page/dismissible_page.dart';
 import 'package:flutter/material.dart';
 
 class Tenants extends StatefulWidget {
-  Future<LikeFromUser?> firstTenantFuture;
+  final Future<LikeFromUser?> firstTenantFuture;
 
-  Tenants({required this.child, required this.firstTenantFuture});
+  Tenants({Key? key, required this.child, required this.firstTenantFuture})
+      : super(key: key);
 
   final Widget child;
 
@@ -41,7 +42,7 @@ class _Tenants extends State<Tenants> {
           settings: settings,
           builder: (BuildContext context) {
             return Container(
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   image: DecorationImage(
                     image: AssetImage("assets/background.gif"),
                     fit: BoxFit.cover,
@@ -69,7 +70,8 @@ class ContentPage extends StatefulWidget {
   final ignoreUrlStr =
       "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/ignoreuser";
 //------------------------
-  Future<void> _networkFunction(String urlString, int userId, int apartmentId) async {
+  Future<void> _networkFunction(BuildContext context, String urlString,
+      int userId, int apartmentId) async {
     var dio = RuntimeStore().dio;
     try {
       Response response = await dio.post(
@@ -84,30 +86,22 @@ class ContentPage extends StatefulWidget {
         ),
       );
 
-      if (response.statusCode != 200)
-        print("Failure");
-      else
-        print("Done");
-    } on DioError catch (e) {
-      if (e.type == DioErrorType.connectTimeout ||
-          e.type == DioErrorType.receiveTimeout ||
-          e.type == DioErrorType.other ||
-          e.type == DioErrorType.sendTimeout ||
-          e.type == DioErrorType.cancel) {
-        throw ConnectionException();
+      if (response.statusCode != 200) {
+        Navigator.restorablePush(
+            context, ErrorDialogBuilder.buildGenericConnectionErrorRoute);
       }
-      if (e.response?.statusCode != 200) {
-        print("Failure");
-      }
+    } on DioError {
+      Navigator.restorablePush(
+          context, ErrorDialogBuilder.buildConnectionErrorRoute);
     }
   }
 
-  void likeTenant(int tenantId, int apartmentId) async {
-    await _networkFunction(likeUrlStr, tenantId, apartmentId);
+  void likeTenant(BuildContext context, int tenantId, int apartmentId) async {
+    await _networkFunction(context, likeUrlStr, tenantId, apartmentId);
   }
 
-  void ignoreTenant(int tenantId, int apartmentId) async {
-    await _networkFunction(ignoreUrlStr, tenantId, apartmentId);
+  void ignoreTenant(BuildContext context, int tenantId, int apartmentId) async {
+    await _networkFunction(context, ignoreUrlStr, tenantId, apartmentId);
   }
 
   Future<LikeFromUser?> currentTenantFuture;
@@ -118,10 +112,13 @@ class ContentPage extends StatefulWidget {
   @override
   _ContentPage createState() => _ContentPage();
 
-  ContentPage({required this.currentTenantFuture,
-    required this.updateUI,
-    required this.match,
-    required this.whoCreatedMe});
+  ContentPage(
+      {Key? key,
+      required this.currentTenantFuture,
+      required this.updateUI,
+      required this.match,
+      required this.whoCreatedMe})
+      : super(key: key);
 }
 
 class _ContentPage extends State<ContentPage> {
@@ -187,10 +184,10 @@ class _ContentPage extends State<ContentPage> {
                     widget.updateUI(false);
                     if (currentTenant != null) {
                       if (finalCoord < initialCoord) {
-                        widget.likeTenant(currentTenant!.user.id,
+                        widget.likeTenant(context, currentTenant!.user.id,
                             currentTenant!.apartment!.id);
                       } else {
-                        widget.ignoreTenant(currentTenant!.user.id,
+                        widget.ignoreTenant(context, currentTenant!.user.id,
                             currentTenant!.apartment!.id);
                       }
                     }

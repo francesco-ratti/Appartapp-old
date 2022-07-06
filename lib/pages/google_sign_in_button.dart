@@ -20,14 +20,11 @@ class GoogleSignInButton extends StatefulWidget {
 
   Future<List> signIn(Fb.User user, String accessToken) async {
     String idToken = await user.getIdToken();
-    var dio = RuntimeStore().dio;
+    var dio = RuntimeStore().dio; //ok
     try {
       Response response = await dio.post(
         urlStr,
-        data: {
-          "idtoken": idToken,
-          "accesstoken": accessToken
-        },
+        data: {"idtoken": idToken, "accesstoken": accessToken},
         options: Options(
           contentType: Headers.formUrlEncodedContentType,
           headers: {"Content-Type": "application/x-www-form-urlencoded"},

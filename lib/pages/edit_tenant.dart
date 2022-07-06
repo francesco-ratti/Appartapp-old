@@ -1,17 +1,20 @@
-import 'package:appartapp/classes/connection_exception.dart';
 import 'package:appartapp/classes/enum_month.dart';
 import 'package:appartapp/classes/enum_temporalq.dart';
 import 'package:appartapp/classes/runtime_store.dart';
 import 'package:appartapp/classes/user.dart';
+import 'package:appartapp/widgets/error_dialog_builder.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
 class EditTenant extends StatefulWidget {
-  String urlStr =
+  final String urlStr =
       "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/edituser";
-  Color bgColor = Colors.white;
+  final Color bgColor = Colors.white;
 
   User user = RuntimeStore().getUser() as User;
+
+  EditTenant({Key? key}) : super(key: key);
 
   @override
   _EditTenantState createState() => _EditTenantState();
@@ -25,15 +28,11 @@ class YesNoForList {
 }
 
 class _EditTenantState extends State<EditTenant> {
-  void doUpdate(Function(String) updateUi,
-      String bio,
-      String reason,
-      String job,
-      String income,
-      String pets,
-      Month? month,
-      TemporalQ? smoker) async {
-    var dio = RuntimeStore().dio;
+  bool _isLoading = false;
+
+  void doUpdate(String bio, String reason, String job, String income,
+      String pets, Month? month, TemporalQ? smoker) async {
+    var dio = RuntimeStore().dio; //ok
     try {
       Response response = await dio.post(
         widget.urlStr,
@@ -52,25 +51,25 @@ class _EditTenantState extends State<EditTenant> {
         ),
       );
 
-      if (response.statusCode != 200)
-        updateUi("Failure");
-      else {
-        updateUi("Updated");
+      setState(() {
+        _isLoading = false;
+      });
+
+      if (response.statusCode == 200) {
         Map responseMap = response.data;
         RuntimeStore().setUser(User.fromMap(responseMap));
         Navigator.pop(context);
+      } else {
+        Navigator.restorablePush(
+            context, ErrorDialogBuilder.buildGenericConnectionErrorRoute);
       }
-    } on DioError catch (e) {
-      if (e.type == DioErrorType.connectTimeout ||
-          e.type == DioErrorType.receiveTimeout ||
-          e.type == DioErrorType.other ||
-          e.type == DioErrorType.sendTimeout ||
-          e.type == DioErrorType.cancel) {
-        throw ConnectionException();
-      }
-      if (e.response?.statusCode != 200) {
-        updateUi("Failure");
-      }
+    } on DioError {
+      setState(() {
+        _isLoading = false;
+      });
+
+      Navigator.restorablePush(
+          context, ErrorDialogBuilder.buildConnectionErrorRoute);
     }
   }
 
@@ -87,7 +86,7 @@ class _EditTenantState extends State<EditTenant> {
   TemporalQ? _smokerTQ = null;
 
   YesNoForList? _petsItem = null;
-  List<YesNoForList> _petsEntries = <YesNoForList>[yesYN, noYN];
+  final List<YesNoForList> _petsEntries = <YesNoForList>[yesYN, noYN];
 
   @override
   void initState() {
@@ -95,8 +94,9 @@ class _EditTenantState extends State<EditTenant> {
 
     if (widget.user.bio.isNotEmpty) bioController.text = widget.user.bio;
 
-    if (widget.user.reason.isNotEmpty)
+    if (widget.user.reason.isNotEmpty) {
       reasonController.text = widget.user.reason;
+    }
 
     if (widget.user.job.isNotEmpty) jobController.text = widget.user.job;
 
@@ -110,162 +110,171 @@ class _EditTenantState extends State<EditTenant> {
       _petsItem = noYN;
     }
 
-    if (widget.user.income.isNotEmpty)
+    if (widget.user.income.isNotEmpty) {
       incomeController.text = widget.user.income;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Le tue info da locatario'),
-        backgroundColor: Colors.brown,
-      ),
-      body: ListView(
-        padding: EdgeInsets.all(16.0),
-        children: <Widget>[
-          Padding(
-            padding: EdgeInsets.all(10.0),
-            child: Text(
-              "Queste informazioni verranno visualizzate nel tuo profilo dai proprietari degli appartamenti a cui metti like. Finchè non fornisci queste informazioni non potrai cercare appartamenti.",
-              style: TextStyle(color: Colors.black54),
-            ),
-          ),
-          Padding(
-              padding: EdgeInsets.all(8.0),
-              child: TextField(
-                obscureText: false,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Bio',
+        appBar: AppBar(
+          title: const Text('Le tue info da locatario'),
+          backgroundColor: Colors.brown,
+        ),
+        body: ModalProgressHUD(
+          child: ListView(
+            padding: const EdgeInsets.all(16.0),
+            children: <Widget>[
+              const Padding(
+                padding: EdgeInsets.all(10.0),
+                child: Text(
+                  "Queste informazioni verranno visualizzate nel tuo profilo dai proprietari degli appartamenti a cui metti like. Finchè non fornisci queste informazioni non potrai cercare appartamenti.",
+                  style: TextStyle(color: Colors.black54),
                 ),
-                controller: bioController,
-              )),
-          Padding(
-              padding: EdgeInsets.all(8.0),
-              child: TextField(
-                obscureText: false,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Perchè cerchi un appartamento?',
-                ),
-                controller: reasonController,
-              )),
-          Padding(
-              padding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 0.0),
-              child: Text("Mese in cui cerchi un appartamento")),
-          Padding(
-              padding: EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 8.0),
-              child: DropdownButton<Month>(
-                value: _month,
-                hint: Text("Mese in cui cerchi un appartamento"),
-                // Not necessary for Option 1
-                onChanged: (newValue) {
-                  setState(() {
-                    _month = newValue!;
-                  });
-                },
-                items: Month.values.map((monthItem) {
-                  return DropdownMenuItem<Month>(
-                    child: new Text(monthItem.name),
-                    value: monthItem,
-                  );
-                }).toList(),
-              )),
-          Padding(
-              padding: EdgeInsets.all(8.0),
-              child: TextField(
-                obscureText: false,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Che fai nella vita?',
-                ),
-                controller: jobController,
-              )),
-          Padding(
-              padding: EdgeInsets.all(8.0),
-              child: TextField(
-                obscureText: false,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Introito medio mensile',
-                ),
-                controller: incomeController,
-              )),
-          Padding(
-              padding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 0.0),
-              child: Text("Fumi?")),
-          Padding(
-              padding: EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 8.0),
-              child: DropdownButton<TemporalQ>(
-                value: _smokerTQ,
-                hint: Text("Fumi?"),
-                // Not necessary for Option 1
-                onChanged: (newValue) {
-                  setState(() {
-                    _smokerTQ = newValue!;
-                  });
-                },
-                items: TemporalQ.values.map((temporalQv) {
-                  return DropdownMenuItem(
-                    child: Text(temporalQv.toItalianString()),
-                    value: temporalQv,
-                  );
-                }).toList(),
-              )),
-          Padding(
-              padding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 0.0),
-              child: Text("Hai animali domestici?")),
-          Padding(
-              padding: EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 8.0),
-              child: DropdownButton<YesNoForList>(
-                value: _petsItem,
-                hint: Text("Hai animali domestici?"),
-                // Not necessary for Option 1
-                onChanged: (newValue) {
-                  setState(() {
-                    if (newValue != null) {
-                      if (!newValue.value) petsController.text = "";
+              ),
+              Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextField(
+                    obscureText: false,
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Bio',
+                    ),
+                    controller: bioController,
+                  )),
+              Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextField(
+                    obscureText: false,
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Perchè cerchi un appartamento?',
+                    ),
+                    controller: reasonController,
+                  )),
+              const Padding(
+                  padding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 0.0),
+                  child: Text("Mese in cui cerchi un appartamento")),
+              Padding(
+                  padding: const EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 8.0),
+                  child: DropdownButton<Month>(
+                    value: _month,
+                    hint: const Text("Mese in cui cerchi un appartamento"),
+                    // Not necessary for Option 1
+                    onChanged: (newValue) {
                       setState(() {
-                        _petsItem = newValue;
+                        _month = newValue!;
                       });
-                    }
-                  });
-                },
-                items: _petsEntries.map((temporalQv) {
-                  return DropdownMenuItem(
-                    child: new Text(temporalQv.name),
-                    value: temporalQv,
-                  );
-                }).toList(),
-              )),
-          (_petsItem != null && _petsItem!.value == true)
-              ? Padding(
-              padding: EdgeInsets.all(8.0),
-              child: TextField(
-                obscureText: false,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Quali?',
-                ),
-                controller: petsController,
-              ))
-              : SizedBox(),
-          ElevatedButton(
-              child: Text("Modifica"),
-              style: ElevatedButton.styleFrom(primary: Colors.brown),
-              onPressed: () {
-                String bio = bioController.text.trim();
-                String reason = reasonController.text.trim();
-                String job = jobController.text.trim();
-                String income = incomeController.text.trim();
-                String pets = petsController.text.trim();
+                    },
+                    items: Month.values.map((monthItem) {
+                      return DropdownMenuItem<Month>(
+                        child: Text(monthItem.name),
+                        value: monthItem,
+                      );
+                    }).toList(),
+                  )),
+              Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextField(
+                    obscureText: false,
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Che fai nella vita?',
+                    ),
+                    controller: jobController,
+                  )),
+              Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextField(
+                    obscureText: false,
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Introito medio mensile',
+                    ),
+                    controller: incomeController,
+                  )),
+              const Padding(
+                  padding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 0.0),
+                  child: Text("Fumi?")),
+              Padding(
+                  padding: const EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 8.0),
+                  child: DropdownButton<TemporalQ>(
+                    value: _smokerTQ,
+                    hint: const Text("Fumi?"),
+                    // Not necessary for Option 1
+                    onChanged: (newValue) {
+                      setState(() {
+                        _smokerTQ = newValue!;
+                      });
+                    },
+                    items: TemporalQ.values.map((temporalQv) {
+                      return DropdownMenuItem(
+                        child: Text(temporalQv.toItalianString()),
+                        value: temporalQv,
+                      );
+                    }).toList(),
+                  )),
+              const Padding(
+                  padding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 0.0),
+                  child: Text("Hai animali domestici?")),
+              Padding(
+                  padding: const EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 8.0),
+                  child: DropdownButton<YesNoForList>(
+                    value: _petsItem,
+                    hint: const Text("Hai animali domestici?"),
+                    // Not necessary for Option 1
+                    onChanged: (newValue) {
+                      setState(() {
+                        if (newValue != null) {
+                          if (!newValue.value) petsController.text = "";
+                          setState(() {
+                            _petsItem = newValue;
+                          });
+                        }
+                      });
+                    },
+                    items: _petsEntries.map((temporalQv) {
+                      return DropdownMenuItem(
+                        child: Text(temporalQv.name),
+                        value: temporalQv,
+                      );
+                    }).toList(),
+                  )),
+              (_petsItem != null && _petsItem!.value == true)
+                  ? Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: TextField(
+                        obscureText: false,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'Quali?',
+                        ),
+                        controller: petsController,
+                      ))
+                  : const SizedBox(),
+              ElevatedButton(
+                  child: const Text("Modifica"),
+                  style: ElevatedButton.styleFrom(primary: Colors.brown),
+                  onPressed: () {
+                    String bio = bioController.text.trim();
+                    String reason = reasonController.text.trim();
+                    String job = jobController.text.trim();
+                    String income = incomeController.text.trim();
+                    String pets = petsController.text.trim();
 
-                doUpdate((p0) => null, bio, reason, job, income, pets, _month,
-                    _smokerTQ);
-              }),
-        ],
-      ),
-    );
+                    setState(() {
+                      _isLoading = true;
+                    });
+
+                    doUpdate(bio, reason, job, income, pets, _month, _smokerTQ);
+                  }),
+            ],
+          ),
+          inAsyncCall: _isLoading,
+          // demo of some additional parameters
+          opacity: 0.5,
+          progressIndicator: const CircularProgressIndicator(),
+        ));
   }
 }

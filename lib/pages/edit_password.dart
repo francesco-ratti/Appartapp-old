@@ -1,5 +1,5 @@
-import 'package:appartapp/classes/connection_exception.dart';
 import 'package:appartapp/classes/runtime_store.dart';
+import 'package:appartapp/widgets/error_dialog_builder.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
@@ -19,39 +19,32 @@ class _EditPasswordState extends State<EditPassword> {
 
   String status = "";
 
-  void doUpdate(Function(String) updateUi, String email, String oldpassword,
-      String newpassword) async {
-    var dio = RuntimeStore().dio;
+  bool _isLoading = false;
+
+  void doUpdate(String email, String oldpassword, String newpassword) async {
+    var dio = RuntimeStore().dio; //ok
     try {
       Response response = await dio.post(
         widget.urlStr,
-        data: {
-          "password": oldpassword,
-          "newpassword": newpassword
-        },
+        data: {"password": oldpassword, "newpassword": newpassword},
         options: Options(
           contentType: Headers.formUrlEncodedContentType,
           headers: {"Content-Type": "application/x-www-form-urlencoded"},
         ),
       );
 
-      if (response.statusCode != 200)
-        updateUi("Failure");
-      else {
-        updateUi("Updated");
+      setState(() {
+        _isLoading = false;
+      });
+      if (response.statusCode == 200) {
         Navigator.pop(context);
+      } else {
+        Navigator.restorablePush(
+            context, ErrorDialogBuilder.buildGenericConnectionErrorRoute);
       }
-    } on DioError catch (e) {
-      if (e.type == DioErrorType.connectTimeout ||
-          e.type == DioErrorType.receiveTimeout ||
-          e.type == DioErrorType.other ||
-          e.type == DioErrorType.sendTimeout ||
-          e.type == DioErrorType.cancel) {
-        throw ConnectionException();
-      }
-      if (e.response?.statusCode != 200) {
-        updateUi("Failure");
-      }
+    } on DioError {
+      Navigator.restorablePush(
+          context, ErrorDialogBuilder.buildConnectionErrorRoute);
     }
   }
 
@@ -119,7 +112,7 @@ class _EditPasswordState extends State<EditPassword> {
                     password1Controller.text.trim().isEmpty ||
                     password2Controller.text.trim().isEmpty) {
                   setState(() {
-                    status = "Compila tutti i campi";
+                    status = "Inserisci la tua vecchia password e la nuova";
                   });
                   return;
                 }
@@ -130,11 +123,11 @@ class _EditPasswordState extends State<EditPassword> {
                   });
                 } else {
                   String newPassword = password1Controller.text;
-                  doUpdate((String toWrite) {
-                    setState(() {
-                      status = toWrite;
-                    });
-                  }, RuntimeStore().getUser()?.email ?? "", oldPassword, newPassword);
+                  setState(() {
+                    _isLoading = true;
+                  });
+                  doUpdate(RuntimeStore().getUser()?.email ?? "", oldPassword,
+                      newPassword);
                 }
               }),
           Padding(

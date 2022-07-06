@@ -4,7 +4,7 @@ import 'package:appartapp/classes/login_handler.dart';
 import 'package:appartapp/classes/runtime_store.dart';
 import 'package:appartapp/classes/user.dart';
 import 'package:appartapp/pages/loading.dart';
-import 'package:appartapp/widgets/connection_error_dialog_builder.dart';
+import 'package:appartapp/widgets/error_dialog_builder.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
@@ -49,21 +49,23 @@ class _LoginState extends State<Login> {
           setState(() {
             _isLoading = false;
           });
-          updateUi("internal server error");
+          Navigator.restorablePush(
+              context, ErrorDialogBuilder.buildGenericConnectionErrorRoute);
           break;
         default:
           setState(() {
             _isLoading = false;
           });
-          updateUi("Errore");
+          Navigator.restorablePush(
+              context, ErrorDialogBuilder.buildGenericConnectionErrorRoute);
           break;
       }
     } on ConnectionException {
       setState(() {
         _isLoading = false;
       });
-      Navigator.of(context)
-          .restorablePush(ConnectionErrorDialogBuilder.buildRoute);
+      Navigator.restorablePush(
+          context, ErrorDialogBuilder.buildGenericConnectionErrorRoute);
     }
   }
 

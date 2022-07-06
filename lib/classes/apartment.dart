@@ -1,13 +1,10 @@
+import 'package:appartapp/classes/connection_exception.dart';
 import 'package:appartapp/classes/runtime_store.dart';
 import 'package:appartapp/classes/user.dart';
 import 'package:appartapp/exceptions/network_exception.dart';
 import 'package:appartapp/exceptions/unauthorized_exception.dart';
 import 'package:dio/dio.dart';
-import 'package:dio_cookie_manager/dio_cookie_manager.dart';
-
 import 'package:flutter/material.dart';
-
-import 'apartment_handler.dart';
 
 class Apartment {
 
@@ -112,6 +109,13 @@ class Apartment {
       else if (response.statusCode != 200)
         throw new NetworkException();
     } on DioError catch (e) {
+      if (e.type == DioErrorType.connectTimeout ||
+          e.type == DioErrorType.receiveTimeout ||
+          e.type == DioErrorType.other ||
+          e.type == DioErrorType.sendTimeout ||
+          e.type == DioErrorType.cancel) {
+        throw ConnectionException();
+      }
       if (e.response?.statusCode == 401)
         throw new UnauthorizedException();
       else
@@ -122,6 +126,7 @@ class Apartment {
   void markAsIgnored() async {
     _performRequest(urlStrMarkAsIgnored);
   }
+
   void markAsLiked() async {
     _performRequest(urlStrMarkAsLiked);
   }

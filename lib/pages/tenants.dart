@@ -1,3 +1,4 @@
+import 'package:appartapp/classes/connection_exception.dart';
 import 'package:appartapp/classes/enum_gender.dart';
 import 'package:appartapp/classes/enum_month.dart';
 import 'package:appartapp/classes/enum_temporalq.dart';
@@ -88,6 +89,13 @@ class ContentPage extends StatefulWidget {
       else
         print("Done");
     } on DioError catch (e) {
+      if (e.type == DioErrorType.connectTimeout ||
+          e.type == DioErrorType.receiveTimeout ||
+          e.type == DioErrorType.other ||
+          e.type == DioErrorType.sendTimeout ||
+          e.type == DioErrorType.cancel) {
+        throw ConnectionException();
+      }
       if (e.response?.statusCode != 200) {
         print("Failure");
       }
@@ -192,11 +200,11 @@ class _ContentPage extends State<ContentPage> {
                         context,
                         MaterialPageRoute(
                             builder: (context) => ContentPage(
-                                  currentTenantFuture: nextTenantFuture,
-                                  updateUI: widget.updateUI,
-                                  match: widget.match,
-                                  whoCreatedMe: "Content creation",
-                                )));
+                              currentTenantFuture: nextTenantFuture,
+                              updateUI: widget.updateUI,
+                              match: widget.match,
+                              whoCreatedMe: "Content creation",
+                            )));
                   },
                   direction: widget.match
                       ? DismissiblePageDismissDirection.endToStart

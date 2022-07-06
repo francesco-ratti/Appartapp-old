@@ -1,7 +1,7 @@
-import 'package:appartapp/classes/runtime_store.dart';
-import 'package:dio/dio.dart';
 import 'package:appartapp/classes/lessor_match.dart';
+import 'package:appartapp/classes/runtime_store.dart';
 import 'package:collection/collection.dart';
+import 'package:dio/dio.dart';
 
 class MatchHandler {
   //SINGLETON PATTERN
@@ -66,6 +66,7 @@ class MatchHandler {
         }
       }
     } on DioError catch (e) {
+      //TODO
       /*if (e.response?.statusCode == 401)
         return [null, null, LoginResult.wrong_credentials];
       else

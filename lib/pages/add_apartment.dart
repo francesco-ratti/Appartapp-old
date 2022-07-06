@@ -1,12 +1,13 @@
 import 'dart:io';
 
 import 'package:appartapp/classes/apartment.dart';
-import 'package:appartapp/classes/credentials.dart';
 import 'package:appartapp/classes/runtime_store.dart';
-import 'package:appartapp/exceptions/unauthorized_exception.dart';
 import 'package:appartapp/widgets/ImgGallery.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
+
+import '../widgets/error_dialog_builder.dart';
 
 class AddApartment extends StatefulWidget {
   final Apartment? toEdit;
@@ -35,10 +36,13 @@ class _AddApartment extends State<AddApartment> {
 
   Apartment? toEdit;
 
+  bool _isLoading = false;
+  bool _uploadError = false;
+
   _AddApartment(this.toEdit);
 
   void doCreateApartmentPost(
-      Function(String) updateUi,
+      Function cbk,
       String listingTitle,
       String description,
       String additionalExpenseDetail,
@@ -72,37 +76,22 @@ class _AddApartment extends State<AddApartment> {
         ),
       );
 
-      if (response.statusCode != 200) {
-        if (response.statusCode == 401) {
-          updateUi("Non autorizzato");
-          throw new UnauthorizedException();
-        } else {
-          updateUi("Errore interno");
-          return;
-        }
-      } else {
-        print("added");
-        Navigator.pop(context);
+      if (response.statusCode != 200)
+        _uploadError = true;
+      else {
+        cbk();
       }
-    } on DioError catch (e) {
-      if (e.response?.statusCode == 401) {
-        updateUi("Non autorizzato");
-        throw new UnauthorizedException();
-      } else {
-        updateUi("Errore interno");
-      }
+    } on DioError {
+      _uploadError = true;
     }
   }
 
-  void removeImage(Function(String) updateUi, String imageId, String apartmentId) async {
+  void removeImage(Function cbk, String imageId, String apartmentId) async {
     var dio = RuntimeStore().dio;
     try {
       Response response = await dio.post(
         widget.removeImagesUrlStr,
-        data: {
-          "imageid": imageId,
-          "apartmentid": apartmentId
-        },
+        data: {"imageid": imageId, "apartmentid": apartmentId},
         options: Options(
           contentType: Headers.formUrlEncodedContentType,
           headers: {"Content-Type": "application/x-www-form-urlencoded"},
@@ -110,19 +99,17 @@ class _AddApartment extends State<AddApartment> {
       );
 
       if (response.statusCode != 200)
-        updateUi("Failure");
+        _uploadError = true;
       else {
-        updateUi("Updated");
+        cbk();
       }
-    } on DioError catch (e) {
-      if (e.response?.statusCode != 200) {
-        updateUi("Failure");
-      }
+    } on DioError {
+      _uploadError = true;
     }
   }
 
   void doEditApartmentPost(
-      Function(String) updateUi,
+      Function() cbk,
       int id,
       String listingTitle,
       String description,
@@ -147,32 +134,17 @@ class _AddApartment extends State<AddApartment> {
         ),
       );
 
-      if (response.statusCode != 200) {
-        if (response.statusCode == 401) {
-          updateUi("Non autorizzato");
-          throw new UnauthorizedException();
-        } else {
-          updateUi("Errore interno");
-          return;
-        }
-      } else {
-        print("edited");
-        updateUi("edited");
+      if (response.statusCode != 200)
+        _uploadError = true;
+      else {
+        cbk();
       }
-    } on DioError catch (e) {
-      if (e.response?.statusCode == 401) {
-        updateUi("Non autorizzato");
-        throw new UnauthorizedException();
-      } else {
-        updateUi("Errore interno");
-      }
+    } on DioError {
+      _uploadError = true;
     }
   }
 
-  void addImages(
-      Function(String) updateUi,
-      int id,
-      List<File> files) async {
+  void addImages(Function cbk, int id, List<File> files) async {
     var dio = RuntimeStore().dio;
     try {
       var formData = FormData();
@@ -194,30 +166,15 @@ class _AddApartment extends State<AddApartment> {
         ),
       );
 
-      if (response.statusCode != 200) {
-        if (response.statusCode == 401) {
-          updateUi("Non autorizzato");
-          throw new UnauthorizedException();
-        } else {
-          updateUi("Errore interno");
-          return;
-        }
-      } else {
-        print("added");
-        updateUi("added");
+      if (response.statusCode != 200)
+        _uploadError = true;
+      else {
+        cbk();
       }
-    } on DioError catch (e) {
-      if (e.response?.statusCode == 401) {
-        updateUi("Non autorizzato");
-        throw new UnauthorizedException();
-      } else {
-        updateUi("Errore interno");
-      }
+    } on DioError {
+      _uploadError = true;
     }
   }
-
-
-  String status = "";
 
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descController = TextEditingController();
@@ -237,8 +194,15 @@ class _AddApartment extends State<AddApartment> {
   int uploadCtr=0;
   int numUploads=0;
   void onUploadsEnd () {
-    if (widget.callback!=null)
-      widget.callback!();
+    if (_uploadError) {
+      Navigator.restorablePush(
+          context, ErrorDialogBuilder.buildGenericConnectionErrorRoute);
+    } else {
+      setState(() {
+        _isLoading = false;
+      });
+      if (widget.callback != null) widget.callback!();
+    }
   }
 
   @override
@@ -274,18 +238,20 @@ class _AddApartment extends State<AddApartment> {
   @override
   Widget build(BuildContext context) {
     //final User user = Provider.of<User>(context);
-    return SafeArea(
-      child: Scaffold(
-        body: Container(
-          color: Colors.white,
-          child: Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: ListView(
-              children: <Widget>[
-                header(),
-                ImgGallery(
-                  filesToUploadCbk: (imageList) {
-                    _toUpload=imageList;
+    return ModalProgressHUD(
+        inAsyncCall: _isLoading,
+        child: SafeArea(
+          child: Scaffold(
+            body: Container(
+              color: Colors.white,
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: ListView(
+                  children: <Widget>[
+                    header(),
+                    ImgGallery(
+                      filesToUploadCbk: (imageList) {
+                        _toUpload=imageList;
                   },
                   onSubmitCbksCbk: (cbkList) {
                     _onSubmitCbks=cbkList;
@@ -293,23 +259,17 @@ class _AddApartment extends State<AddApartment> {
                   totalImagesCbk: (int totalImages) {
                     _totalImages=totalImages;
                   }, existingImages: existingImages,),
-                title(),
-                desc(),
-                address(),
-                price(),
-                sendButton(),
-                Padding(
-                    padding: EdgeInsets.all(16.0),
-                    child: Text(
-                      status,
-                      style: TextStyle(fontSize: 20),
-                    )),
-              ],
+                    title(),
+                    desc(),
+                    address(),
+                    price(),
+                    sendButton(),
+                  ],
+                ),
+              ),
             ),
           ),
-        ),
-      ),
-    );
+        ));
   }
 
   Widget header() {
@@ -416,26 +376,23 @@ class _AddApartment extends State<AddApartment> {
       padding: const EdgeInsets.only(top: 20.0),
       child: Container(
         child: ElevatedButton(
-          onPressed: !uploading
+          onPressed: !_isLoading
               ? () {
-            if (isReady()) {
-              setState(() {
-                uploading = true;
-                status = "Caricamento in corso...";
-              });
-              if (toEdit==null) {
-                doCreateApartmentPost((String toWrite) {
-                  setState(() {
-                    status = toWrite;
-                    print(status);
-                  });
-                },
-                    _titleController.text,
-                    _descController.text,
-                    _aedController.text,
-                    int.parse(_priceController.text),
-                    _addressController.text,
-                    _toUpload);
+                  if (isReady()) {
+                    numUploads = 0;
+
+                    setState(() {
+                      _isLoading = true;
+                    });
+                    if (toEdit == null) {
+                      doCreateApartmentPost(
+                          () {},
+                          _titleController.text,
+                          _descController.text,
+                          _aedController.text,
+                          int.parse(_priceController.text),
+                          _addressController.text,
+                          _toUpload);
               } else {
                 numUploads++; //for editapartmentPost
                 if (_toUpload.isNotEmpty)
@@ -451,18 +408,19 @@ class _AddApartment extends State<AddApartment> {
                     }
                   }, toEdit!.id, _toUpload);
                 }
-                doEditApartmentPost((String toWrite) {
-                  uploadCtr++;
-                  if (uploadCtr==numUploads) {
-                    onUploadsEnd();
-                  }
-                },
-                  toEdit!.id,
-                  _titleController.text,
-                  _descController.text,
-                  _aedController.text,
-                  int.parse(_priceController.text),
-                  _addressController.text,
+                doEditApartmentPost(
+                        () {
+                          uploadCtr++;
+                          if (uploadCtr == numUploads) {
+                            onUploadsEnd();
+                          }
+                        },
+                        toEdit!.id,
+                        _titleController.text,
+                        _descController.text,
+                        _aedController.text,
+                        int.parse(_priceController.text),
+                        _addressController.text,
                 );
               }
             }

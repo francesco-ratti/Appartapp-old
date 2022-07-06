@@ -1,11 +1,11 @@
 import 'package:appartapp/classes/user.dart';
-import '../exceptions/unauthorized_exception.dart';
 import 'package:dio/dio.dart';
+
 import '../exceptions/network_exception.dart';
+import '../exceptions/unauthorized_exception.dart';
+import 'connection_exception.dart';
 import 'like_from_user.dart';
 import 'runtime_store.dart';
-
-import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 
 class UserHandler {
   //SINGLETON PATTERN
@@ -41,14 +41,20 @@ class UserHandler {
       if (response.statusCode == 401)
         throw new UnauthorizedException();
       else if (response.statusCode == 200) {
-        if (response.data == null)
-          return null;
-        LikeFromUser likeFromUser=LikeFromUser.fromMap(response.data as Map);
+        if (response.data == null) return null;
+        LikeFromUser likeFromUser = LikeFromUser.fromMap(response.data as Map);
         callback(likeFromUser);
         return likeFromUser;
       } else
-        throw new NetworkException();
+        throw ConnectionException();
     } on DioError catch (e) {
+      if (e.type == DioErrorType.connectTimeout ||
+          e.type == DioErrorType.receiveTimeout ||
+          e.type == DioErrorType.other ||
+          e.type == DioErrorType.sendTimeout ||
+          e.type == DioErrorType.cancel) {
+        throw ConnectionException();
+      }
       if (e.response?.statusCode == 401)
         throw new UnauthorizedException();
       else

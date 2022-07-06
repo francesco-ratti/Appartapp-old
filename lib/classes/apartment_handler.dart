@@ -1,11 +1,10 @@
-import '../exceptions/unauthorized_exception.dart';
 import 'package:appartapp/classes/apartment.dart';
+import 'package:appartapp/classes/connection_exception.dart';
 import 'package:dio/dio.dart';
-import '../exceptions/network_exception.dart';
-import 'runtime_store.dart';
 
-import 'package:dio_cookie_manager/dio_cookie_manager.dart';
-import 'package:cookie_jar/cookie_jar.dart';
+import '../exceptions/network_exception.dart';
+import '../exceptions/unauthorized_exception.dart';
+import 'runtime_store.dart';
 
 class ApartmentHandler {
   //SINGLETON PATTERN
@@ -52,6 +51,13 @@ class ApartmentHandler {
       else
         throw new NetworkException();
     } on DioError catch (e) {
+      if (e.type == DioErrorType.connectTimeout ||
+          e.type == DioErrorType.receiveTimeout ||
+          e.type == DioErrorType.other ||
+          e.type == DioErrorType.sendTimeout ||
+          e.type == DioErrorType.cancel) {
+        throw ConnectionException();
+      }
       if (e.response?.statusCode == 401)
         throw new UnauthorizedException();
       else
@@ -85,6 +91,13 @@ class ApartmentHandler {
       else
         throw new NetworkException();
     } on DioError catch (e) {
+      if (e.type == DioErrorType.connectTimeout ||
+          e.type == DioErrorType.receiveTimeout ||
+          e.type == DioErrorType.other ||
+          e.type == DioErrorType.sendTimeout ||
+          e.type == DioErrorType.cancel) {
+        throw ConnectionException();
+      }
       if (e.response?.statusCode == 401)
         throw new UnauthorizedException();
       else

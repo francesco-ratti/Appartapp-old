@@ -1,5 +1,6 @@
 import 'package:appartapp/classes/apartment.dart';
 import 'package:appartapp/classes/apartment_handler.dart';
+import 'package:appartapp/classes/connection_exception.dart';
 import 'package:appartapp/classes/runtime_store.dart';
 import 'package:appartapp/widgets/apartment_viewer.dart';
 import 'package:dio/dio.dart';
@@ -100,10 +101,17 @@ class ContentPage extends StatefulWidget {
         else
           print("Done");
       } on DioError catch (e) {
-        if (e.response?.statusCode != 200) {
-          print("Failure");
-        }
+      if (e.type == DioErrorType.connectTimeout ||
+          e.type == DioErrorType.receiveTimeout ||
+          e.type == DioErrorType.other ||
+          e.type == DioErrorType.sendTimeout ||
+          e.type == DioErrorType.cancel) {
+        throw ConnectionException();
       }
+      if (e.response?.statusCode != 200) {
+        print("Failure");
+      }
+    }
   }
 
   void likeApartment(int apartmentId) async {

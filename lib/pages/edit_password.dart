@@ -1,6 +1,7 @@
+import 'package:appartapp/classes/connection_exception.dart';
+import 'package:appartapp/classes/runtime_store.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:appartapp/classes/runtime_store.dart';
 
 class EditPassword extends StatefulWidget {
   Color bgColor = Colors.white;
@@ -41,6 +42,13 @@ class _EditPasswordState extends State<EditPassword> {
         Navigator.pop(context);
       }
     } on DioError catch (e) {
+      if (e.type == DioErrorType.connectTimeout ||
+          e.type == DioErrorType.receiveTimeout ||
+          e.type == DioErrorType.other ||
+          e.type == DioErrorType.sendTimeout ||
+          e.type == DioErrorType.cancel) {
+        throw ConnectionException();
+      }
       if (e.response?.statusCode != 200) {
         updateUi("Failure");
       }

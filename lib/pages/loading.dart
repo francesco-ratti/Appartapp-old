@@ -9,7 +9,7 @@ import 'package:appartapp/classes/match_handler.dart';
 import 'package:appartapp/classes/runtime_store.dart';
 import 'package:appartapp/classes/user.dart';
 import 'package:appartapp/classes/user_handler.dart';
-import 'package:appartapp/widgets/connection_error_dialog_builder.dart';
+import 'package:appartapp/widgets/error_dialog_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -90,8 +90,8 @@ class _LoadingState extends State<Loading> {
                   break;
                 case LoginResult.server_error:
                   print("internal server error");
-                  Navigator.of(context)
-                      .restorablePush(ConnectionErrorDialogBuilder.buildRoute);
+                  Navigator.of(context).restorablePush(
+                      ErrorDialogBuilder.buildConnectionErrorRoute);
                   break;
                 default:
                 //TODO showerror: network error
@@ -99,7 +99,7 @@ class _LoadingState extends State<Loading> {
             });
           } on ConnectionException {
             Navigator.of(context)
-                .restorablePush(ConnectionErrorDialogBuilder.buildRoute);
+                .restorablePush(ErrorDialogBuilder.buildConnectionErrorRoute);
           }
         }
       } else {

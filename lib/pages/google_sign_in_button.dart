@@ -1,8 +1,10 @@
+import 'package:appartapp/classes/connection_exception.dart';
 import 'package:appartapp/classes/enum_loginresult.dart';
 import 'package:appartapp/classes/runtime_store.dart';
 import 'package:appartapp/classes/user.dart' as AppUser;
 import 'package:appartapp/pages/loading.dart';
 import 'package:appartapp/utils/authentication.dart';
+import 'package:appartapp/widgets/error_dialog_builder.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart' as Fb;
 import 'package:flutter/material.dart';
@@ -45,6 +47,13 @@ class GoogleSignInButton extends StatefulWidget {
         return [user, LoginResult.ok];
       }
     } on DioError catch (e) {
+      if (e.type == DioErrorType.connectTimeout ||
+          e.type == DioErrorType.receiveTimeout ||
+          e.type == DioErrorType.other ||
+          e.type == DioErrorType.sendTimeout ||
+          e.type == DioErrorType.cancel) {
+        throw ConnectionException();
+      }
       if (e.response?.statusCode == 401)
         return [null, LoginResult.wrong_credentials];
       else
@@ -62,37 +71,53 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
       padding: const EdgeInsets.only(bottom: 16.0),
       child: _isSigningIn
           ? CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-            )
+        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+      )
           : SignInButton(
-              Buttons.Google,
-              text: "Accedi con Google",
-              onPressed: () async {
-                setState(() {
-                  _isSigningIn = true;
-                });
+        Buttons.Google,
+        text: "Accedi con Google",
+        onPressed: () async {
+          setState(() {
+            _isSigningIn = true;
+          });
 
-                List? resG =
-                    await Authentication.signInWithGoogle(context: context);
+          List? resG =
+          await Authentication.signInWithGoogle(context: context);
 
-                setState(() {
-                  _isSigningIn = false;
-                });
+          setState(() {
+            _isSigningIn = false;
+          });
 
-                if (resG != null) {
+          if (resG != null) {
             Fb.User? gUser = resG[0];
             String accessToken=resG[1];
 
             List res=await widget.signIn(gUser!, accessToken);
             LoginResult loginResult=res[1];
             switch (loginResult) {
-              case LoginResult.ok:
-                AppUser.User appUser=res[0];
-                doInitialisation(context, appUser, RuntimeStore().getSharedPreferences() as SharedPreferences);
-                break;
-                //TODO implement other case
-            }
-          }
+                    case LoginResult.ok:
+                      AppUser.User appUser = res[0];
+                      doInitialisation(
+                          context,
+                          appUser,
+                          RuntimeStore().getSharedPreferences()
+                              as SharedPreferences);
+                      break;
+                    case LoginResult.network_fail:
+                      Navigator.restorablePush(context,
+                          ErrorDialogBuilder.buildConnectionErrorRoute);
+                      break;
+                    case LoginResult.wrong_credentials:
+                      // TODO: Handle this case.
+                      Navigator.restorablePush(context,
+                          ErrorDialogBuilder.buildCredentialsErrorRoute);
+                      break;
+                    case LoginResult.server_error:
+                      Navigator.restorablePush(context,
+                          ErrorDialogBuilder.buildGenericConnectionErrorRoute);
+                      break;
+                  }
+                }
         },
       ),
     );

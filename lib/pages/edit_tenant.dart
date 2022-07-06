@@ -1,9 +1,10 @@
+import 'package:appartapp/classes/connection_exception.dart';
 import 'package:appartapp/classes/enum_month.dart';
+import 'package:appartapp/classes/enum_temporalq.dart';
 import 'package:appartapp/classes/runtime_store.dart';
 import 'package:appartapp/classes/user.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:appartapp/classes/enum_temporalq.dart';
 
 class EditTenant extends StatefulWidget {
   String urlStr =
@@ -24,8 +25,7 @@ class YesNoForList {
 }
 
 class _EditTenantState extends State<EditTenant> {
-  void doUpdate(
-      Function(String) updateUi,
+  void doUpdate(Function(String) updateUi,
       String bio,
       String reason,
       String job,
@@ -61,6 +61,13 @@ class _EditTenantState extends State<EditTenant> {
         Navigator.pop(context);
       }
     } on DioError catch (e) {
+      if (e.type == DioErrorType.connectTimeout ||
+          e.type == DioErrorType.receiveTimeout ||
+          e.type == DioErrorType.other ||
+          e.type == DioErrorType.sendTimeout ||
+          e.type == DioErrorType.cancel) {
+        throw ConnectionException();
+      }
       if (e.response?.statusCode != 200) {
         updateUi("Failure");
       }
@@ -234,15 +241,15 @@ class _EditTenantState extends State<EditTenant> {
               )),
           (_petsItem != null && _petsItem!.value == true)
               ? Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: TextField(
-                    obscureText: false,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'Quali?',
-                    ),
-                    controller: petsController,
-                  ))
+              padding: EdgeInsets.all(8.0),
+              child: TextField(
+                obscureText: false,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Quali?',
+                ),
+                controller: petsController,
+              ))
               : SizedBox(),
           ElevatedButton(
               child: Text("Modifica"),

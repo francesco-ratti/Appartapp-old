@@ -1,9 +1,9 @@
+import 'package:appartapp/classes/connection_exception.dart';
 import 'package:appartapp/classes/enum_gender.dart';
 import 'package:appartapp/classes/runtime_store.dart';
-import 'package:flutter/material.dart';
-
 //import './../SimpleTextField.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 
 class Signup extends StatefulWidget {
   String urlStr = "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/signup";
@@ -38,6 +38,13 @@ class _SignupState extends State<Signup> {
       else
         updateUi("Signed up");
     } on DioError catch (e) {
+      if (e.type == DioErrorType.connectTimeout ||
+          e.type == DioErrorType.receiveTimeout ||
+          e.type == DioErrorType.other ||
+          e.type == DioErrorType.sendTimeout ||
+          e.type == DioErrorType.cancel) {
+        throw ConnectionException();
+      }
       if (e.response?.statusCode != 200) {
         updateUi("Failure");
       }
@@ -61,7 +68,7 @@ class _SignupState extends State<Signup> {
     Color bgColor = Colors.white;
 
     birthdayController.text =
-        "${_birthday.day}/${_birthday.month}/${_birthday.year}";
+    "${_birthday.day}/${_birthday.month}/${_birthday.year}";
 
     return Scaffold(
         appBar: AppBar(
@@ -117,10 +124,10 @@ class _SignupState extends State<Signup> {
                   readOnly: true,
                   onTap: () {
                     showDatePicker(
-                            context: context,
-                            initialDate: _birthday,
-                            lastDate: DateTime.now(),
-                            firstDate: DateTime(1900))
+                        context: context,
+                        initialDate: _birthday,
+                        lastDate: DateTime.now(),
+                        firstDate: DateTime(1900))
                         .then((value) {
                       if (value != null) {
                         setState(() {
@@ -142,21 +149,21 @@ class _SignupState extends State<Signup> {
                 child: Row(children: [
                   Expanded(
                       child: DropdownButton<Gender>(
-                    hint: Text("Scegli il tuo genere"),
-                    // Not necessary for Option 1
-                    value: _gender,
-                    onChanged: (newValue) {
-                      setState(() {
-                        _gender = newValue;
-                      });
-                    },
-                    items: Gender.values.map((gender) {
-                      return DropdownMenuItem(
-                        child: Text(gender.toItalianString()),
-                        value: gender,
-                      );
-                    }).toList(),
-                  ))
+                        hint: Text("Scegli il tuo genere"),
+                        // Not necessary for Option 1
+                        value: _gender,
+                        onChanged: (newValue) {
+                          setState(() {
+                            _gender = newValue;
+                          });
+                        },
+                        items: Gender.values.map((gender) {
+                          return DropdownMenuItem(
+                            child: Text(gender.toItalianString()),
+                            value: gender,
+                          );
+                        }).toList(),
+                      ))
                 ])),
             ElevatedButton(
                 child: Text("Registrati"),

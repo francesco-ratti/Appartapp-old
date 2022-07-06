@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:appartapp/classes/connection_exception.dart';
 import 'package:appartapp/classes/enum_gender.dart';
 import 'package:appartapp/classes/runtime_store.dart';
 import 'package:appartapp/classes/user.dart';
@@ -59,6 +60,13 @@ class _EditProfileState extends State<EditProfile> {
         print("added");
       }
     } on DioError catch (e) {
+      if (e.type == DioErrorType.connectTimeout ||
+          e.type == DioErrorType.receiveTimeout ||
+          e.type == DioErrorType.other ||
+          e.type == DioErrorType.sendTimeout ||
+          e.type == DioErrorType.cancel) {
+        throw ConnectionException();
+      }
       if (e.response?.statusCode == 401) {
         updateUi("Non autorizzato");
         throw new UnauthorizedException();
@@ -88,6 +96,13 @@ class _EditProfileState extends State<EditProfile> {
         updateUi("Updated");
       }
     } on DioError catch (e) {
+      if (e.type == DioErrorType.connectTimeout ||
+          e.type == DioErrorType.receiveTimeout ||
+          e.type == DioErrorType.other ||
+          e.type == DioErrorType.sendTimeout ||
+          e.type == DioErrorType.cancel) {
+        throw ConnectionException();
+      }
       if (e.response?.statusCode != 200) {
         updateUi("Failure");
       }
@@ -125,6 +140,13 @@ class _EditProfileState extends State<EditProfile> {
         RuntimeStore().setUser(User.fromMap(responseMap));
       }
     } on DioError catch (e) {
+      if (e.type == DioErrorType.connectTimeout ||
+          e.type == DioErrorType.receiveTimeout ||
+          e.type == DioErrorType.other ||
+          e.type == DioErrorType.sendTimeout ||
+          e.type == DioErrorType.cancel) {
+        throw ConnectionException();
+      }
       if (e.response?.statusCode != 200) {
         updateUi("Failure");
       }
@@ -352,11 +374,20 @@ class _EditProfileState extends State<EditProfile> {
                                 Navigator.pop(context);
                               }
                             } on DioError catch (e) {
-                              if (e.response?.statusCode != 200) {
-                                updateUi("Failure");
-                              }
-                            }
-                          })));
+                                      if (e.type ==
+                                              DioErrorType.connectTimeout ||
+                                          e.type ==
+                                              DioErrorType.receiveTimeout ||
+                                          e.type == DioErrorType.other ||
+                                          e.type == DioErrorType.sendTimeout ||
+                                          e.type == DioErrorType.cancel) {
+                                        throw ConnectionException();
+                                      }
+                                      if (e.response?.statusCode != 200) {
+                                        updateUi("Failure");
+                                      }
+                                    }
+                                  })));
                 }
 
               } else {

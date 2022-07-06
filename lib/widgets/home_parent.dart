@@ -93,7 +93,7 @@ class _HomeParent extends State<HomeParent> {
                       }),
                 ),
               )
-            : Container(),
+            : SizedBox(),
       ]),
     );
   }

@@ -1,8 +1,10 @@
+import 'package:appartapp/classes/connection_exception.dart';
 import 'package:appartapp/classes/enum_loginresult.dart';
 import 'package:appartapp/classes/login_handler.dart';
 import 'package:appartapp/classes/runtime_store.dart';
 import 'package:appartapp/classes/user.dart';
 import 'package:appartapp/pages/loading.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -17,42 +19,50 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
   bool _isLoading = false;
+  bool _connectionError = false;
 
   void doLogin(Function(String) updateUi, String email, String password) async {
     setState(() {
       _isLoading = true;
     });
-    List res = await LoginHandler.doLogin(email, password);
-    LoginResult loginResult = res[1];
-    switch (loginResult) {
-      case LoginResult.ok:
-        User user = res[0];
-        SharedPreferences sharedPreferences =
-            RuntimeStore().getSharedPreferences() as SharedPreferences;
+    try {
+      List res = await LoginHandler.doLogin(email, password);
+      LoginResult loginResult = res[1];
+      switch (loginResult) {
+        case LoginResult.ok:
+          User user = res[0];
+          SharedPreferences sharedPreferences =
+              RuntimeStore().getSharedPreferences() as SharedPreferences;
 
-        sharedPreferences.setBool("credentialslogin", true);
-        RuntimeStore().credentialsLogin = true;
+          sharedPreferences.setBool("credentialslogin", true);
+          RuntimeStore().credentialsLogin = true;
 
-        doInitialisation(context, user, sharedPreferences);
-        break;
-      case LoginResult.wrong_credentials:
-        setState(() {
-          _isLoading = false;
-        });
-        updateUi("Credenziali errate");
-        break;
-      case LoginResult.server_error:
-        setState(() {
-          _isLoading = false;
-        });
-        updateUi("internal server error");
-        break;
-      default:
-        setState(() {
-          _isLoading = false;
-        });
-        updateUi("Errore");
-        break;
+          doInitialisation(context, user, sharedPreferences);
+          break;
+        case LoginResult.wrong_credentials:
+          setState(() {
+            _isLoading = false;
+          });
+          updateUi("Credenziali errate");
+          break;
+        case LoginResult.server_error:
+          setState(() {
+            _isLoading = false;
+          });
+          updateUi("internal server error");
+          break;
+        default:
+          setState(() {
+            _isLoading = false;
+          });
+          updateUi("Errore");
+          break;
+      }
+    } on ConnectionException {
+      setState(() {
+        _isLoading = false;
+        _connectionError = true;
+      });
     }
   }
 
@@ -70,11 +80,12 @@ class _LoginState extends State<Login> {
       ),
       backgroundColor: widget.bgColor,
       body: ModalProgressHUD(
-        child: Center(
-            child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-              /*
+        child: Stack(children: <Widget>[
+          Center(
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                /*
           const SimpleTextField(
             labelText: 'E-Mail',
             showLabelAboveTextField: true,
@@ -89,52 +100,70 @@ class _LoginState extends State<Login> {
           ),
 
            */
-              Padding(
-                  padding: EdgeInsets.all(16.0),
-                  child: Text(
-                    "Inserisci le tue credenziali",
-                    style: TextStyle(fontSize: 20),
-                  )),
-              Padding(
-                  padding: EdgeInsets.all(16.0),
-                  child: Text(
-                    status,
-                    style: TextStyle(fontSize: 20),
-                  )),
-              Padding(
-                  padding: EdgeInsets.all(16.0),
-                  child: TextField(
-                    obscureText: false,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'E-Mail',
-                    ),
-                    controller: emailController,
-                  )),
-              Padding(
-                  padding: EdgeInsets.all(16.0),
-                  child: TextField(
-                    controller: passwordController,
-                    obscureText: true,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'Password',
-                    ),
-                  )),
-              ElevatedButton(
-                  child: Text("Accedi"),
-                  style: ElevatedButton.styleFrom(primary: Colors.brown),
-                  onPressed: () {
-                    String email = emailController.text;
-                    String password = passwordController.text;
+                    Padding(
+                        padding: EdgeInsets.all(16.0),
+                        child: Text(
+                          "Inserisci le tue credenziali",
+                          style: TextStyle(fontSize: 20),
+                        )),
+                    Padding(
+                        padding: EdgeInsets.all(16.0),
+                        child: Text(
+                          status,
+                          style: TextStyle(fontSize: 20),
+                        )),
+                    Padding(
+                        padding: EdgeInsets.all(16.0),
+                        child: TextField(
+                          obscureText: false,
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(),
+                            labelText: 'E-Mail',
+                          ),
+                          controller: emailController,
+                        )),
+                    Padding(
+                        padding: EdgeInsets.all(16.0),
+                        child: TextField(
+                          controller: passwordController,
+                          obscureText: true,
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(),
+                            labelText: 'Password',
+                          ),
+                        )),
+                    ElevatedButton(
+                        child: Text("Accedi"),
+                        style: ElevatedButton.styleFrom(primary: Colors.brown),
+                        onPressed: () {
+                      String email = emailController.text;
+                      String password = passwordController.text;
 
-                    doLogin((String toWrite) {
-                      setState(() {
-                        status = toWrite;
-                      });
-                    }, email, password);
-                  })
-            ])),
+                      doLogin((String toWrite) {
+                        setState(() {
+                          status = toWrite;
+                        });
+                      }, email, password);
+                    })
+              ])),
+          _connectionError
+              ? CupertinoAlertDialog(
+                  title: const Text("Errore"),
+                  actions: [
+                    CupertinoDialogAction(
+                        child: Text("OK"),
+                        onPressed: () {
+                          setState(() {
+                            _connectionError = false;
+                          });
+                          //do nothing
+                        })
+                  ],
+                  content: Center(
+                    child: Text("Errore di connessione"),
+                  ))
+              : SizedBox()
+        ]),
 
         inAsyncCall: _isLoading,
         // demo of some additional parameters

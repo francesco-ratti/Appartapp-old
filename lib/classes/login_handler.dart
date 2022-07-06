@@ -1,16 +1,15 @@
+import 'package:appartapp/classes/connection_exception.dart';
+import 'package:appartapp/classes/enum_loginresult.dart';
 import 'package:appartapp/classes/runtime_store.dart';
 import 'package:appartapp/classes/user.dart';
-import 'package:appartapp/classes/credentials.dart';
-import 'package:appartapp/classes/enum_loginresult.dart';
-import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
-import 'package:dio_cookie_manager/dio_cookie_manager.dart';
-
 
 class LoginHandler {
-  static String urlStr = "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/login";
+  static String urlStr =
+      "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/login";
 
-  static Future<List> doLogin(String email, String password) async { //TODO make it return user instead of credentials
+  static Future<List> doLogin(String email, String password) async {
+    //TODO make it return user instead of credentials
     var dio = RuntimeStore().dio;
     try {
       Response response = await dio.post(
@@ -35,10 +34,16 @@ class LoginHandler {
         return [user, LoginResult.ok];
       }
     } on DioError catch (e) {
+      if (e.type == DioErrorType.connectTimeout ||
+          e.type == DioErrorType.receiveTimeout ||
+          e.type == DioErrorType.other ||
+          e.type == DioErrorType.sendTimeout ||
+          e.type == DioErrorType.cancel) {
+        throw ConnectionException();
+      }
       if (e.response?.statusCode == 401)
         return [null, LoginResult.wrong_credentials];
-      else
-        return [null, LoginResult.server_error];
+      return [null, LoginResult.server_error];
     }
   }
 

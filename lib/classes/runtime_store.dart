@@ -43,25 +43,29 @@ class RuntimeStore {
   }
 
   void setOwnedApartmentsFuture(Future<List<Apartment>> ownedApartments) {
-    _ownedApartments=ownedApartments;
+    _ownedApartments = ownedApartments;
   }
 
   //useful as singleton since this will be our temporary application state store
 
-  User? _user=null;
+  User? _user = null;
 
   late CookieJar cookieJar;
 
-  Dio dio=Dio();
+  Dio dio = Dio(new BaseOptions(
+      receiveDataWhenStatusError: true,
+      connectTimeout: 10 * 1000,
+      receiveTimeout: 10 * 1000,
+      sendTimeout: 10 * 1000));
 
-  SharedPreferences? _sharedPreferences=null;
+  SharedPreferences? _sharedPreferences = null;
 
   User? getUser() {
     return _user;
   }
 
   void setUser(User user) {
-    _user=user;
+    _user = user;
   }
 
   SharedPreferences? getSharedPreferences() {

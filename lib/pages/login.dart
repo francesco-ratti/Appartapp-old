@@ -4,6 +4,7 @@ import 'package:appartapp/classes/login_handler.dart';
 import 'package:appartapp/classes/runtime_store.dart';
 import 'package:appartapp/classes/user.dart';
 import 'package:appartapp/pages/loading.dart';
+import 'package:appartapp/widgets/connection_error_dialog_builder.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
@@ -19,7 +20,6 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
   bool _isLoading = false;
-  bool _connectionError = false;
 
   void doLogin(Function(String) updateUi, String email, String password) async {
     setState(() {
@@ -61,8 +61,9 @@ class _LoginState extends State<Login> {
     } on ConnectionException {
       setState(() {
         _isLoading = false;
-        _connectionError = true;
       });
+      Navigator.of(context)
+          .restorablePush(ConnectionErrorDialogBuilder.buildRoute);
     }
   }
 
@@ -80,12 +81,11 @@ class _LoginState extends State<Login> {
       ),
       backgroundColor: widget.bgColor,
       body: ModalProgressHUD(
-        child: Stack(children: <Widget>[
-          Center(
-              child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                /*
+        child: Center(
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+              /*
           const SimpleTextField(
             labelText: 'E-Mail',
             showLabelAboveTextField: true,
@@ -146,25 +146,6 @@ class _LoginState extends State<Login> {
                       }, email, password);
                     })
               ])),
-          _connectionError
-              ? CupertinoAlertDialog(
-                  title: const Text("Errore"),
-                  actions: [
-                    CupertinoDialogAction(
-                        child: Text("OK"),
-                        onPressed: () {
-                          setState(() {
-                            _connectionError = false;
-                          });
-                          //do nothing
-                        })
-                  ],
-                  content: Center(
-                    child: Text("Errore di connessione"),
-                  ))
-              : SizedBox()
-        ]),
-
         inAsyncCall: _isLoading,
         // demo of some additional parameters
         opacity: 0.5,

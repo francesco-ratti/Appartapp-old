@@ -24,9 +24,6 @@ class _LoginState extends State<Login> {
   bool _isLoading = false;
 
   void doLogin(Function(String) updateUi, String email, String password) async {
-    setState(() {
-      _isLoading = true;
-    });
     try {
       List res = await LoginHandler.doLogin(email, password);
       LoginResult loginResult = res[1];
@@ -142,6 +139,10 @@ class _LoginState extends State<Login> {
                   onPressed: () {
                     String email = emailController.text;
                     String password = passwordController.text;
+
+                    setState(() {
+                      _isLoading = true;
+                    });
 
                     doLogin((String toWrite) {
                       setState(() {

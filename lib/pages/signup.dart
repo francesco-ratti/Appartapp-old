@@ -195,6 +195,7 @@ class _SignupState extends State<Signup> {
                       setState(() {
                         _isLoading = true;
                       });
+
                       doSignup((String toWrite) {
                         setState(() {
                           status = toWrite;

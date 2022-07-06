@@ -37,31 +37,18 @@ class ApartmentHandler {
         ),
       );
 
-      if (response.statusCode == 401)
-        throw new UnauthorizedException();
-      else if (response.statusCode == 200) {
-        List apList=response.data as List;
+      if (response.statusCode == 200) {
+        List apList = response.data as List;
 
-        List<Apartment> ownedApartments=[];
+        List<Apartment> ownedApartments = [];
         apList.forEach((element) {
           ownedApartments.add(Apartment.fromMap(element));
         });
         return ownedApartments;
       }
-      else
-        throw new NetworkException();
-    } on DioError catch (e) {
-      if (e.type == DioErrorType.connectTimeout ||
-          e.type == DioErrorType.receiveTimeout ||
-          e.type == DioErrorType.other ||
-          e.type == DioErrorType.sendTimeout ||
-          e.type == DioErrorType.cancel) {
-        throw ConnectionException();
-      }
-      if (e.response?.statusCode == 401)
-        throw new UnauthorizedException();
-      else
-        throw new NetworkException();
+      throw ConnectionException();
+    } on DioError {
+      throw ConnectionException();
     }
   }
 

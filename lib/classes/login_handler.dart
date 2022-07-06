@@ -47,7 +47,7 @@ class LoginHandler {
     }
   }
 
-  static Future<List> doLoginWithCookies() async { //TODO make it return user instead of credentials
+  static Future<List> doLoginWithCookies() async {
     var dio = RuntimeStore().dio;
     try {
       Response response = await dio.post(

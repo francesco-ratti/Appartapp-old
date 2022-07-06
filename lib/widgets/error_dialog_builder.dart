@@ -44,6 +44,27 @@ class ErrorDialogBuilder {
     );
   }
 
+  static Route<Object?> buildGenericErrorRoute(
+      BuildContext context, Object? arguments) {
+    return CupertinoDialogRoute<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return CupertinoAlertDialog(
+            title: const Text("Errore"),
+            actions: [
+              CupertinoDialogAction(
+                  child: Text("OK"),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  })
+            ],
+            content: Center(
+              child: Text("Errore nell'eseguire l'operazione richiesta."),
+            ));
+      },
+    );
+  }
+
   static Route<Object?> buildCredentialsErrorRoute(
       BuildContext context, Object? arguments) {
     return CupertinoDialogRoute<void>(

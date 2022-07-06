@@ -141,17 +141,17 @@ class _LoginState extends State<Login> {
                       String email = emailController.text;
                       String password = passwordController.text;
 
-                      doLogin((String toWrite) {
-                        setState(() {
-                          status = toWrite;
-                        });
-                      }, email, password);
-                    })
-              ])),
+                    doLogin((String toWrite) {
+                      setState(() {
+                        status = toWrite;
+                      });
+                    }, email, password);
+                  })
+            ])),
         inAsyncCall: _isLoading,
         // demo of some additional parameters
         opacity: 0.5,
-        progressIndicator: CircularProgressIndicator(),
+        progressIndicator: const CircularProgressIndicator(),
       ),
     ));
   }

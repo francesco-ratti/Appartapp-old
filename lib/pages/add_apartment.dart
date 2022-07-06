@@ -240,6 +240,8 @@ class _AddApartment extends State<AddApartment> {
     //final User user = Provider.of<User>(context);
     return ModalProgressHUD(
         inAsyncCall: _isLoading,
+        opacity: 0.5,
+        progressIndicator: const CircularProgressIndicator(),
         child: SafeArea(
           child: Scaffold(
             body: Container(

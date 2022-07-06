@@ -91,57 +91,57 @@ class _SignupState extends State<Signup> {
         backgroundColor: bgColor,
         body: ModalProgressHUD(
           child: ListView(
-            padding: EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(16.0),
             children: <Widget>[
               Padding(
-                  padding: EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(8.0),
                   child: TextField(
                     obscureText: false,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       border: OutlineInputBorder(),
                       labelText: 'E-Mail',
                     ),
                     controller: emailController,
                   )),
               Padding(
-                  padding: EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(8.0),
                   child: TextField(
                     obscureText: true,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       border: OutlineInputBorder(),
                       labelText: 'Password',
                     ),
                     controller: passwordController,
                   )),
               Padding(
-                  padding: EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(8.0),
                   child: TextField(
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       border: OutlineInputBorder(),
                       labelText: 'Nome',
                     ),
                     controller: nameController,
                   )),
               Padding(
-                  padding: EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(8.0),
                   child: TextField(
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       border: OutlineInputBorder(),
                       labelText: 'Cognome',
                     ),
                     controller: surnameController,
                   )),
               Padding(
-                  padding: EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(8.0),
                   child: TextField(
                     controller: birthdayController,
                     readOnly: true,
                     onTap: () {
                       showDatePicker(
-                          context: context,
-                          initialDate: _birthday,
-                          lastDate: DateTime.now(),
-                          firstDate: DateTime(1900))
+                              context: context,
+                              initialDate: _birthday,
+                              lastDate: DateTime.now(),
+                              firstDate: DateTime(1900))
                           .then((value) {
                         if (value != null) {
                           setState(() {
@@ -150,47 +150,47 @@ class _SignupState extends State<Signup> {
                         }
                       });
                     },
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(),
+                    decoration: const InputDecoration(
+                      border: const OutlineInputBorder(),
                       labelText: 'Data di nascita',
                     ),
                   )),
-              Padding(
+              const Padding(
                   padding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 0.0),
                   child: Text("Genere")),
               Padding(
-                  padding: EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 8.0),
+                  padding: const EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 8.0),
                   child: Row(children: [
                     Expanded(
                         child: DropdownButton<Gender>(
-                          hint: Text("Scegli il tuo genere"),
-                          // Not necessary for Option 1
-                          value: _gender,
-                          onChanged: (newValue) {
-                            setState(() {
-                              _gender = newValue;
-                            });
-                          },
-                          items: Gender.values.map((gender) {
-                            return DropdownMenuItem(
-                              child: Text(gender.toItalianString()),
-                              value: gender,
+                      hint: const Text("Scegli il tuo genere"),
+                      // Not necessary for Option 1
+                      value: _gender,
+                      onChanged: (newValue) {
+                        setState(() {
+                          _gender = newValue;
+                        });
+                      },
+                      items: Gender.values.map((gender) {
+                        return DropdownMenuItem(
+                          child: Text(gender.toItalianString()),
+                          value: gender,
                             );
                           }).toList(),
                         ))
                   ])),
               ElevatedButton(
-                  child: Text("Registrati"),
+                  child: const Text("Registrati"),
                   onPressed: () {
                     String email = emailController.text;
                     String password = passwordController.text;
                     String name = nameController.text;
                     String surname = surnameController.text;
 
-                    if ((email.length > 0 &&
-                        password.length > 0 &&
-                        name.length > 0 &&
-                        surname.length > 0 &&
+                    if ((email.isNotEmpty &&
+                        password.isNotEmpty &&
+                        name.isNotEmpty &&
+                        surname.isNotEmpty &&
                         _gender != null)) {
                       setState(() {
                         _isLoading = true;
@@ -209,10 +209,10 @@ class _SignupState extends State<Signup> {
                     }
                   }),
               Padding(
-                  padding: EdgeInsets.all(16.0),
+                  padding: const EdgeInsets.all(16.0),
                   child: Text(
                     status,
-                    style: TextStyle(fontSize: 20),
+                    style: const TextStyle(fontSize: 20),
                   )),
             ],
           ),

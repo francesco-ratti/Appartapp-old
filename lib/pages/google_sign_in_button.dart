@@ -13,7 +13,12 @@ import 'package:flutter_signin_button/button_view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class GoogleSignInButton extends StatefulWidget {
-  String urlStr = "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/login";
+  final String urlStr =
+      "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/login";
+  final Function(bool) isLoadingCbk;
+
+  const GoogleSignInButton({Key? key, required this.isLoadingCbk})
+      : super(key: key);
 
   @override
   _GoogleSignInButtonState createState() => _GoogleSignInButtonState();
@@ -61,38 +66,25 @@ class GoogleSignInButton extends StatefulWidget {
 }
 
 class _GoogleSignInButtonState extends State<GoogleSignInButton> {
-  bool _isSigningIn = false;
-
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 16.0),
-      child: _isSigningIn
-          ? CircularProgressIndicator(
-        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-      )
-          : SignInButton(
+      child: SignInButton(
         Buttons.Google,
         text: "Accedi con Google",
         onPressed: () async {
-          setState(() {
-            _isSigningIn = true;
-          });
+          widget.isLoadingCbk(true);
 
-          List? resG =
-          await Authentication.signInWithGoogle(context: context);
-
-          setState(() {
-            _isSigningIn = false;
-          });
+          List? resG = await Authentication.signInWithGoogle(context: context);
 
           if (resG != null) {
-                  Fb.User? gUser = resG[0];
-                  String accessToken = resG[1];
+            Fb.User? gUser = resG[0];
+            String accessToken = resG[1];
 
-                  try {
-                    List res = await widget.signIn(gUser!, accessToken);
-                    LoginResult loginResult = res[1];
+            try {
+              List res = await widget.signIn(gUser!, accessToken);
+              LoginResult loginResult = res[1];
                     switch (loginResult) {
                       case LoginResult.ok:
                         AppUser.User appUser = res[0];
@@ -103,24 +95,26 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
                                 as SharedPreferences);
                         break;
                       case LoginResult.network_fail:
-                        Navigator.restorablePush(context,
-                            ErrorDialogBuilder.buildConnectionErrorRoute);
-                        break;
-                      case LoginResult.wrong_credentials:
-                        Navigator.restorablePush(context,
-                            ErrorDialogBuilder.buildCredentialsErrorRoute);
-                        break;
-                      case LoginResult.server_error:
-                        Navigator.restorablePush(
-                            context,
-                            ErrorDialogBuilder
-                                .buildGenericConnectionErrorRoute);
-                        break;
-                    }
+                        widget.isLoadingCbk(false);
+                  Navigator.restorablePush(
+                      context, ErrorDialogBuilder.buildConnectionErrorRoute);
+                  break;
+                case LoginResult.wrong_credentials:
+                        widget.isLoadingCbk(false);
+                  Navigator.restorablePush(
+                      context, ErrorDialogBuilder.buildCredentialsErrorRoute);
+                  break;
+                case LoginResult.server_error:
+                        widget.isLoadingCbk(false);
+                  Navigator.restorablePush(context,
+                      ErrorDialogBuilder.buildGenericConnectionErrorRoute);
+                  break;
+              }
                   } on ConnectionException {
-                    Navigator.restorablePush(
-                        context, ErrorDialogBuilder.buildConnectionErrorRoute);
-                  }
+              widget.isLoadingCbk(false);
+              Navigator.restorablePush(
+                  context, ErrorDialogBuilder.buildConnectionErrorRoute);
+            }
                 }
               },
       ),

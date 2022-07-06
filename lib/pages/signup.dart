@@ -3,7 +3,6 @@ import 'package:appartapp/classes/runtime_store.dart';
 import 'package:appartapp/classes/user.dart';
 import 'package:appartapp/pages/loading.dart';
 import 'package:appartapp/widgets/error_dialog_builder.dart';
-
 //import './../SimpleTextField.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -22,7 +21,7 @@ class _SignupState extends State<Signup> {
 
   void doSignup(Function(String) updateUi, String email, String password,
       String name, String surname, DateTime birthday, Gender gender) async {
-    var dio = RuntimeStore().dio;
+    var dio = RuntimeStore().dio; //ok
     try {
       Response response = await dio.post(
         widget.urlStr,

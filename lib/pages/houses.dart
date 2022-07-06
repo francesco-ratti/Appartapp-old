@@ -1,8 +1,8 @@
 import 'package:appartapp/classes/apartment.dart';
 import 'package:appartapp/classes/apartment_handler.dart';
-import 'package:appartapp/classes/connection_exception.dart';
 import 'package:appartapp/classes/runtime_store.dart';
 import 'package:appartapp/widgets/apartment_viewer.dart';
+import 'package:appartapp/widgets/error_dialog_builder.dart';
 import 'package:dio/dio.dart';
 import 'package:dismissible_page/dismissible_page.dart';
 import 'package:flutter/material.dart';
@@ -38,7 +38,7 @@ class _HousesState extends State<Houses> {
 
   @override
   Widget build(BuildContext context) {
-        return Navigator(
+    return Navigator(
       onGenerateRoute: (RouteSettings settings) {
         return MaterialPageRoute(
           settings: settings,
@@ -78,55 +78,50 @@ class _HousesState extends State<Houses> {
 
 class ContentPage extends StatefulWidget {
 
-  final likeUrlStr="http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/likeapartment";
-  final ignoreUrlStr="http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/ignoreapartment";
+  final likeUrlStr =
+      "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/likeapartment";
+  final ignoreUrlStr =
+      "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/ignoreapartment";
 
-  Future<void> _networkFunction(String urlString, int apartmentId) async {
-    var dio = RuntimeStore().dio;
-      try {
-        Response response = await dio.post(
-          urlString,
-          data: {
-            "apartmentid": apartmentId,
-          },
-          options: Options(
-            contentType: Headers.formUrlEncodedContentType,
-            headers: {"Content-Type": "application/x-www-form-urlencoded"},
-          ),
-        );
+  Future<void> _networkFunction(
+      BuildContext context, String urlString, int apartmentId) async {
+    var dio = RuntimeStore().dio; //ok
+    try {
+      Response response = await dio.post(
+        urlString,
+        data: {
+          "apartmentid": apartmentId,
+        },
+        options: Options(
+          contentType: Headers.formUrlEncodedContentType,
+          headers: {"Content-Type": "application/x-www-form-urlencoded"},
+        ),
+      );
 
-
-        if (response.statusCode != 200)
-          print("Failure");
-        else
-          print("Done");
-      } on DioError catch (e) {
-      if (e.type == DioErrorType.connectTimeout ||
-          e.type == DioErrorType.receiveTimeout ||
-          e.type == DioErrorType.other ||
-          e.type == DioErrorType.sendTimeout ||
-          e.type == DioErrorType.cancel) {
-        throw ConnectionException();
+      if (response.statusCode != 200) {
+        Navigator.restorablePush(
+            context, ErrorDialogBuilder.buildGenericConnectionErrorRoute);
       }
-      if (e.response?.statusCode != 200) {
-        print("Failure");
-      }
+    } on DioError {
+      Navigator.restorablePush(
+          context, ErrorDialogBuilder.buildConnectionErrorRoute);
     }
   }
 
-  void likeApartment(int apartmentId) async {
-    await _networkFunction(likeUrlStr, apartmentId);
+  void likeApartment(BuildContext context, int apartmentId) async {
+    await _networkFunction(context, likeUrlStr, apartmentId);
   }
 
-  void ignoreApartment (int apartmentId) async {
-    await _networkFunction(ignoreUrlStr, apartmentId);
+  void ignoreApartment(BuildContext context, int apartmentId) async {
+    await _networkFunction(context, ignoreUrlStr, apartmentId);
   }
-
 
   Future<Apartment?> currentApartmentFuture;
+
 //Function updateHouses;
   @override
   _ContentPage createState() => _ContentPage();
+
   ContentPage({
     required this.currentApartmentFuture,
     //required this.updateHouses,
@@ -191,21 +186,21 @@ class _ContentPage extends State<ContentPage> {
             settings: settings,
             builder: (BuildContext context) {
               return DismissiblePage(
-                //backgroundColor: Colors.white,
-                onDismissed: () {
-                  if (currentApartment!=null) {
-                    if (finalCoord < initialCoord) {
-                      widget.likeApartment(currentApartment!.id);
-                    } else {
-                      widget.ignoreApartment(currentApartment!.id);
+                  //backgroundColor: Colors.white,
+                  onDismissed: () {
+                    if (currentApartment != null) {
+                      if (finalCoord < initialCoord) {
+                        widget.likeApartment(context, currentApartment!.id);
+                      } else {
+                        widget.ignoreApartment(context, currentApartment!.id);
+                      }
                     }
-                  }
-                  Navigator.of(context).pop();
+                    Navigator.of(context).pop();
 
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => ContentPage(
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ContentPage(
                                   currentApartmentFuture: nextApartmentFuture,
                                 )));
 

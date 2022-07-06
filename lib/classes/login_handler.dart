@@ -9,8 +9,7 @@ class LoginHandler {
       "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/login";
 
   static Future<List> doLogin(String email, String password) async {
-    //TODO make it return user instead of credentials
-    var dio = RuntimeStore().dio;
+    var dio = RuntimeStore().dio; //ok
     try {
       Response response = await dio.post(
         urlStr,
@@ -48,7 +47,7 @@ class LoginHandler {
   }
 
   static Future<List> doLoginWithCookies() async {
-    var dio = RuntimeStore().dio;
+    var dio = RuntimeStore().dio; //ok
     try {
       Response response = await dio.post(
         urlStr,

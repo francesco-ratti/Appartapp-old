@@ -10,6 +10,7 @@ import 'package:appartapp/classes/runtime_store.dart';
 import 'package:appartapp/classes/user.dart';
 import 'package:appartapp/classes/user_handler.dart';
 import 'package:appartapp/widgets/error_dialog_builder.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -60,6 +61,8 @@ void doInitialisation(BuildContext context, User user,
 }
 
 class Loading extends StatefulWidget {
+  const Loading({Key? key}) : super(key: key);
+
   @override
   _LoadingState createState() => _LoadingState();
 }
@@ -69,11 +72,11 @@ class _LoadingState extends State<Loading> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     RuntimeStore().setSharedPreferences(prefs);
     //await Future.delayed(Duration(seconds: 1));
-    bool? TourCompleted = prefs.getBool('tourcompleted');
-    bool? logged=prefs.getBool('logged');
+    bool? tourCompleted = prefs.getBool('tourcompleted');
+    bool? logged = prefs.getBool('logged');
     RuntimeStore().initDio().then((value) {
-      if (TourCompleted != null && TourCompleted) {
-        if (logged==null || logged==false) {
+      if (tourCompleted != null && tourCompleted) {
+        if (logged == null || logged == false) {
           Navigator.pushReplacementNamed(context, '/loginorsignup');
         } else {
           try {
@@ -89,12 +92,16 @@ class _LoadingState extends State<Loading> {
                   Navigator.pushReplacementNamed(context, '/loginorsignup');
                   break;
                 case LoginResult.server_error:
-                  print("internal server error");
+                  if (kDebugMode) {
+                    print("internal server error");
+                  }
                   Navigator.of(context).restorablePush(
-                      ErrorDialogBuilder.buildConnectionErrorRoute);
+                      ErrorDialogBuilder.buildGenericErrorRoute);
                   break;
                 default:
-                //TODO showerror: network error
+                  Navigator.of(context).restorablePush(
+                      ErrorDialogBuilder.buildGenericErrorRoute);
+                  break;
               }
             });
           } on ConnectionException {
@@ -116,7 +123,7 @@ class _LoadingState extends State<Loading> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       backgroundColor: Colors.brown,
       body: Center(
         child: SpinKitSquareCircle(

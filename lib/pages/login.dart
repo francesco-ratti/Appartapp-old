@@ -5,14 +5,16 @@ import 'package:appartapp/classes/runtime_store.dart';
 import 'package:appartapp/classes/user.dart';
 import 'package:appartapp/pages/loading.dart';
 import 'package:appartapp/widgets/error_dialog_builder.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Login extends StatefulWidget {
-  String urlStr = "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/login";
-  Color bgColor = Colors.white;
+  final String urlStr =
+      "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/login";
+  final Color bgColor = Colors.white;
+
+  const Login({Key? key}) : super(key: key);
 
   @override
   _LoginState createState() => _LoginState();
@@ -50,7 +52,7 @@ class _LoginState extends State<Login> {
             _isLoading = false;
           });
           Navigator.restorablePush(
-              context, ErrorDialogBuilder.buildGenericConnectionErrorRoute);
+              context, ErrorDialogBuilder.buildGenericErrorRoute);
           break;
         default:
           setState(() {
@@ -102,44 +104,44 @@ class _LoginState extends State<Login> {
           ),
 
            */
+                  const Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: Text(
+                    "Inserisci le tue credenziali",
+                    style: TextStyle(fontSize: 20),
+                  )),
                     Padding(
-                        padding: EdgeInsets.all(16.0),
-                        child: Text(
-                          "Inserisci le tue credenziali",
-                          style: TextStyle(fontSize: 20),
-                        )),
+                        padding: const EdgeInsets.all(16.0),
+                  child: Text(
+                    status,
+                    style: const TextStyle(fontSize: 20),
+                  )),
                     Padding(
-                        padding: EdgeInsets.all(16.0),
-                        child: Text(
-                          status,
-                          style: TextStyle(fontSize: 20),
-                        )),
+                        padding: const EdgeInsets.all(16.0),
+                  child: TextField(
+                    obscureText: false,
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'E-Mail',
+                    ),
+                    controller: emailController,
+                  )),
                     Padding(
-                        padding: EdgeInsets.all(16.0),
-                        child: TextField(
-                          obscureText: false,
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(),
-                            labelText: 'E-Mail',
-                          ),
-                          controller: emailController,
-                        )),
-                    Padding(
-                        padding: EdgeInsets.all(16.0),
-                        child: TextField(
-                          controller: passwordController,
-                          obscureText: true,
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(),
-                            labelText: 'Password',
-                          ),
-                        )),
+                        padding: const EdgeInsets.all(16.0),
+                  child: TextField(
+                    controller: passwordController,
+                    obscureText: true,
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Password',
+                    ),
+                  )),
                     ElevatedButton(
-                        child: Text("Accedi"),
-                        style: ElevatedButton.styleFrom(primary: Colors.brown),
-                        onPressed: () {
-                      String email = emailController.text;
-                      String password = passwordController.text;
+                        child: const Text("Accedi"),
+                  style: ElevatedButton.styleFrom(primary: Colors.brown),
+                  onPressed: () {
+                    String email = emailController.text;
+                    String password = passwordController.text;
 
                     doLogin((String toWrite) {
                       setState(() {

@@ -22,6 +22,28 @@ class ErrorDialogBuilder {
     );
   }
 
+  static Route<Object?> buildConnectionErrorReloadAppRoute(
+      BuildContext context, Object? arguments) {
+    return CupertinoDialogRoute<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return CupertinoAlertDialog(
+            title: const Text("Errore"),
+            actions: [
+              CupertinoDialogAction(
+                  child: Text("Riprova"),
+                  onPressed: () {
+                    Navigator.pushNamedAndRemoveUntil(
+                        context, '/', (route) => false);
+                  })
+            ],
+            content: Center(
+              child: Text("Errore di connessione"),
+            ));
+      },
+    );
+  }
+
   static Route<Object?> buildGenericConnectionErrorRoute(
       BuildContext context, Object? arguments) {
     return CupertinoDialogRoute<void>(

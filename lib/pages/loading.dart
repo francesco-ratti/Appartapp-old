@@ -17,20 +17,22 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 void doInitialisation(BuildContext context, User user,
     SharedPreferences sharedPreferences) async {
+  //TODO delete session cookie
+
   sharedPreferences.setBool("logged", true);
   RuntimeStore().credentialsLogin =
       sharedPreferences.getBool("credentialslogin")!;
 
   RuntimeStore().setUser(user);
 
-  RuntimeStore().matchHandler = MatchHandler();
-  RuntimeStore().matchHandler.startPeriodicUpdate();
-
   Apartment? firstApartment =
       await ApartmentHandler().getNewApartment((Apartment apartment) {
     for (final Image im in apartment.images) {
       precacheImage(im.image, context);
     }
+  }).onError((error, stackTrace) {
+    Navigator.restorablePush(
+        context, ErrorDialogBuilder.buildConnectionErrorReloadAppRoute);
   });
 
   Future<Apartment?> firstApartmentFuture = Future(() {
@@ -44,18 +46,24 @@ void doInitialisation(BuildContext context, User user,
 //     arguments: firstApartmentFuture);
 
   LikeFromUser? firstTenant =
-  await UserHandler().getNewLikeFromUser((LikeFromUser likeFromUser) {
+      await UserHandler().getNewLikeFromUser((LikeFromUser likeFromUser) {
     for (final Image im in likeFromUser.user.images) {
       precacheImage(im.image, context);
     }
+  }).onError((error, stackTrace) {
+    Navigator.restorablePush(
+        context, ErrorDialogBuilder.buildConnectionErrorReloadAppRoute);
   });
 
   Future<LikeFromUser?> firstTenantFuture = Future(() {
     return firstTenant;
   });
 
+  RuntimeStore().matchHandler = MatchHandler();
+  RuntimeStore().matchHandler.startPeriodicUpdate();
+
   FirstArguments firstArguments =
-  FirstArguments(firstApartmentFuture, firstTenantFuture);
+      FirstArguments(firstApartmentFuture, firstTenantFuture);
 
   Navigator.pushReplacementNamed(context, '/home', arguments: firstArguments);
 }
@@ -95,18 +103,18 @@ class _LoadingState extends State<Loading> {
                   if (kDebugMode) {
                     print("internal server error");
                   }
-                  Navigator.of(context).restorablePush(
-                      ErrorDialogBuilder.buildGenericErrorRoute);
+                  Navigator.restorablePush(context,
+                      ErrorDialogBuilder.buildConnectionErrorReloadAppRoute);
                   break;
                 default:
-                  Navigator.of(context).restorablePush(
-                      ErrorDialogBuilder.buildGenericErrorRoute);
+                  Navigator.restorablePush(context,
+                      ErrorDialogBuilder.buildConnectionErrorReloadAppRoute);
                   break;
               }
             });
           } on ConnectionException {
-            Navigator.of(context)
-                .restorablePush(ErrorDialogBuilder.buildConnectionErrorRoute);
+            Navigator.restorablePush(
+                context, ErrorDialogBuilder.buildConnectionErrorReloadAppRoute);
           }
         }
       } else {

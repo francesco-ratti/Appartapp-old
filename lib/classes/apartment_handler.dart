@@ -2,8 +2,6 @@ import 'package:appartapp/classes/apartment.dart';
 import 'package:appartapp/classes/connection_exception.dart';
 import 'package:dio/dio.dart';
 
-import '../exceptions/network_exception.dart';
-import '../exceptions/unauthorized_exception.dart';
 import 'runtime_store.dart';
 
 class ApartmentHandler {
@@ -26,7 +24,7 @@ class ApartmentHandler {
   ApartmentHandler._internal();
 
   Future<List<Apartment>> getOwnedApartments() async {
-    var dio = RuntimeStore().dio;
+    var dio = RuntimeStore().dio; //ok
 
     try {
       Response response = await dio.post(
@@ -53,8 +51,6 @@ class ApartmentHandler {
   }
 
   Future<Apartment?> getNewApartment(Function(Apartment) callback) async {
-    //TODO test
-
     var dio = RuntimeStore().dio;
 
     try {
@@ -66,29 +62,17 @@ class ApartmentHandler {
         ),
       );
 
-      if (response.statusCode == 401)
-        throw new UnauthorizedException();
-      else if (response.statusCode == 200) {
-        if (response.data == null)
+      if (response.statusCode == 200) {
+        if (response.data == null) {
           return null;
-        Apartment apartment=Apartment.fromMap(response.data as Map);
+        }
+        Apartment apartment = Apartment.fromMap(response.data as Map);
         callback(apartment);
         return apartment;
       }
-      else
-        throw new NetworkException();
-    } on DioError catch (e) {
-      if (e.type == DioErrorType.connectTimeout ||
-          e.type == DioErrorType.receiveTimeout ||
-          e.type == DioErrorType.other ||
-          e.type == DioErrorType.sendTimeout ||
-          e.type == DioErrorType.cancel) {
-        throw ConnectionException();
-      }
-      if (e.response?.statusCode == 401)
-        throw new UnauthorizedException();
-      else
-        throw new NetworkException();
+      throw ConnectionException();
+    } on DioError {
+      throw ConnectionException();
     }
 
     /*
@@ -108,9 +92,10 @@ class ApartmentHandler {
 
      */
   }
-
+/*
   Future<List<Apartment>> getAllApartments() async {
     //TODO
     return <Apartment>[];
   }
+ */
 }

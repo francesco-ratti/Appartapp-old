@@ -148,6 +148,7 @@ class _ContentPage extends State<ContentPage> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    //TODO handle retry
     nextApartmentFuture=ApartmentHandler().getNewApartment((Apartment apartment) {
       /*Future.delayed(Duration(seconds: 10)).then((value) {
         for (final Image im in apartment.images) {

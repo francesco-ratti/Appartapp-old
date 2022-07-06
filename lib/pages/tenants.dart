@@ -72,7 +72,7 @@ class ContentPage extends StatefulWidget {
 //------------------------
   Future<void> _networkFunction(BuildContext context, String urlString,
       int userId, int apartmentId) async {
-    var dio = RuntimeStore().dio;
+    var dio = RuntimeStore().dio; //ok
     try {
       Response response = await dio.post(
         urlString,

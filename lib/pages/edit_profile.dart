@@ -4,11 +4,12 @@ import 'package:appartapp/classes/connection_exception.dart';
 import 'package:appartapp/classes/enum_gender.dart';
 import 'package:appartapp/classes/runtime_store.dart';
 import 'package:appartapp/classes/user.dart';
-import 'package:appartapp/exceptions/unauthorized_exception.dart';
 import 'package:appartapp/pages/reinsert_password.dart';
 import 'package:appartapp/widgets/ImgGallery.dart';
+import 'package:appartapp/widgets/error_dialog_builder.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
 class EditProfile extends StatefulWidget {
   String urlStr =
@@ -28,14 +29,31 @@ class _EditProfileState extends State<EditProfile> {
   List<File> _images = <File>[];
   List<Function> _onSubmitCbks = <Function>[];
 
-  void addImages(Function(String) updateUi, List<File> files) async {
-    var dio = RuntimeStore().dio;
+  bool _isLoading = false;
+  bool _uploadError = false;
+
+  int uploadCtr = 0;
+  int numUploads = 0;
+
+  void onUploadsEnd() {
+    setState(() {
+      _isLoading = false;
+    });
+    if (_uploadError) {
+      _uploadError = false;
+      Navigator.restorablePush(
+          context, ErrorDialogBuilder.buildGenericConnectionErrorRoute);
+    }
+  }
+
+  void addImages(Function cbk, List<File> files) async {
+    var dio = RuntimeStore().dio; //ok
     try {
       var formData = FormData();
 
       for (final File file in files) {
         MultipartFile mpfile =
-        await MultipartFile.fromFile(file.path, filename: "filename.jpg");
+            await MultipartFile.fromFile(file.path, filename: "filename.jpg");
         formData.files.add(MapEntry("images", mpfile));
       }
 
@@ -49,73 +67,43 @@ class _EditProfileState extends State<EditProfile> {
       );
 
       if (response.statusCode != 200) {
-        if (response.statusCode == 401) {
-          updateUi("Non autorizzato");
-          throw new UnauthorizedException();
-        } else {
-          updateUi("Errore interno");
-          return;
-        }
-      } else {
-        print("added");
+        _uploadError = true;
       }
-    } on DioError catch (e) {
-      if (e.type == DioErrorType.connectTimeout ||
-          e.type == DioErrorType.receiveTimeout ||
-          e.type == DioErrorType.other ||
-          e.type == DioErrorType.sendTimeout ||
-          e.type == DioErrorType.cancel) {
-        throw ConnectionException();
-      }
-      if (e.response?.statusCode == 401) {
-        updateUi("Non autorizzato");
-        throw new UnauthorizedException();
-      } else {
-        updateUi("Errore interno");
-      }
+
+      cbk();
+    } on DioError {
+      _uploadError = true;
+
+      cbk();
     }
   }
 
-  void removeImage(Function(String) updateUi, String id) async {
-    var dio = RuntimeStore().dio;
+  void removeImage(Function cbk, String id) async {
+    var dio = RuntimeStore().dio; //ok
     try {
       Response response = await dio.post(
         widget.removeImagesUrlStr,
-        data: {
-          "id": id
-        },
+        data: {"id": id},
         options: Options(
           contentType: Headers.formUrlEncodedContentType,
           headers: {"Content-Type": "application/x-www-form-urlencoded"},
         ),
       );
 
-      if (response.statusCode != 200)
-        updateUi("Failure");
-      else {
-        updateUi("Updated");
+      if (response.statusCode != 200) {
+        _uploadError = true;
       }
-    } on DioError catch (e) {
-      if (e.type == DioErrorType.connectTimeout ||
-          e.type == DioErrorType.receiveTimeout ||
-          e.type == DioErrorType.other ||
-          e.type == DioErrorType.sendTimeout ||
-          e.type == DioErrorType.cancel) {
-        throw ConnectionException();
-      }
-      if (e.response?.statusCode != 200) {
-        updateUi("Failure");
-      }
+
+      cbk();
+    } on DioError {
+      _uploadError = true;
+      cbk();
     }
   }
 
-  void doUpdate(
-      Function(String) updateUi,
-      String name,
-      String surname,
-      DateTime birthday,
+  void doUpdate(Function cbk, String name, String surname, DateTime birthday,
       Gender gender) async {
-    var dio = RuntimeStore().dio;
+    var dio = RuntimeStore().dio; //ok
     try {
       Response response = await dio.post(
         widget.urlStr,
@@ -131,25 +119,13 @@ class _EditProfileState extends State<EditProfile> {
         ),
       );
 
-      if (response.statusCode != 200)
-        updateUi("Failure");
-      else {
-        updateUi("Updated");
-        Map responseMap = response.data;
-
-        RuntimeStore().setUser(User.fromMap(responseMap));
+      if (response.statusCode != 200) {
+        _uploadError = true;
       }
-    } on DioError catch (e) {
-      if (e.type == DioErrorType.connectTimeout ||
-          e.type == DioErrorType.receiveTimeout ||
-          e.type == DioErrorType.other ||
-          e.type == DioErrorType.sendTimeout ||
-          e.type == DioErrorType.cancel) {
-        throw ConnectionException();
-      }
-      if (e.response?.statusCode != 200) {
-        updateUi("Failure");
-      }
+      cbk();
+    } on DioError {
+      _uploadError = true;
+      cbk();
     }
   }
 
@@ -184,11 +160,15 @@ class _EditProfileState extends State<EditProfile> {
       existingImages.add(GalleryImage(
           RuntimeStore().getUser()!.images[i],
               () => () {
-            removeImage(
-                    (p0) => null,
-                im['id']
-                    .toString()); //returns a cbk function which will be invoked at submit
-          }));
+                removeImage(() {
+                  uploadCtr++;
+                  if (uploadCtr == numUploads) {
+                    onUploadsEnd();
+                  }
+                },
+                    im['id']
+                        .toString()); //returns a cbk function which will be invoked at submit
+              }));
     }
     /*
     for (Map im in RuntimeStore()
@@ -222,20 +202,21 @@ class _EditProfileState extends State<EditProfile> {
   @override
   Widget build(BuildContext context) {
     birthdayController.text =
-    "${_birthday.day}/${_birthday.month}/${_birthday.year}";
+        "${_birthday.day}/${_birthday.month}/${_birthday.year}";
 
-    return ListView(
-      padding: EdgeInsets.all(16.0),
-      children: <Widget>[
-        Padding(
-          padding: EdgeInsets.all(8.0),
-          child: ImgGallery(
-            filesToUploadCbk: (imgList) {
-              _images = imgList;
-            },
-            onSubmitCbksCbk: (cbkList) {
-              _onSubmitCbks = cbkList;
-            },
+    return ModalProgressHUD(
+      child: ListView(
+        padding: EdgeInsets.all(16.0),
+        children: <Widget>[
+          Padding(
+            padding: EdgeInsets.all(8.0),
+            child: ImgGallery(
+              filesToUploadCbk: (imgList) {
+                _images = imgList;
+              },
+              onSubmitCbksCbk: (cbkList) {
+                _onSubmitCbks = cbkList;
+              },
             existingImages: existingImages,
           ),
         ),
@@ -332,62 +313,84 @@ class _EditProfileState extends State<EditProfile> {
                   name.length > 0 &&
                   surname.length > 0 &&
                   _gender != null)) {
-                for (Function fun in _onSubmitCbks) {
-                  fun();
-                }
+                      numUploads = 0;
 
-                if (_images.isNotEmpty)
-                  addImages((p0) => null, _images);
+                      setState(() {
+                        _isLoading = true;
+                      });
 
-                doUpdate((String toWrite) {
-                  setState(() {
-                    status = toWrite;
-                  });
-                }, name,
-                    surname, _birthday, _gender as Gender);
+                      numUploads++; //for editapartmentPost
+                      if (_images.isNotEmpty) {
+                        numUploads++;
+                      }
+                      for (Function fun in _onSubmitCbks) {
+                        fun();
+                      }
+                      if (_images.isNotEmpty) {
+                        addImages(() {
+                          uploadCtr++;
+                          if (uploadCtr == numUploads) {
+                            onUploadsEnd();
+                          }
+                        }, _images);
+                      }
 
-                if (email!=RuntimeStore().getUser()?.email) {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => InsertPassword((String password, Function(String) updateUi) async {
-                            var dio = RuntimeStore().dio;
-                            try {
-                              Response response = await dio.post(
-                                widget.urlPwdStr,
-                                data: {
-                                  "newemail": email,
-                                  "password": password,
-                                },
-                                options: Options(
-                                  contentType: Headers.formUrlEncodedContentType,
-                                  headers: {"Content-Type": "application/x-www-form-urlencoded"},
-                                ),
-                              );
+                      doUpdate(() {
+                        uploadCtr++;
+                        if (uploadCtr == numUploads) {
+                          onUploadsEnd();
+                        }
+                      }, name, surname, _birthday, _gender as Gender);
 
-                              if (response.statusCode != 200)
-                                updateUi("Failure");
-                              else {
-                                updateUi("Updated");
-                                Map responseMap = response.data;
-                                RuntimeStore().setUser(User.fromMap(responseMap));
-                                Navigator.pop(context);
-                              }
-                            } on DioError catch (e) {
-                                      if (e.type ==
-                                              DioErrorType.connectTimeout ||
-                                          e.type ==
-                                              DioErrorType.receiveTimeout ||
-                                          e.type == DioErrorType.other ||
-                                          e.type == DioErrorType.sendTimeout ||
-                                          e.type == DioErrorType.cancel) {
-                                        throw ConnectionException();
-                                      }
-                                      if (e.response?.statusCode != 200) {
-                                        updateUi("Failure");
-                                      }
-                                    }
-                                  })));
+                      if (email != RuntimeStore().getUser()?.email) {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => InsertPassword(
+                                        (String password,
+                                            Function(String) updateUi) async {
+                                      var dio = RuntimeStore().dio; //ok
+                                      try {
+                                        Response response = await dio.post(
+                                          widget.urlPwdStr,
+                                          data: {
+                                            "newemail": email,
+                                            "password": password,
+                                          },
+                                          options: Options(
+                                            contentType: Headers
+                                                .formUrlEncodedContentType,
+                                            headers: {
+                                              "Content-Type":
+                                                  "application/x-www-form-urlencoded"
+                                            },
+                                          ),
+                                  );
+
+                                  if (response.statusCode != 200) {
+                                          updateUi("Failure");
+                                        } else {
+                                          updateUi("Updated");
+                                          Map responseMap = response.data;
+                                          RuntimeStore().setUser(
+                                              User.fromMap(responseMap));
+                                          Navigator.pop(context);
+                                        }
+                                      } on DioError catch (e) {
+                                  if (e.type ==
+                                      DioErrorType.connectTimeout ||
+                                      e.type ==
+                                          DioErrorType.receiveTimeout ||
+                                      e.type == DioErrorType.other ||
+                                      e.type == DioErrorType.sendTimeout ||
+                                      e.type == DioErrorType.cancel) {
+                                    throw ConnectionException();
+                                  }
+                                  if (e.response?.statusCode != 200) {
+                                    updateUi("Failure");
+                                  }
+                                }
+                              })));
                 }
 
               } else {
@@ -421,16 +424,21 @@ class _EditProfileState extends State<EditProfile> {
               RuntimeStore().getSharedPreferences()?.remove("logged");
               RuntimeStore().getSharedPreferences()?.remove("credentialslogin");
               RuntimeStore().matchHandler.stopPeriodicUpdate();
-              RuntimeStore().cookieJar.deleteAll();
-              Navigator.pushReplacementNamed(context, "/loginorsignup");
-            }),
-        Padding(
-            padding: EdgeInsets.all(16.0),
-            child: Text(
-              status,
-              style: TextStyle(fontSize: 20),
-            )),
-      ],
+                RuntimeStore().cookieJar.deleteAll();
+                Navigator.pushReplacementNamed(context, "/loginorsignup");
+              }),
+          Padding(
+              padding: EdgeInsets.all(16.0),
+              child: Text(
+                status,
+                style: TextStyle(fontSize: 20),
+              )),
+        ],
+      ),
+      inAsyncCall: _isLoading,
+      // demo of some additional parameters
+      opacity: 0.5,
+      progressIndicator: const CircularProgressIndicator(),
     );
   }
 

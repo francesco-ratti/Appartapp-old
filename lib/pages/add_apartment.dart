@@ -75,13 +75,12 @@ class _AddApartment extends State<AddApartment> {
         ),
       );
 
-      if (response.statusCode != 200)
-        _uploadError = true;
-      else {
-        cbk();
-      }
+      if (response.statusCode != 200) _uploadError = true;
+
+      cbk();
     } on DioError {
       _uploadError = true;
+      cbk();
     }
   }
 
@@ -97,18 +96,17 @@ class _AddApartment extends State<AddApartment> {
         ),
       );
 
-      if (response.statusCode != 200)
-        _uploadError = true;
-      else {
-        cbk();
-      }
+      if (response.statusCode != 200) _uploadError = true;
+
+      cbk();
     } on DioError {
       _uploadError = true;
+      cbk();
     }
   }
 
   void doEditApartmentPost(
-      Function() cbk,
+      Function cbk,
       int id,
       String listingTitle,
       String description,
@@ -133,13 +131,13 @@ class _AddApartment extends State<AddApartment> {
         ),
       );
 
-      if (response.statusCode != 200)
-        _uploadError = true;
-      else {
-        cbk();
-      }
+      if (response.statusCode != 200) _uploadError = true;
+
+      cbk();
     } on DioError {
       _uploadError = true;
+
+      cbk();
     }
   }
 
@@ -165,13 +163,12 @@ class _AddApartment extends State<AddApartment> {
         ),
       );
 
-      if (response.statusCode != 200)
-        _uploadError = true;
-      else {
-        cbk();
-      }
+      if (response.statusCode != 200) _uploadError = true;
+
+      cbk();
     } on DioError {
       _uploadError = true;
+      cbk();
     }
   }
 
@@ -193,20 +190,19 @@ class _AddApartment extends State<AddApartment> {
   int uploadCtr=0;
   int numUploads=0;
   void onUploadsEnd () {
+    setState(() {
+      _isLoading = false;
+    });
     if (_uploadError) {
+      _uploadError = false;
       Navigator.restorablePush(
           context, ErrorDialogBuilder.buildGenericConnectionErrorRoute);
-    } else {
-      setState(() {
-        _isLoading = false;
-      });
-      if (widget.callback != null) widget.callback!();
     }
+    if (widget.callback != null) widget.callback!();
   }
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     if (toEdit!=null) {
       _titleController.text=toEdit!.listingTitle;
@@ -222,12 +218,15 @@ class _AddApartment extends State<AddApartment> {
                 toEdit!.images[i],
                     () => () {
                   numUploads++;
-                  removeImage((p0) {
+                  removeImage(() {
                     uploadCtr++;
-                    if (uploadCtr==numUploads) {
+                    if (uploadCtr == numUploads) {
                       onUploadsEnd();
                     }
-                  }, im['id'].toString(), toEdit!.id.toString()); //returns a cbk function which will be invoked at submit
+                  },
+                      im['id'].toString(),
+                      toEdit!.id
+                          .toString()); //returns a cbk function which will be invoked at submit
                 })
         );
       }
@@ -252,14 +251,16 @@ class _AddApartment extends State<AddApartment> {
                     header(),
                     ImgGallery(
                       filesToUploadCbk: (imageList) {
-                        _toUpload=imageList;
-                  },
-                  onSubmitCbksCbk: (cbkList) {
-                    _onSubmitCbks=cbkList;
-                  },
-                  totalImagesCbk: (int totalImages) {
-                    _totalImages=totalImages;
-                  }, existingImages: existingImages,),
+                        _toUpload = imageList;
+                      },
+                      onSubmitCbksCbk: (cbkList) {
+                        _onSubmitCbks = cbkList;
+                      },
+                      totalImagesCbk: (int totalImages) {
+                        _totalImages = totalImages;
+                      },
+                      existingImages: existingImages,
+                    ),
                     title(),
                     desc(),
                     address(),
@@ -394,22 +395,21 @@ class _AddApartment extends State<AddApartment> {
                           int.parse(_priceController.text),
                           _addressController.text,
                           _toUpload);
-              } else {
-                numUploads++; //for editapartmentPost
-                if (_toUpload.isNotEmpty)
-                  numUploads++;
-                for (Function fun in _onSubmitCbks) {
-                  fun();
-                }
-                if (_toUpload.isNotEmpty) {
-                  addImages((p0) {
-                    uploadCtr++;
-                    if (uploadCtr == numUploads) {
-                      onUploadsEnd();
-                    }
-                  }, toEdit!.id, _toUpload);
-                }
-                doEditApartmentPost(
+                    } else {
+                      numUploads++; //for editapartmentPost
+                      if (_toUpload.isNotEmpty) numUploads++;
+                      for (Function fun in _onSubmitCbks) {
+                        fun();
+                      }
+                      if (_toUpload.isNotEmpty) {
+                        addImages(() {
+                          uploadCtr++;
+                          if (uploadCtr == numUploads) {
+                            onUploadsEnd();
+                          }
+                        }, toEdit!.id, _toUpload);
+                      }
+                      doEditApartmentPost(
                         () {
                           uploadCtr++;
                           if (uploadCtr == numUploads) {
@@ -422,8 +422,8 @@ class _AddApartment extends State<AddApartment> {
                         _aedController.text,
                         int.parse(_priceController.text),
                         _addressController.text,
-                );
-              }
+                      );
+                    }
             }
           }
               : null,

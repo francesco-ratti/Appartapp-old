@@ -35,10 +35,11 @@ class GoogleSignInButton extends StatefulWidget {
       );
 
       if (response.statusCode != 200) {
-        if (response.statusCode == 401)
-          return [null,LoginResult.wrong_credentials];
-        else
-          return [null,LoginResult.server_error];
+        if (response.statusCode == 401) {
+          return [null, LoginResult.wrong_credentials];
+        } else {
+          return [null, LoginResult.server_error];
+        }
       }
       else {
         Map responseMap = response.data;
@@ -54,10 +55,10 @@ class GoogleSignInButton extends StatefulWidget {
           e.type == DioErrorType.cancel) {
         throw ConnectionException();
       }
-      if (e.response?.statusCode == 401)
+      if (e.response?.statusCode == 401) {
         return [null, LoginResult.wrong_credentials];
-      else
-        return [null, LoginResult.server_error];
+      }
+      return [null, LoginResult.server_error];
     }
   }
 }
@@ -89,36 +90,42 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
           });
 
           if (resG != null) {
-            Fb.User? gUser = resG[0];
-            String accessToken=resG[1];
+                  Fb.User? gUser = resG[0];
+                  String accessToken = resG[1];
 
-            List res=await widget.signIn(gUser!, accessToken);
-            LoginResult loginResult=res[1];
-            switch (loginResult) {
-                    case LoginResult.ok:
-                      AppUser.User appUser = res[0];
-                      doInitialisation(
-                          context,
-                          appUser,
-                          RuntimeStore().getSharedPreferences()
-                              as SharedPreferences);
-                      break;
-                    case LoginResult.network_fail:
-                      Navigator.restorablePush(context,
-                          ErrorDialogBuilder.buildConnectionErrorRoute);
-                      break;
-                    case LoginResult.wrong_credentials:
-                      // TODO: Handle this case.
-                      Navigator.restorablePush(context,
-                          ErrorDialogBuilder.buildCredentialsErrorRoute);
-                      break;
-                    case LoginResult.server_error:
-                      Navigator.restorablePush(context,
-                          ErrorDialogBuilder.buildGenericConnectionErrorRoute);
-                      break;
+                  try {
+                    List res = await widget.signIn(gUser!, accessToken);
+                    LoginResult loginResult = res[1];
+                    switch (loginResult) {
+                      case LoginResult.ok:
+                        AppUser.User appUser = res[0];
+                        doInitialisation(
+                            context,
+                            appUser,
+                            RuntimeStore().getSharedPreferences()
+                                as SharedPreferences);
+                        break;
+                      case LoginResult.network_fail:
+                        Navigator.restorablePush(context,
+                            ErrorDialogBuilder.buildConnectionErrorRoute);
+                        break;
+                      case LoginResult.wrong_credentials:
+                        Navigator.restorablePush(context,
+                            ErrorDialogBuilder.buildCredentialsErrorRoute);
+                        break;
+                      case LoginResult.server_error:
+                        Navigator.restorablePush(
+                            context,
+                            ErrorDialogBuilder
+                                .buildGenericConnectionErrorRoute);
+                        break;
+                    }
+                  } on ConnectionException {
+                    Navigator.restorablePush(
+                        context, ErrorDialogBuilder.buildConnectionErrorRoute);
                   }
                 }
-        },
+              },
       ),
     );
   }

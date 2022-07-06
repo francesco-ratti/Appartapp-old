@@ -1,5 +1,6 @@
 import 'package:appartapp/classes/apartment.dart';
 import 'package:appartapp/classes/apartment_handler.dart';
+import 'package:appartapp/classes/connection_exception.dart';
 import 'package:appartapp/classes/enum_loginresult.dart';
 import 'package:appartapp/classes/first_arguments.dart';
 import 'package:appartapp/classes/like_from_user.dart';
@@ -8,6 +9,7 @@ import 'package:appartapp/classes/match_handler.dart';
 import 'package:appartapp/classes/runtime_store.dart';
 import 'package:appartapp/classes/user.dart';
 import 'package:appartapp/classes/user_handler.dart';
+import 'package:appartapp/widgets/connection_error_dialog_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -74,23 +76,31 @@ class _LoadingState extends State<Loading> {
         if (logged==null || logged==false) {
           Navigator.pushReplacementNamed(context, '/loginorsignup');
         } else {
-          LoginHandler.doLoginWithCookies().then((res) async {
-            LoginResult loginResult = res[1];
-            switch (loginResult) {
-              case LoginResult.ok:
-                User user = res[0];
-                doInitialisation(context, user, prefs);
-                break;
-              case LoginResult.wrong_credentials:
-                Navigator.pushReplacementNamed(context, '/loginorsignup');
-                break;
-              case LoginResult.server_error:
-                print("internal server error");
-                break;
-              default:
-              //TODO showerror: network error
-            }
-          });
+          try {
+            LoginHandler.doLoginWithCookies().then((res) async {
+              LoginResult loginResult = res[1];
+              switch (loginResult) {
+                case LoginResult.ok:
+                  User user = res[0];
+                  doInitialisation(context, user, prefs);
+                  break;
+                case LoginResult.wrong_credentials:
+                  RuntimeStore().cookieJar.deleteAll();
+                  Navigator.pushReplacementNamed(context, '/loginorsignup');
+                  break;
+                case LoginResult.server_error:
+                  print("internal server error");
+                  Navigator.of(context)
+                      .restorablePush(ConnectionErrorDialogBuilder.buildRoute);
+                  break;
+                default:
+                //TODO showerror: network error
+              }
+            });
+          } on ConnectionException {
+            Navigator.of(context)
+                .restorablePush(ConnectionErrorDialogBuilder.buildRoute);
+          }
         }
       } else {
         Navigator.pushReplacementNamed(context, '/first', arguments: prefs);

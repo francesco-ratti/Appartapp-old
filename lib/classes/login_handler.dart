@@ -72,10 +72,16 @@ class LoginHandler {
         return [user, LoginResult.ok];
       }
     } on DioError catch (e) {
+      if (e.type == DioErrorType.connectTimeout ||
+          e.type == DioErrorType.receiveTimeout ||
+          e.type == DioErrorType.other ||
+          e.type == DioErrorType.sendTimeout ||
+          e.type == DioErrorType.cancel) {
+        throw ConnectionException();
+      }
       if (e.response?.statusCode == 401)
         return [null, LoginResult.wrong_credentials];
-      else
-        return [null, LoginResult.server_error];
+      return [null, LoginResult.server_error];
     }
   }
 }

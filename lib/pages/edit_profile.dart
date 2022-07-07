@@ -381,7 +381,7 @@ class _EditProfileState extends State<EditProfile> {
                                     callback: (String password,
                                         Function(bool, String) updateUi) async {
                                       updateUi(true, "");
-                                      var dio = RuntimeStore().dio;
+                                      var dio = RuntimeStore().dio; //ok
                                       try {
                                         Response response = await dio.post(
                                           widget.urlPwdStr,

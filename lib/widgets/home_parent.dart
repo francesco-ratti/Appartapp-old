@@ -24,7 +24,8 @@ class _HomeParent extends State<HomeParent> {
   @override
   void initState() {
     super.initState();
-    RuntimeStore().matchHandler.doUpdate(callback);
+    //RuntimeStore().matchHandler.doUpdate(callback);
+    RuntimeStore().matchHandler.doUpdateFromDate(callback); //TODO
     RuntimeStore().matchHandler.addUpdateCallback(callback);
   }
 

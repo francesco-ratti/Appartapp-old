@@ -230,12 +230,15 @@ class _ContentPage extends State<ContentPage> {
                   dragSensitivity: 0.5,
                   disabled: !_apartmentLoaded,
                   child: _networkerror
-                      ? RetryWidget(retryCallback: () {
-                          setState(() {
-                            _networkerror = false;
-                          });
-                          currentApartmentFuture = getNewApartment();
-                        })
+                      ? RetryWidget(
+                          textColor: Colors.white,
+                          retryCallback: () {
+                            setState(() {
+                              _networkerror = false;
+                            });
+                            currentApartmentFuture = getNewApartment();
+                            showCurrentApartmentFromFuture();
+                          })
                       : ApartmentViewer(
                           apartmentLoaded: _apartmentLoaded,
                           currentApartment: currentApartment,

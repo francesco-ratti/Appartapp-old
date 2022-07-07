@@ -136,7 +136,6 @@ class _AddApartment extends State<AddApartment> {
       cbk();
     } on DioError {
       _uploadError = true;
-
       cbk();
     }
   }

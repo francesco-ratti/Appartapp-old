@@ -73,7 +73,6 @@ class _EditProfileState extends State<EditProfile> {
       cbk();
     } on DioError {
       _uploadError = true;
-
       cbk();
     }
   }
@@ -349,7 +348,7 @@ class _EditProfileState extends State<EditProfile> {
                                 builder: (context) => InsertPassword(
                                         (String password,
                                             Function(String) updateUi) async {
-                                      var dio = RuntimeStore().dio; //ok
+                                      var dio = RuntimeStore().dio;
                                       try {
                                         Response response = await dio.post(
                                           widget.urlPwdStr,

@@ -85,12 +85,12 @@ class _LoginState extends State<Login> {
         child: LayoutBuilder(
             builder: (context, constraints) => ListView(children: [
                   Container(
-                      padding: const EdgeInsets.all(20.0),
                       constraints: BoxConstraints(
                         minHeight: constraints.maxHeight,
                       ),
                       child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: <Widget>[
                             /*
           const SimpleTextField(

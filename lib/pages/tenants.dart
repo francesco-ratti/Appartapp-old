@@ -238,12 +238,15 @@ class _ContentPage extends State<ContentPage> {
                   dragSensitivity: 0.5,
                   disabled: !tenantLoaded,
                   child: _networkerror
-                      ? RetryWidget(retryCallback: () {
-                          setState(() {
-                            _networkerror = false;
-                          });
-                          currentTenantFuture = getNewTenant();
-                        })
+                      ? RetryWidget(
+                          textColor: Colors.white,
+                          retryCallback: () {
+                            setState(() {
+                              _networkerror = false;
+                            });
+                            currentTenantFuture = getNewTenant();
+                            showCurrentTenantFromFuture();
+                          })
                       : TenantViewer(
                           tenantLoaded: tenantLoaded,
                           lessor: false,

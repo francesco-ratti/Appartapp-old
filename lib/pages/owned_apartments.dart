@@ -66,7 +66,9 @@ class _OwnedApartments extends State<OwnedApartments> {
               body: ownedApartments == null
                   ? Center(
                       child: _networkError
-                          ? RetryWidget(retryCallback: updateApartments)
+                          ? RetryWidget(
+                              textColor: Colors.black,
+                              retryCallback: updateApartments)
                           : const CircularProgressIndicator(
                               value: null,
                             ))

@@ -1,6 +1,5 @@
 import 'package:appartapp/classes/apartment.dart';
 import 'package:appartapp/classes/apartment_handler.dart';
-import 'package:appartapp/classes/connection_exception.dart';
 import 'package:appartapp/classes/enum_loginresult.dart';
 import 'package:appartapp/classes/first_arguments.dart';
 import 'package:appartapp/classes/like_from_user.dart';
@@ -46,7 +45,7 @@ void doInitialisation(BuildContext context, User user,
 //     arguments: firstApartmentFuture);
 
   LikeFromUser? firstTenant =
-      await UserHandler().getNewLikeFromUser((LikeFromUser likeFromUser) {
+  await UserHandler().getNewLikeFromUser((LikeFromUser likeFromUser) {
     for (final Image im in likeFromUser.user.images) {
       precacheImage(im.image, context);
     }
@@ -88,40 +87,41 @@ class _LoadingState extends State<Loading> {
           RuntimeStore().cookieJar.deleteAll();
           Navigator.pushReplacementNamed(context, '/loginorsignup');
         } else {
-          try {
-            LoginHandler.invalidateSession().then((value) =>
-                LoginHandler.doLoginWithCookies().then((res) async {
-                  LoginResult loginResult = res[1];
-                  switch (loginResult) {
-                    case LoginResult.ok:
-                      User user = res[0];
-                      doInitialisation(context, user, prefs);
-                      break;
-                    case LoginResult.wrong_credentials:
-                      RuntimeStore().cookieJar.deleteAll();
-                      Navigator.pushReplacementNamed(context, '/loginorsignup');
-                      break;
-                    case LoginResult.server_error:
-                  if (kDebugMode) {
-                        print("internal server error");
-                      }
-                      Navigator.restorablePush(
-                          context,
-                          ErrorDialogBuilder
-                              .buildConnectionErrorReloadAppRoute);
-                      break;
-                    default:
-                      Navigator.restorablePush(
-                          context,
-                          ErrorDialogBuilder
-                              .buildConnectionErrorReloadAppRoute);
-                      break;
-                  }
-                }));
-          } on ConnectionException {
+          LoginHandler.invalidateSession()
+              .then((value) =>
+                  LoginHandler.doLoginWithCookies().then((res) async {
+                    LoginResult loginResult = res[1];
+                    switch (loginResult) {
+                      case LoginResult.ok:
+                        User user = res[0];
+                        doInitialisation(context, user, prefs);
+                        break;
+                      case LoginResult.wrong_credentials:
+                        RuntimeStore().cookieJar.deleteAll();
+                        Navigator.pushReplacementNamed(
+                            context, '/loginorsignup');
+                        break;
+                      case LoginResult.server_error:
+                        if (kDebugMode) {
+                          print("internal server error");
+                        }
+                        Navigator.restorablePush(
+                            context,
+                            ErrorDialogBuilder
+                                .buildConnectionErrorReloadAppRoute);
+                        break;
+                      default:
+                        Navigator.restorablePush(
+                            context,
+                            ErrorDialogBuilder
+                                .buildConnectionErrorReloadAppRoute);
+                        break;
+                    }
+                  }))
+              .onError((error, stackTrace) {
             Navigator.restorablePush(
                 context, ErrorDialogBuilder.buildConnectionErrorReloadAppRoute);
-          }
+          });
         }
       } else {
         Navigator.pushReplacementNamed(context, '/first', arguments: prefs);

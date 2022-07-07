@@ -85,38 +85,42 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
             try {
               List res = await widget.signIn(gUser!, accessToken);
               LoginResult loginResult = res[1];
-                    switch (loginResult) {
-                      case LoginResult.ok:
-                        AppUser.User appUser = res[0];
-                        doInitialisation(
-                            context,
-                            appUser,
-                            RuntimeStore().getSharedPreferences()
-                                as SharedPreferences);
-                        break;
-                      case LoginResult.network_fail:
-                        widget.isLoadingCbk(false);
+              switch (loginResult) {
+                case LoginResult.ok:
+                  AppUser.User appUser = res[0];
+                  doInitialisation(
+                      context,
+                      appUser,
+                      RuntimeStore().getSharedPreferences()
+                          as SharedPreferences);
+                  break;
+                case LoginResult.network_fail:
+                  widget.isLoadingCbk(false);
                   Navigator.restorablePush(
                       context, ErrorDialogBuilder.buildConnectionErrorRoute);
                   break;
                 case LoginResult.wrong_credentials:
-                        widget.isLoadingCbk(false);
+                  widget.isLoadingCbk(false);
                   Navigator.restorablePush(
                       context, ErrorDialogBuilder.buildCredentialsErrorRoute);
                   break;
                 case LoginResult.server_error:
-                        widget.isLoadingCbk(false);
+                  widget.isLoadingCbk(false);
                   Navigator.restorablePush(context,
                       ErrorDialogBuilder.buildGenericConnectionErrorRoute);
                   break;
               }
-                  } on ConnectionException {
+            } on ConnectionException {
               widget.isLoadingCbk(false);
               Navigator.restorablePush(
                   context, ErrorDialogBuilder.buildConnectionErrorRoute);
             }
-                }
-              },
+          } else {
+            widget.isLoadingCbk(false);
+            Navigator.restorablePush(
+                context, ErrorDialogBuilder.buildGenericConnectionErrorRoute);
+          }
+        },
       ),
     );
   }

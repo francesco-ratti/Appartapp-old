@@ -82,11 +82,17 @@ class _LoginState extends State<Login> {
       ),
       backgroundColor: widget.bgColor,
       body: ModalProgressHUD(
-        child: Center(
-            child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-              /*
+        child: LayoutBuilder(
+            builder: (context, constraints) => ListView(children: [
+                  Container(
+                      padding: const EdgeInsets.all(20.0),
+                      constraints: BoxConstraints(
+                        minHeight: constraints.maxHeight,
+                      ),
+                      child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            /*
           const SimpleTextField(
             labelText: 'E-Mail',
             showLabelAboveTextField: true,
@@ -140,17 +146,18 @@ class _LoginState extends State<Login> {
                     String email = emailController.text;
                     String password = passwordController.text;
 
-                    setState(() {
-                      _isLoading = true;
-                    });
+                                  setState(() {
+                                    _isLoading = true;
+                                  });
 
-                    doLogin((String toWrite) {
-                      setState(() {
-                        status = toWrite;
-                      });
-                    }, email, password);
-                  })
-            ])),
+                                  doLogin((String toWrite) {
+                                    setState(() {
+                                      status = toWrite;
+                                    });
+                                  }, email, password);
+                                })
+                          ]))
+                ])),
         inAsyncCall: _isLoading,
         // demo of some additional parameters
         opacity: 0.5,

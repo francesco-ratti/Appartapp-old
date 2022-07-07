@@ -5,8 +5,26 @@ import 'package:appartapp/classes/user.dart';
 import 'package:dio/dio.dart';
 
 class LoginHandler {
-  static String urlStr =
+  static final String urlStr =
       "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/login";
+
+  static final String urlInvalidateStr =
+      "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/invalidatesession";
+
+  static Future<void> invalidateSession() async {
+    var dio = RuntimeStore().dio; //ok
+    try {
+      Response response = await dio.get(
+        urlInvalidateStr,
+      );
+
+      if (response.statusCode != 200) {
+        throw ConnectionException();
+      }
+    } on DioError {
+      throw ConnectionException();
+    }
+  }
 
   static Future<List> doLogin(String email, String password) async {
     var dio = RuntimeStore().dio; //ok
@@ -22,13 +40,12 @@ class LoginHandler {
 
       if (response.statusCode != 200) {
         if (response.statusCode == 401)
-          return [null,LoginResult.wrong_credentials];
+          return [null, LoginResult.wrong_credentials];
         else
-          return [null,LoginResult.server_error];
-      }
-      else {
+          return [null, LoginResult.server_error];
+      } else {
         Map responseMap = response.data;
-        User user=User.fromMap(responseMap);
+        User user = User.fromMap(responseMap);
 
         return [user, LoginResult.ok];
       }

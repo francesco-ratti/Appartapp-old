@@ -79,8 +79,15 @@ class RuntimeStore {
   Future<void> initDio() async {
     Directory appDocDir = await getApplicationDocumentsDirectory();
     this.cookieJar = PersistCookieJar(
-        persistSession: false,
+        persistSession: true,
         storage: FileStorage(appDocDir.path + '/.cookies/'));
     dio.interceptors.add(CookieManager(RuntimeStore().cookieJar));
+
+    /*
+    List<FileSystemEntity> file = io.Directory(appDocDir.path + '/.cookies/').listSync();
+    for (FileSystemEntity obj in file) {
+      print(obj.toString());
+    }
+    print("end");*/
   }
 }

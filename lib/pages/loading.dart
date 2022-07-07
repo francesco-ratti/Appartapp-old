@@ -85,33 +85,39 @@ class _LoadingState extends State<Loading> {
     RuntimeStore().initDio().then((value) {
       if (tourCompleted != null && tourCompleted) {
         if (logged == null || logged == false) {
+          RuntimeStore().cookieJar.deleteAll();
           Navigator.pushReplacementNamed(context, '/loginorsignup');
         } else {
           try {
-            LoginHandler.doLoginWithCookies().then((res) async {
-              LoginResult loginResult = res[1];
-              switch (loginResult) {
-                case LoginResult.ok:
-                  User user = res[0];
-                  doInitialisation(context, user, prefs);
-                  break;
-                case LoginResult.wrong_credentials:
-                  RuntimeStore().cookieJar.deleteAll();
-                  Navigator.pushReplacementNamed(context, '/loginorsignup');
-                  break;
-                case LoginResult.server_error:
+            LoginHandler.invalidateSession().then((value) =>
+                LoginHandler.doLoginWithCookies().then((res) async {
+                  LoginResult loginResult = res[1];
+                  switch (loginResult) {
+                    case LoginResult.ok:
+                      User user = res[0];
+                      doInitialisation(context, user, prefs);
+                      break;
+                    case LoginResult.wrong_credentials:
+                      RuntimeStore().cookieJar.deleteAll();
+                      Navigator.pushReplacementNamed(context, '/loginorsignup');
+                      break;
+                    case LoginResult.server_error:
                   if (kDebugMode) {
-                    print("internal server error");
+                        print("internal server error");
+                      }
+                      Navigator.restorablePush(
+                          context,
+                          ErrorDialogBuilder
+                              .buildConnectionErrorReloadAppRoute);
+                      break;
+                    default:
+                      Navigator.restorablePush(
+                          context,
+                          ErrorDialogBuilder
+                              .buildConnectionErrorReloadAppRoute);
+                      break;
                   }
-                  Navigator.restorablePush(context,
-                      ErrorDialogBuilder.buildConnectionErrorReloadAppRoute);
-                  break;
-                default:
-                  Navigator.restorablePush(context,
-                      ErrorDialogBuilder.buildConnectionErrorReloadAppRoute);
-                  break;
-              }
-            });
+                }));
           } on ConnectionException {
             Navigator.restorablePush(
                 context, ErrorDialogBuilder.buildConnectionErrorReloadAppRoute);

@@ -29,6 +29,7 @@ class YesNoForList {
 
 class _EditTenantState extends State<EditTenant> {
   bool _isLoading = false;
+  //Function()? updatedCallback=null;
 
   void doUpdate(String bio, String reason, String job, String income,
       String pets, Month? month, TemporalQ? smoker) async {
@@ -51,15 +52,18 @@ class _EditTenantState extends State<EditTenant> {
         ),
       );
 
-      setState(() {
-        _isLoading = false;
-      });
-
       if (response.statusCode == 200) {
         Map responseMap = response.data;
         RuntimeStore().setUser(User.fromMap(responseMap));
+        Function() cbk = RuntimeStore().tenantInfoUpdated;
+        if (cbk != null) {
+          cbk();
+        }
         Navigator.pop(context);
       } else {
+        setState(() {
+          _isLoading = false;
+        });
         Navigator.restorablePush(
             context, ErrorDialogBuilder.buildGenericConnectionErrorRoute);
       }
@@ -114,6 +118,21 @@ class _EditTenantState extends State<EditTenant> {
       incomeController.text = widget.user.income;
     }
   }
+
+  /*
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (updatedCallback==null) {
+      var fun = ModalRoute
+          .of(context)!
+          .settings
+          .arguments;
+      if (fun != null) {
+        updatedCallback = fun as Function();
+      }
+    }
+  }*/
 
   @override
   Widget build(BuildContext context) {
@@ -243,15 +262,15 @@ class _EditTenantState extends State<EditTenant> {
                   )),
               (_petsItem != null && _petsItem!.value == true)
                   ? Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: TextField(
-                        obscureText: false,
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          labelText: 'Quali?',
-                        ),
-                        controller: petsController,
-                      ))
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextField(
+                    obscureText: false,
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Quali?',
+                    ),
+                    controller: petsController,
+                  ))
                   : const SizedBox(),
               ElevatedButton(
                   child: const Text("Modifica"),

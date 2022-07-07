@@ -28,6 +28,8 @@ class RuntimeStore {
 
   late MatchHandler matchHandler;
 
+  late Function() tenantInfoUpdated;
+
   late bool credentialsLogin;
 
   bool getCredentialsLogin() {
@@ -35,7 +37,7 @@ class RuntimeStore {
   }
 
   void setCredentialsLogin(bool credentialsLogin) {
-    this.credentialsLogin=credentialsLogin;
+    this.credentialsLogin = credentialsLogin;
   }
 
   Future<List<Apartment>>? getOwnedApartments() {

@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:appartapp/classes/enum_gender.dart';
 import 'package:appartapp/classes/enum_month.dart';
+import 'package:flutter/material.dart';
 
 import 'enum_temporalq.dart';
 
@@ -22,6 +22,21 @@ class User {
   String income; //What is a rough estimate of your income?
   TemporalQ? smoker; //Do you smoke?
   String pets; //Do you have pets?
+
+  bool isProfileComplete() {
+    return (bio != null &&
+        bio.trim().isNotEmpty &&
+        reason != null &&
+        reason.trim().isNotEmpty &&
+        month != null &&
+        job != null &&
+        job.isNotEmpty &&
+        income != null &&
+        income.isNotEmpty &&
+        smoker != null &&
+        pets != null &&
+        pets.isNotEmpty);
+  }
 
   static List<Image> fromImagesDetailsToImages(List imagesDetails) {
     List<Image> images = [];

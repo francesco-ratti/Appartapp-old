@@ -1,13 +1,14 @@
-import 'package:appartapp/classes/match_handler.dart';
-import 'package:appartapp/classes/user.dart';
 import 'package:appartapp/classes/first_arguments.dart';
+import 'package:appartapp/classes/match_handler.dart';
+import 'package:appartapp/classes/runtime_store.dart';
+import 'package:appartapp/classes/user.dart';
 import 'package:appartapp/pages/empty_page.dart';
 import 'package:appartapp/pages/houses.dart';
 import 'package:appartapp/pages/matches.dart';
 import 'package:appartapp/pages/profile_apartments.dart';
 import 'package:appartapp/pages/tenants.dart';
+import 'package:appartapp/widgets/add_tenant_informations.dart';
 import 'package:flutter/material.dart';
-import '../classes/runtime_store.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -16,17 +17,21 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   int _pageIndex = 0;
+  User user = RuntimeStore().getUser() as User;
 
   @override
   Widget build(BuildContext context) {
     Color bgColor = Colors.yellowAccent;
 
-    User? user = RuntimeStore().getUser();
-    if (user != null) {
-      for (final Image im in user.images) {
-        precacheImage(im.image, context);
-      }
+    for (final Image im in user.images) {
+      precacheImage(im.image, context);
     }
+
+    RuntimeStore().tenantInfoUpdated = () {
+      setState(() {
+        user = RuntimeStore().getUser() as User;
+      });
+    };
 
     return Scaffold(
       //backgroundColor: RuntimeStore.backgroundColor,
@@ -36,12 +41,14 @@ class _HomeState extends State<Home> {
         child: IndexedStack(
           index: _pageIndex,
           children: <Widget>[
-            Houses(
-                child: Text('Esplora'),
-                firstApartmentFuture: ((ModalRoute.of(context)!
-                        .settings
-                        .arguments) as FirstArguments)
-                    .firstApartmentFuture),
+            user.isProfileComplete()
+                ? Houses(
+                    child: Text('Esplora'),
+                    firstApartmentFuture: ((ModalRoute.of(context)!
+                            .settings
+                            .arguments) as FirstArguments)
+                        .firstApartmentFuture)
+                : AddTenantInformations(textColor: Colors.black),
             Matches(),
             Tenants(
                 child: Text('Esplora'),
@@ -110,7 +117,7 @@ class _HomeState extends State<Home> {
         currentIndex: _pageIndex,
         onTap: (int index) {
           setState(
-            () {
+                () {
               _pageIndex = index;
               if (index == 1) {
                 MatchHandler().unseenChanges = false;

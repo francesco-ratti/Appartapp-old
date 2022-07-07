@@ -189,6 +189,8 @@ class _AddApartment extends State<AddApartment> {
   int uploadCtr=0;
   int numUploads=0;
   void onUploadsEnd () {
+    uploadCtr = 0;
+    numUploads = 0;
     setState(() {
       _isLoading = false;
     });

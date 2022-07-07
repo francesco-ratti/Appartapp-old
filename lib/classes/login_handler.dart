@@ -21,7 +21,7 @@ class LoginHandler {
       if (response.statusCode != 200) {
         throw ConnectionException();
       }
-    } on DioError {
+    } on DioError catch (e) {
       throw ConnectionException();
     }
   }

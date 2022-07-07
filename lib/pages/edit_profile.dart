@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:appartapp/classes/connection_exception.dart';
 import 'package:appartapp/classes/enum_gender.dart';
+import 'package:appartapp/classes/login_handler.dart';
 import 'package:appartapp/classes/runtime_store.dart';
 import 'package:appartapp/classes/user.dart';
 import 'package:appartapp/pages/reinsert_password.dart';
@@ -26,6 +26,8 @@ class EditProfile extends StatefulWidget {
 }
 
 class _EditProfileState extends State<EditProfile> {
+  User? user = RuntimeStore().getUser();
+
   List<File> _images = <File>[];
   List<Function> _onSubmitCbks = <Function>[];
 
@@ -36,6 +38,8 @@ class _EditProfileState extends State<EditProfile> {
   int numUploads = 0;
 
   void onUploadsEnd() {
+    uploadCtr = 0;
+    numUploads = 0;
     setState(() {
       _isLoading = false;
     });
@@ -44,6 +48,16 @@ class _EditProfileState extends State<EditProfile> {
       Navigator.restorablePush(
           context, ErrorDialogBuilder.buildGenericConnectionErrorRoute);
     }
+    LoginHandler.doLoginWithCookies().then((value) {
+      User newUser = value[0];
+      if (newUser != null) {
+        RuntimeStore().setUser(newUser);
+        setState(() {
+          user = newUser;
+          init();
+        });
+      }
+    });
   }
 
   void addImages(Function cbk, List<File> files) async {
@@ -122,7 +136,7 @@ class _EditProfileState extends State<EditProfile> {
         _uploadError = true;
       }
       cbk();
-    } on DioError {
+    } on DioError catch (e) {
       _uploadError = true;
       cbk();
     }
@@ -135,17 +149,23 @@ class _EditProfileState extends State<EditProfile> {
 
   String status = "";
 
-  User? user = RuntimeStore().getUser();
-
   late DateTime _birthday = new DateTime.now();
 
   Gender? _gender;
 
   List<GalleryImage> existingImages = [];
 
-  @override
-  void initState() {
-    super.initState();
+  void init() {
+    existingImages = [];
+
+    _images = <File>[];
+    _onSubmitCbks = <Function>[];
+
+    _isLoading = false;
+    _uploadError = false;
+
+    uploadCtr = 0;
+    numUploads = 0;
 
     _birthday = user!.birthday;
     _gender = user!.gender;
@@ -158,7 +178,7 @@ class _EditProfileState extends State<EditProfile> {
       Map im = RuntimeStore().getUser()!.imagesDetails[i];
       existingImages.add(GalleryImage(
           RuntimeStore().getUser()!.images[i],
-              () => () {
+          () => () {
                 removeImage(() {
                   uploadCtr++;
                   if (uploadCtr == numUploads) {
@@ -199,6 +219,13 @@ class _EditProfileState extends State<EditProfile> {
   }
 
   @override
+  void initState() {
+    super.initState();
+
+    init();
+  }
+
+  @override
   Widget build(BuildContext context) {
     birthdayController.text =
         "${_birthday.day}/${_birthday.month}/${_birthday.year}";
@@ -216,109 +243,112 @@ class _EditProfileState extends State<EditProfile> {
               onSubmitCbksCbk: (cbkList) {
                 _onSubmitCbks = cbkList;
               },
-            existingImages: existingImages,
+              existingImages: existingImages,
+            ),
           ),
-        ),
-        Padding(
-            padding: EdgeInsets.all(8.0),
-            child: TextField(
-              enabled: RuntimeStore().credentialsLogin,
-              obscureText: false,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'E-Mail',
-              ),
-              controller: emailController,
-            )),
-        Padding(
-            padding: EdgeInsets.all(8.0),
-            child: TextField(
-              enabled: RuntimeStore().credentialsLogin,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Nome',
-              ),
-              controller: nameController,
-            )),
-        Padding(
-            padding: EdgeInsets.all(8.0),
-            child: TextField(
-              enabled: RuntimeStore().credentialsLogin,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Cognome',
-              ),
-              controller: surnameController,
-            )),
-        Padding(
-            padding: EdgeInsets.all(8.0),
-            child: TextField(
-              controller: birthdayController,
-              readOnly: true,
-              onTap: () {
-                if (RuntimeStore().credentialsLogin) {
-                  showDatePicker(
-                      context: context,
-                      initialDate: _birthday,
-                      lastDate: DateTime.now(),
-                      firstDate: DateTime(1900))
-                      .then((value) {
-                    if (value != null) {
-                      setState(() {
-                        _birthday = value;
-                      });
-                    }
-                  });
-                }
-              },
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Data di nascita',
-              ),
-            )),
-        Padding(
-            padding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 0.0),
-            child: Text("Genere")),
-        Padding(
-            padding: EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 8.0),
-            child: Row(children: [
-              Expanded(
-                  child: DropdownButton<Gender>(
-                    hint: Text("Scegli il tuo genere"),
-                    // Not necessary for Option 1
-                    value: _gender,
-                    onChanged: RuntimeStore().credentialsLogin ? (newValue) {
-                      setState(() {
-                        _gender = newValue;
-                      });
-                    } : null,
-                    items: Gender.values.map((gender) {
-                      return DropdownMenuItem(
-                        child: Text(gender.toItalianString()),
-                        value: gender,
-                      );
-                    }).toList(),
-                  ))
-            ])),
-        RuntimeStore().credentialsLogin ? ElevatedButton(
-            child: Text("Modifica"),
-            style: ElevatedButton.styleFrom(primary: Colors.brown),
-            onPressed: () {
-              String email = emailController.text;
-              String name = nameController.text;
-              String surname = surnameController.text;
+          Padding(
+              padding: EdgeInsets.all(8.0),
+              child: TextField(
+                enabled: RuntimeStore().credentialsLogin,
+                obscureText: false,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'E-Mail',
+                ),
+                controller: emailController,
+              )),
+          Padding(
+              padding: EdgeInsets.all(8.0),
+              child: TextField(
+                enabled: RuntimeStore().credentialsLogin,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Nome',
+                ),
+                controller: nameController,
+              )),
+          Padding(
+              padding: EdgeInsets.all(8.0),
+              child: TextField(
+                enabled: RuntimeStore().credentialsLogin,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Cognome',
+                ),
+                controller: surnameController,
+              )),
+          Padding(
+              padding: EdgeInsets.all(8.0),
+              child: TextField(
+                controller: birthdayController,
+                readOnly: true,
+                onTap: () {
+                  if (RuntimeStore().credentialsLogin) {
+                    showDatePicker(
+                            context: context,
+                            initialDate: _birthday,
+                            lastDate: DateTime.now(),
+                            firstDate: DateTime(1900))
+                        .then((value) {
+                      if (value != null) {
+                        setState(() {
+                          _birthday = value;
+                        });
+                      }
+                    });
+                  }
+                },
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Data di nascita',
+                ),
+              )),
+          Padding(
+              padding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 0.0),
+              child: Text("Genere")),
+          Padding(
+              padding: EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 8.0),
+              child: Row(children: [
+                Expanded(
+                    child: DropdownButton<Gender>(
+                  hint: Text("Scegli il tuo genere"),
+                  // Not necessary for Option 1
+                  value: _gender,
+                  onChanged: RuntimeStore().credentialsLogin
+                      ? (newValue) {
+                          setState(() {
+                            _gender = newValue;
+                          });
+                        }
+                      : null,
+                  items: Gender.values.map((gender) {
+                    return DropdownMenuItem(
+                      child: Text(gender.toItalianString()),
+                      value: gender,
+                    );
+                  }).toList(),
+                ))
+              ])),
+          RuntimeStore().credentialsLogin
+              ? ElevatedButton(
+                  child: Text("Modifica"),
+                  style: ElevatedButton.styleFrom(primary: Colors.brown),
+                  onPressed: () {
+                    String email = emailController.text;
+                    String name = nameController.text;
+                    String surname = surnameController.text;
 
-              if ((email.length > 0 &&
-                  name.length > 0 &&
-                  surname.length > 0 &&
-                  _gender != null)) {
+                    if ((email.length > 0 &&
+                        name.length > 0 &&
+                        surname.length > 0 &&
+                        _gender != null)) {
                       numUploads = 0;
 
                       setState(() {
                         _isLoading = true;
                       });
 
-                      numUploads++; //for editapartmentPost
+                      numUploads++; //for editprofilePost
                       if (_images.isNotEmpty) {
                         numUploads++;
                       }
@@ -346,8 +376,11 @@ class _EditProfileState extends State<EditProfile> {
                             context,
                             MaterialPageRoute(
                                 builder: (context) => InsertPassword(
-                                        (String password,
-                                            Function(String) updateUi) async {
+                                    description:
+                                        "Reinserisci la tua password per modificare l'email",
+                                    callback: (String password,
+                                        Function(bool, String) updateUi) async {
+                                      updateUi(true, "");
                                       var dio = RuntimeStore().dio;
                                       try {
                                         Response response = await dio.post(
@@ -364,65 +397,107 @@ class _EditProfileState extends State<EditProfile> {
                                                   "application/x-www-form-urlencoded"
                                             },
                                           ),
-                                  );
+                                        );
 
-                                  if (response.statusCode != 200) {
-                                          updateUi("Failure");
-                                        } else {
-                                          updateUi("Updated");
+                                        if (response.statusCode == 200) {
                                           Map responseMap = response.data;
-                                          RuntimeStore().setUser(
-                                              User.fromMap(responseMap));
+                                          User newUser =
+                                              User.fromMap(responseMap);
+                                          RuntimeStore().setUser(newUser);
+                                          setState(() {
+                                            user = newUser;
+                                            init();
+                                          });
+                                          //updateUi(false, "");
                                           Navigator.pop(context);
+                                        } else if (response.statusCode == 401) {
+                                          //unauthorized
+                                          String oldEmail = RuntimeStore()
+                                              .getUser()
+                                              ?.email as String;
+                                          emailController.text = oldEmail;
+                                          updateUi(false, "Password errata");
+                                        } else {
+                                          String oldEmail = RuntimeStore()
+                                              .getUser()
+                                              ?.email as String;
+                                          emailController.text = oldEmail;
+
+                                          updateUi(false, "");
+                                          Navigator.restorablePush(
+                                              context,
+                                              ErrorDialogBuilder
+                                                  .buildGenericConnectionErrorRoute);
                                         }
                                       } on DioError catch (e) {
-                                  if (e.type ==
-                                      DioErrorType.connectTimeout ||
-                                      e.type ==
-                                          DioErrorType.receiveTimeout ||
-                                      e.type == DioErrorType.other ||
-                                      e.type == DioErrorType.sendTimeout ||
-                                      e.type == DioErrorType.cancel) {
-                                    throw ConnectionException();
-                                  }
-                                  if (e.response?.statusCode != 200) {
-                                    updateUi("Failure");
-                                  }
-                                }
-                              })));
-                }
+                                        updateUi(false, "");
+                                        String oldEmail = RuntimeStore()
+                                            .getUser()
+                                            ?.email as String;
+                                        emailController.text = oldEmail;
 
-              } else {
-                setState(() {
-                  status = "Incompleto. Compila tutti i campi";
-                });
-              }
-            }) : const SizedBox(),
-        const Divider(
-          height: 20,
-          thickness: 1,
-          indent: 20,
-          endIndent: 20,
-          color: Colors.grey,
-        ), RuntimeStore().credentialsLogin ? ElevatedButton(
-            child: Text("Aggiorna la password"),
-            style: ElevatedButton.styleFrom(primary: Colors.brown),
-            onPressed: () {
-              Navigator.pushNamed(context, "/editpassword");
-            }) : const SizedBox(),
-        ElevatedButton(
-            child: Text("Modifica informazioni locatario"),
-            style: ElevatedButton.styleFrom(primary: Colors.brown),
-            onPressed: () {
-              Navigator.pushNamed(context, "/edittenants");
-            }),
-        ElevatedButton(
-            child: Text("Esci"),
-            style: ElevatedButton.styleFrom(primary: Colors.red),
-            onPressed: () {
-              RuntimeStore().getSharedPreferences()?.remove("logged");
-              RuntimeStore().getSharedPreferences()?.remove("credentialslogin");
-              RuntimeStore().matchHandler.stopPeriodicUpdate();
+                                        if (e.type ==
+                                                DioErrorType.connectTimeout ||
+                                            e.type ==
+                                                DioErrorType.receiveTimeout ||
+                                            e.type == DioErrorType.other ||
+                                            e.type ==
+                                                DioErrorType.sendTimeout ||
+                                            e.type == DioErrorType.cancel) {
+                                          Navigator.restorablePush(
+                                              context,
+                                              ErrorDialogBuilder
+                                                  .buildConnectionErrorRoute);
+                                        } else if (e.response?.statusCode ==
+                                            401) {
+                                          //unauthorized
+                                          updateUi(false, "Password errata");
+                                        } else {
+                                          Navigator.restorablePush(
+                                              context,
+                                              ErrorDialogBuilder
+                                                  .buildGenericConnectionErrorRoute);
+                                        }
+                                      }
+                                    })));
+                      }
+                    } else {
+                      setState(() {
+                        status = "Incompleto. Compila tutti i campi";
+                      });
+                    }
+                  })
+              : const SizedBox(),
+          const Divider(
+            height: 20,
+            thickness: 1,
+            indent: 20,
+            endIndent: 20,
+            color: Colors.grey,
+          ),
+          RuntimeStore().credentialsLogin
+              ? ElevatedButton(
+                  child: Text("Aggiorna la password"),
+                  style: ElevatedButton.styleFrom(primary: Colors.brown),
+                  onPressed: () {
+                    Navigator.pushNamed(context, "/editpassword");
+                  })
+              : const SizedBox(),
+          ElevatedButton(
+              child: Text("Modifica informazioni locatario"),
+              style: ElevatedButton.styleFrom(primary: Colors.brown),
+              onPressed: () {
+                Navigator.pushNamed(context, "/edittenants");
+              }),
+          ElevatedButton(
+              child: Text("Esci"),
+              style: ElevatedButton.styleFrom(primary: Colors.red),
+              onPressed: () {
+                RuntimeStore().getSharedPreferences()?.remove("logged");
+                RuntimeStore()
+                    .getSharedPreferences()
+                    ?.remove("credentialslogin");
+                RuntimeStore().matchHandler.stopPeriodicUpdate();
                 RuntimeStore().cookieJar.deleteAll();
                 Navigator.pushReplacementNamed(context, "/loginorsignup");
               }),

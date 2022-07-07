@@ -54,9 +54,9 @@ class RuntimeStore {
 
   Dio dio = Dio(new BaseOptions(
       receiveDataWhenStatusError: true,
-      connectTimeout: 10 * 1000,
-      receiveTimeout: 10 * 1000,
-      sendTimeout: 10 * 1000));
+      connectTimeout: 20 * 1000,
+      receiveTimeout: 20 * 1000,
+      sendTimeout: 20 * 1000));
 
   SharedPreferences? _sharedPreferences = null;
 

@@ -51,7 +51,7 @@ class ApartmentHandler {
   }
 
   Future<Apartment?> getNewApartment(Function(Apartment) callback) async {
-    var dio = RuntimeStore().dio;
+    var dio = RuntimeStore().dio; //ok
 
     try {
       Response response = await dio.post(

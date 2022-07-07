@@ -4,6 +4,7 @@ import 'package:appartapp/classes/connection_exception.dart';
 import 'package:appartapp/classes/runtime_store.dart';
 import 'package:appartapp/pages/add_apartment.dart';
 import 'package:appartapp/widgets/apartment_viewer.dart';
+import 'package:appartapp/widgets/retry_widget.dart';
 import 'package:flutter/material.dart';
 
 class OwnedApartments extends StatefulWidget {
@@ -65,17 +66,7 @@ class _OwnedApartments extends State<OwnedApartments> {
               body: ownedApartments == null
                   ? Center(
                       child: _networkError
-                          ? Column(children: [
-                              Padding(
-                                  padding: EdgeInsets.fromLTRB(0, 0, 0, 8.0),
-                                  child: Text(
-                                      "Impossibile connettersi. Controlla la connessione e riprova")),
-                              ElevatedButton(
-                                  child: Text("Riprova"),
-                                  style: ElevatedButton.styleFrom(
-                                      primary: Colors.brown),
-                                  onPressed: updateApartments)
-                            ])
+                          ? RetryWidget(retryCallback: updateApartments)
                           : const CircularProgressIndicator(
                               value: null,
                             ))

@@ -6,6 +6,7 @@ import 'package:appartapp/classes/runtime_store.dart';
 import 'package:appartapp/classes/user.dart';
 import 'package:appartapp/classes/user_handler.dart';
 import 'package:appartapp/widgets/error_dialog_builder.dart';
+import 'package:appartapp/widgets/retry_widget.dart';
 import 'package:appartapp/widgets/tenant_viewer.dart';
 import 'package:dio/dio.dart';
 import 'package:dismissible_page/dismissible_page.dart';
@@ -110,7 +111,8 @@ class ContentPage extends StatefulWidget {
 //Function updateHouses;
 
   @override
-  _ContentPage createState() => _ContentPage();
+  _ContentPage createState() =>
+      _ContentPage(currentTenantFuture: currentTenantFuture);
 
   ContentPage(
       {Key? key,
@@ -122,6 +124,12 @@ class ContentPage extends StatefulWidget {
 }
 
 class _ContentPage extends State<ContentPage> {
+  Future<LikeFromUser?> currentTenantFuture;
+
+  _ContentPage({
+    required this.currentTenantFuture,
+  });
+
   LikeFromUser? currentTenant = LikeFromUser(
       null,
       User.temp(
@@ -143,32 +151,44 @@ class _ContentPage extends State<ContentPage> {
 
   late Future<LikeFromUser?> nextTenantFuture;
   bool tenantLoaded = false;
+  bool _networkerror = false;
 
   bool firstDrag = true;
   double initialCoord = 0.0;
   double finalCoord = 0.0;
 
+  Future<LikeFromUser?> getNewTenant() {
+    return UserHandler().getNewLikeFromUser((LikeFromUser likeFromUser) {
+      for (final Image im in likeFromUser.user.images) {
+        precacheImage(im.image, context);
+      }
+    });
+  }
+
+  void showCurrentTenantFromFuture() {
+    currentTenantFuture.then((value) {
+      if (value != null) tenantLoaded = true;
+      setState(() {
+        currentTenant = value;
+      });
+    }).onError((error, stackTrace) {
+      setState(() {
+        _networkerror = true;
+      });
+    });
+  }
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    nextTenantFuture =
-        UserHandler().getNewLikeFromUser((LikeFromUser likeFromUser) {
-          for (final Image im in likeFromUser.user.images) {
-            precacheImage(im.image, context);
-          }
-        });
+    nextTenantFuture = getNewTenant();
   }
 
   @override
   void initState() {
     super.initState();
 
-    widget.currentTenantFuture.then((value) {
-      if (value != null) tenantLoaded = true;
-      setState(() {
-        currentTenant = value;
-      });
-    });
+    showCurrentTenantFromFuture();
   }
 
   @override
@@ -217,13 +237,20 @@ class _ContentPage extends State<ContentPage> {
                   },
                   dragSensitivity: 0.5,
                   disabled: !tenantLoaded,
-                  child: TenantViewer(
-                    tenantLoaded: tenantLoaded,
-                    lessor: false,
-                    currentLikeFromUser: currentTenant,
-                    updateUI: widget.updateUI,
-                    match: widget.match,
-                  ));
+                  child: _networkerror
+                      ? RetryWidget(retryCallback: () {
+                          setState(() {
+                            _networkerror = false;
+                          });
+                          currentTenantFuture = getNewTenant();
+                        })
+                      : TenantViewer(
+                          tenantLoaded: tenantLoaded,
+                          lessor: false,
+                          currentLikeFromUser: currentTenant,
+                          updateUI: widget.updateUI,
+                          match: widget.match,
+                        ));
             });
       },
     );

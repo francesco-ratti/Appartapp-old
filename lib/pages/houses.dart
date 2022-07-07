@@ -3,6 +3,7 @@ import 'package:appartapp/classes/apartment_handler.dart';
 import 'package:appartapp/classes/runtime_store.dart';
 import 'package:appartapp/widgets/apartment_viewer.dart';
 import 'package:appartapp/widgets/error_dialog_builder.dart';
+import 'package:appartapp/widgets/retry_widget.dart';
 import 'package:dio/dio.dart';
 import 'package:dismissible_page/dismissible_page.dart';
 import 'package:flutter/material.dart';
@@ -116,11 +117,12 @@ class ContentPage extends StatefulWidget {
     await _networkFunction(context, ignoreUrlStr, apartmentId);
   }
 
+//Function updateHouses;
   Future<Apartment?> currentApartmentFuture;
 
-//Function updateHouses;
   @override
-  _ContentPage createState() => _ContentPage();
+  _ContentPage createState() =>
+      _ContentPage(currentApartmentFuture: currentApartmentFuture);
 
   ContentPage({
     required this.currentApartmentFuture,
@@ -129,54 +131,58 @@ class ContentPage extends StatefulWidget {
 }
 
 class _ContentPage extends State<ContentPage> {
-  Apartment? currentApartment=Apartment.withLocalImages(
+  Future<Apartment?> currentApartmentFuture;
+
+  _ContentPage({required this.currentApartmentFuture});
+
+  Apartment? currentApartment = Apartment.withLocalImages(
       0,
       "Caricamento in corso...",
       "Caricamento in corso...",
       0,
       "Caricamento in corso...",
-      "Caricamento in corso...",
-      <String>[]);
+      "Caricamento in corso...", <String>[]);
 
   late Future<Apartment?> nextApartmentFuture;
-  bool apartmentLoaded=false;
+  bool _apartmentLoaded = false;
+  bool _networkerror = false;
 
-  bool firstDrag=true;
-  double initialCoord=0.0;
-  double finalCoord=0.0;
+  bool firstDrag = true;
+  double initialCoord = 0.0;
+  double finalCoord = 0.0;
+
+  Future<Apartment?> getNewApartment() {
+    return ApartmentHandler().getNewApartment((Apartment apartment) {
+      for (final Image im in apartment.images) {
+        precacheImage(im.image, context);
+      }
+    });
+  }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    //TODO handle retry
-    nextApartmentFuture=ApartmentHandler().getNewApartment((Apartment apartment) {
-      /*Future.delayed(Duration(seconds: 10)).then((value) {
-        for (final Image im in apartment.images) {
-          precacheImage(im.image, context).then((value) {
-            print("precached");
-          });
-        }
-      });
-       */
+    nextApartmentFuture = getNewApartment();
+  }
 
-      for (final Image im in apartment.images) {
-        precacheImage(im.image, context);
-      }
-    }
-    );
+  void showCurrentApartmentFromFuture() {
+    currentApartmentFuture.then((value) {
+      if (value != null) _apartmentLoaded = true;
+      setState(() {
+        currentApartment = value;
+      });
+    }).onError((error, stackTrace) {
+      setState(() {
+        _networkerror = true;
+      });
+    });
   }
 
   @override
   void initState() {
     super.initState();
 
-    widget.currentApartmentFuture.then((value) {
-      if (value!=null)
-        apartmentLoaded=true;
-      setState(() {
-        currentApartment=value;
-      });
-    });
+    showCurrentApartmentFromFuture();
   }
 
   @override
@@ -202,8 +208,8 @@ class _ContentPage extends State<ContentPage> {
                         context,
                         MaterialPageRoute(
                             builder: (context) => ContentPage(
-                                  currentApartmentFuture: nextApartmentFuture,
-                                )));
+                              currentApartmentFuture: nextApartmentFuture,
+                            )));
 
                     // ApartmentHandler()
                     //     .getNewApartment()
@@ -222,11 +228,18 @@ class _ContentPage extends State<ContentPage> {
                     }
                   },
                   dragSensitivity: 0.5,
-                  disabled: !apartmentLoaded,
-                  child: ApartmentViewer(
-                    apartmentLoaded: apartmentLoaded,
-                    currentApartment: currentApartment,
-                  ));
+                  disabled: !_apartmentLoaded,
+                  child: _networkerror
+                      ? RetryWidget(retryCallback: () {
+                          setState(() {
+                            _networkerror = false;
+                          });
+                          currentApartmentFuture = getNewApartment();
+                        })
+                      : ApartmentViewer(
+                          apartmentLoaded: _apartmentLoaded,
+                          currentApartment: currentApartment,
+                        ));
             });
       },
     );

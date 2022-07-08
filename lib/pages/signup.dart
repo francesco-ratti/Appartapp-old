@@ -1,3 +1,4 @@
+import 'package:appartapp/classes/email_validator.dart';
 import 'package:appartapp/classes/enum_gender.dart';
 import 'package:appartapp/classes/runtime_store.dart';
 import 'package:appartapp/classes/user.dart';
@@ -47,7 +48,7 @@ class _SignupState extends State<Signup> {
         User user = User.fromMap(responseMap);
 
         SharedPreferences sharedPreferences =
-            RuntimeStore().getSharedPreferences() as SharedPreferences;
+        RuntimeStore().getSharedPreferences() as SharedPreferences;
 
         sharedPreferences.setBool("credentialslogin", true);
         RuntimeStore().credentialsLogin = true;
@@ -81,7 +82,7 @@ class _SignupState extends State<Signup> {
     Color bgColor = Colors.white;
 
     birthdayController.text =
-        "${_birthday.day}/${_birthday.month}/${_birthday.year}";
+    "${_birthday.day}/${_birthday.month}/${_birthday.year}";
 
     return Scaffold(
         appBar: AppBar(
@@ -138,10 +139,10 @@ class _SignupState extends State<Signup> {
                     readOnly: true,
                     onTap: () {
                       showDatePicker(
-                              context: context,
-                              initialDate: _birthday,
-                              lastDate: DateTime.now(),
-                              firstDate: DateTime(1900))
+                          context: context,
+                          initialDate: _birthday,
+                          lastDate: DateTime.now(),
+                          firstDate: DateTime(1900))
                           .then((value) {
                         if (value != null) {
                           setState(() {
@@ -163,18 +164,18 @@ class _SignupState extends State<Signup> {
                   child: Row(children: [
                     Expanded(
                         child: DropdownButton<Gender>(
-                      hint: const Text("Scegli il tuo genere"),
-                      // Not necessary for Option 1
-                      value: _gender,
-                      onChanged: (newValue) {
-                        setState(() {
-                          _gender = newValue;
-                        });
-                      },
-                      items: Gender.values.map((gender) {
-                        return DropdownMenuItem(
-                          child: Text(gender.toItalianString()),
-                          value: gender,
+                          hint: const Text("Scegli il tuo genere"),
+                          // Not necessary for Option 1
+                          value: _gender,
+                          onChanged: (newValue) {
+                            setState(() {
+                              _gender = newValue;
+                            });
+                          },
+                          items: Gender.values.map((gender) {
+                            return DropdownMenuItem(
+                              child: Text(gender.toItalianString()),
+                              value: gender,
                             );
                           }).toList(),
                         ))
@@ -182,16 +183,27 @@ class _SignupState extends State<Signup> {
               ElevatedButton(
                   child: const Text("Registrati"),
                   onPressed: () {
-                    String email = emailController.text;
+                    setState(() {
+                      status = "";
+                    });
+
+                    String email = emailController.text.trim();
                     String password = passwordController.text;
-                    String name = nameController.text;
-                    String surname = surnameController.text;
+                    String name = nameController.text.trim();
+                    String surname = surnameController.text.trim();
 
                     if ((email.isNotEmpty &&
-                        password.isNotEmpty &&
+                        password.trim().isNotEmpty &&
                         name.isNotEmpty &&
                         surname.isNotEmpty &&
                         _gender != null)) {
+                      if (!EmailValidator.isEmailValid(email)) {
+                        setState(() {
+                          status = "Inserisci un indirizzo email valido";
+                        });
+                        return;
+                      }
+
                       setState(() {
                         _isLoading = true;
                       });

@@ -1,4 +1,5 @@
 import 'package:appartapp/classes/connection_exception.dart';
+import 'package:appartapp/classes/email_validator.dart';
 import 'package:appartapp/classes/enum_loginresult.dart';
 import 'package:appartapp/classes/login_handler.dart';
 import 'package:appartapp/classes/runtime_store.dart';
@@ -107,44 +108,65 @@ class _LoginState extends State<Login> {
           ),
 
            */
-                  const Padding(
-                  padding: EdgeInsets.all(16.0),
-                  child: Text(
-                    "Inserisci le tue credenziali",
-                    style: TextStyle(fontSize: 20),
-                  )),
-                    Padding(
-                        padding: const EdgeInsets.all(16.0),
-                  child: Text(
-                    status,
-                    style: const TextStyle(fontSize: 20),
-                  )),
-                    Padding(
-                        padding: const EdgeInsets.all(16.0),
-                  child: TextField(
-                    obscureText: false,
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'E-Mail',
-                    ),
-                    controller: emailController,
-                  )),
-                    Padding(
-                        padding: const EdgeInsets.all(16.0),
-                  child: TextField(
-                    controller: passwordController,
-                    obscureText: true,
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'Password',
-                    ),
-                  )),
-                    ElevatedButton(
-                        child: const Text("Accedi"),
-                  style: ElevatedButton.styleFrom(primary: Colors.brown),
-                  onPressed: () {
-                    String email = emailController.text;
-                    String password = passwordController.text;
+                            const Padding(
+                                padding: EdgeInsets.all(16.0),
+                                child: Text(
+                                  "Inserisci le tue credenziali",
+                                  style: TextStyle(fontSize: 20),
+                                )),
+                            Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Text(
+                                  status,
+                                  style: const TextStyle(fontSize: 20),
+                                )),
+                            Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: TextField(
+                                  obscureText: false,
+                                  decoration: const InputDecoration(
+                                    border: OutlineInputBorder(),
+                                    labelText: 'E-Mail',
+                                  ),
+                                  controller: emailController,
+                                )),
+                            Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: TextField(
+                                  controller: passwordController,
+                                  obscureText: true,
+                                  decoration: const InputDecoration(
+                                    border: OutlineInputBorder(),
+                                    labelText: 'Password',
+                                  ),
+                                )),
+                            ElevatedButton(
+                                child: const Text("Accedi"),
+                                style: ElevatedButton.styleFrom(
+                                    primary: Colors.brown),
+                                onPressed: () {
+                                  setState(() {
+                                    status = "";
+                                  });
+
+                                  String email = emailController.text.trim();
+                                  String password = passwordController.text;
+
+                                  if (email.isEmpty ||
+                                      password.trim().isEmpty) {
+                                    setState(() {
+                                      status = "Compila tutti i campi";
+                                    });
+                                    return;
+                                  }
+
+                                  if (!EmailValidator.isEmailValid(email)) {
+                                    setState(() {
+                                      status =
+                                          "Inserisci un indirizzo email valido";
+                                    });
+                                    return;
+                                  }
 
                                   setState(() {
                                     _isLoading = true;

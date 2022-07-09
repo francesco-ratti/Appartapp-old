@@ -33,9 +33,7 @@ class User {
         job.isNotEmpty &&
         income != null &&
         income.isNotEmpty &&
-        smoker != null &&
-        pets != null &&
-        pets.isNotEmpty);
+        smoker != null);
   }
 
   static List<Image> fromImagesDetailsToImages(List imagesDetails) {
@@ -88,8 +86,8 @@ class User {
         this.smoker = mapTemporalQ(map['smoker']),
         this.pets = map['pets'];
 
-        //TO DELETE WHEN THE PREVIOUS BLOCK WILL BE UNCOMMENTED
-        //FAKE INITIALISATION
+  //TO DELETE WHEN THE PREVIOUS BLOCK WILL BE UNCOMMENTED
+  //FAKE INITIALISATION
   /*
         this.bio = "",
         this.reason = "Vivo a Roma e ho intenzione di studiare al Polimi",
@@ -117,16 +115,13 @@ class User {
       this.pets);
 
   static Month? mapMonth(String month) {
-    if (month.trim().isEmpty)
-      return null;
+    if (month.trim().isEmpty) return null;
 
-    return Month.values
-        .firstWhere((e) => e.toString() == 'Month.' + month);
+    return Month.values.firstWhere((e) => e.toString() == 'Month.' + month);
   }
 
   static TemporalQ? mapTemporalQ(String temporalQ) {
-    if (temporalQ.trim().isEmpty)
-      return null;
+    if (temporalQ.trim().isEmpty) return null;
 
     return TemporalQ.values
         .firstWhere((e) => e.toString() == 'TemporalQ.' + temporalQ);

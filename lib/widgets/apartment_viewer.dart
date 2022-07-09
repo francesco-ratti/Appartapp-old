@@ -60,7 +60,29 @@ SlidingUpPanel mobileLayout(
   );
 }
 
-Container tabletLayout(
+Row tabletLayout(
     bool apartmentLoaded, Apartment? currentApartment, User? owner) {
-  return Container();
+  return Row(
+    children: [
+      Expanded(
+        flex: 2,
+        child: apartmentLoaded
+            ? ApartmentModel(currentApartment: currentApartment as Apartment)
+            : Center(
+                child: CircularProgressIndicator(
+                value: null,
+              )),
+      ),
+      Expanded(
+        flex: 1,
+        child: apartmentLoaded
+            ? TabWidget(
+                scrollController: ScrollController(),
+                currentApartment: currentApartment as Apartment,
+                owner: owner,
+              )
+            : TabWidgetLoading(),
+      )
+    ],
+  );
 }

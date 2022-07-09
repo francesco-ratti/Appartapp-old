@@ -36,7 +36,7 @@ class TabWidget extends StatelessWidget {
           ),
           Row(
             children: [
-              Container(
+              SingleChildScrollView(
                 padding: EdgeInsets.fromLTRB(30, 10, 10, 30),
                 child: Text(
                   currentApartment.listingTitle,

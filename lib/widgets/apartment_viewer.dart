@@ -4,6 +4,7 @@ import 'package:appartapp/classes/user.dart';
 import 'package:appartapp/widgets/apartment_model.dart';
 import 'package:appartapp/widgets/tab_widget.dart';
 import 'package:appartapp/widgets/tab_widget_loading.dart';
+import 'package:blur/blur.dart';
 import 'package:flutter/material.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
@@ -65,7 +66,7 @@ Row tabletLayout(
   return Row(
     children: [
       Expanded(
-        flex: 2,
+        flex: 100,
         child: apartmentLoaded
             ? ApartmentModel(currentApartment: currentApartment as Apartment)
             : Center(
@@ -74,7 +75,13 @@ Row tabletLayout(
               )),
       ),
       Expanded(
-        flex: 1,
+          flex: 1,
+          child: Blur(
+              child: Container(
+            color: Colors.brown,
+          ))),
+      Expanded(
+        flex: 50,
         child: apartmentLoaded
             ? TabWidget(
                 scrollController: ScrollController(),

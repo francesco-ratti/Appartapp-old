@@ -39,6 +39,9 @@ class _HousesState extends State<Houses> {
 
   @override
   Widget build(BuildContext context) {
+    final double shortestSide = MediaQuery.of(context).size.shortestSide;
+    RuntimeStore().useMobileLayout = shortestSide < 600;
+
     return Navigator(
       onGenerateRoute: (RouteSettings settings) {
         return MaterialPageRoute(
@@ -78,7 +81,6 @@ class _HousesState extends State<Houses> {
 }
 
 class ContentPage extends StatefulWidget {
-
   final likeUrlStr =
       "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/likeapartment";
   final ignoreUrlStr =
@@ -208,8 +210,8 @@ class _ContentPage extends State<ContentPage> {
                         context,
                         MaterialPageRoute(
                             builder: (context) => ContentPage(
-                              currentApartmentFuture: nextApartmentFuture,
-                            )));
+                                  currentApartmentFuture: nextApartmentFuture,
+                                )));
 
                     // ApartmentHandler()
                     //     .getNewApartment()

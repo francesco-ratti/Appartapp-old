@@ -46,7 +46,7 @@ class First extends StatelessWidget {
             ]),
           )
         ]),
-        image: Image.asset('assets/appart.tiff')),
+        image: Image.asset('assets/appart.jpg')),
     PageViewModel(
         title: "Non lasciare nulla al caso ",
         //body:"Vedrai sempre tutte le informazioni necessarie per una scelta informata.  ",
@@ -83,7 +83,7 @@ class First extends StatelessWidget {
                 ]),
               )
             ])),
-        image: Image.asset('assets/simmetria.tiff')),
+        image: Image.asset('assets/simmetria.jpg')),
     PageViewModel(
         title: "Abbattiamo i costi",
         //body: "Nessuna agenzia. Nessuna sorpresa.",
@@ -120,7 +120,7 @@ class First extends StatelessWidget {
                 ]),
               )
             ])),
-        image: Image.asset('assets/soldi.tiff')),
+        image: Image.asset('assets/soldi.jpg')),
     PageViewModel(
         title: "Senza discriminazioni",
         //body:"La foto di un inquilino sarà disponibile solo dopo aver espresso una preferenza alla sua biografia.",
@@ -141,7 +141,7 @@ class First extends StatelessWidget {
                 ),
               ),
             ])),
-        image: Image.asset('assets/noDiscriminazione.tiff')),
+        image: Image.asset('assets/noDiscriminazione.jpg')),
   ];
   @override
   Widget build(BuildContext context) {

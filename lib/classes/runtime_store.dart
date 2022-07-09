@@ -1,4 +1,3 @@
-
 import 'dart:io';
 import 'dart:ui';
 
@@ -14,7 +13,7 @@ import 'match_handler.dart';
 
 class RuntimeStore {
   //SINGLETON PATTERN
-  static const backgroundColor=Color( 0xff282828);
+  static const backgroundColor = Color(0xff282828);
 
   static final RuntimeStore _runtimeStore = RuntimeStore._internal();
 
@@ -31,6 +30,8 @@ class RuntimeStore {
   late Function() tenantInfoUpdated;
 
   late bool credentialsLogin;
+
+  late bool useMobileLayout;
 
   bool getCredentialsLogin() {
     return credentialsLogin;
@@ -75,7 +76,7 @@ class RuntimeStore {
   }
 
   void setSharedPreferences(SharedPreferences sharedPreferences) {
-    _sharedPreferences=sharedPreferences;
+    _sharedPreferences = sharedPreferences;
   }
 
   Future<void> initDio() async {

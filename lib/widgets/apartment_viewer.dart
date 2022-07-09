@@ -8,40 +8,59 @@ import 'package:flutter/material.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class ApartmentViewer extends StatelessWidget {
-
   bool apartmentLoaded;
   Apartment? currentApartment;
   User? owner;
 
-  ApartmentViewer({Key? key, required this.apartmentLoaded, required this.currentApartment, this.owner}) : super(key: key);
+  ApartmentViewer(
+      {Key? key,
+      required this.apartmentLoaded,
+      required this.currentApartment,
+      this.owner})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Container (
-      color: RuntimeStore.backgroundColor,
-      child: currentApartment==null ? (Center(
-          child: Text("no apartments",
-            style: TextStyle(
-                color: Colors.white
-            ),)
-      )) : SlidingUpPanel(
-        color: Colors.transparent.withOpacity(0.7),
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(24.0),
-          topRight: Radius.circular(24.0),
-        ),
-        isDraggable: apartmentLoaded,
-        panelBuilder: (scrollController) =>
-        apartmentLoaded ? TabWidget(
+    return Container(
+        color: RuntimeStore.backgroundColor,
+        child: currentApartment == null
+            ? (Center(
+                child: Text(
+                "no apartments",
+                style: TextStyle(color: Colors.white),
+              )))
+            : RuntimeStore().useMobileLayout
+                ? mobileLayout(apartmentLoaded, currentApartment, owner)
+                : tabletLayout(apartmentLoaded, currentApartment, owner));
+  }
+}
+
+SlidingUpPanel mobileLayout(
+    bool apartmentLoaded, Apartment? currentApartment, User? owner) {
+  return SlidingUpPanel(
+    color: Colors.transparent.withOpacity(0.7),
+    borderRadius: BorderRadius.only(
+      topLeft: Radius.circular(24.0),
+      topRight: Radius.circular(24.0),
+    ),
+    isDraggable: apartmentLoaded,
+    panelBuilder: (scrollController) => apartmentLoaded
+        ? TabWidget(
             scrollController: scrollController,
             currentApartment: currentApartment as Apartment,
             owner: owner,
-        ) : TabWidgetLoading(),
-        body: apartmentLoaded ? ApartmentModel(currentApartment: currentApartment as Apartment) : Center(
+          )
+        : TabWidgetLoading(),
+    body: apartmentLoaded
+        ? ApartmentModel(currentApartment: currentApartment as Apartment)
+        : Center(
             child: CircularProgressIndicator(
-              value: null,
-            )),
-      ),
-    );
-  }
+            value: null,
+          )),
+  );
+}
+
+Container tabletLayout(
+    bool apartmentLoaded, Apartment? currentApartment, User? owner) {
+  return Container();
 }

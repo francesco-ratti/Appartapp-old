@@ -43,10 +43,12 @@ class _HomeParent extends State<HomeParent> {
         Home(),
         currentMatches != null && currentMatches!.isNotEmpty && !pressed
             ? CupertinoAlertDialog(
-                title: const Text("Nuovo match!"),
+                title: currentMatches!.length > 1
+                    ? const Text("Hai dei nuovi match!")
+                    : const Text("Hai un nuovo match!"),
                 actions: [
                   CupertinoDialogAction(
-                    child: Text("OK"),
+                    child: Text("Ho visto"),
                     onPressed: () {
                       setState(() {
                         RuntimeStore().matchHandler.setChangesAsSeen();
@@ -69,6 +71,13 @@ class _HomeParent extends State<HomeParent> {
 
                         return MatchEntry(
                           onTileTap: (BuildContext context, LessorMatch match) {
+                            if (currentMatches!.length == 1) {
+                              setState(() {
+                                RuntimeStore().matchHandler.setChangesAsSeen();
+                                pressed = true;
+                              });
+                            }
+
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -79,9 +88,9 @@ class _HomeParent extends State<HomeParent> {
                                           backgroundColor: Colors.brown,
                                         ),
                                         body: ApartmentViewer(
-                                            apartmentLoaded: true,
-                                            currentApartment: match.apartment,
-                                            owner: match.apartment.owner))));
+                                                apartmentLoaded: true,
+                                                currentApartment: match.apartment,
+                                                owner: match.apartment.owner))));
                           },
                           match: currentMatch,
                         );

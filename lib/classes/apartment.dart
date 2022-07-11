@@ -5,10 +5,8 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
 class Apartment {
-
-  static final String urlStrMarkAsIgnored="";
-  static final String urlStrMarkAsLiked="";
-
+  static const String urlStrMarkAsIgnored = "";
+  static const String urlStrMarkAsLiked = "";
 
   final int id;
   final String listingTitle;

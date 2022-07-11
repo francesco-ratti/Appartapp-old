@@ -25,6 +25,8 @@ class MatchHandler {
   //List? oldResData = null;
 
   DateTime? _lastShowedMatchDateTime = null;
+  DateTime _lastReceivedMatchDateTime =
+      DateTime.now().subtract(const Duration(days: 30));
 
   //DateTime? lastReceivedMatchDateTime = null;
 
@@ -61,14 +63,15 @@ class MatchHandler {
           for (final el in newResData) {
             _currentMatches?.add(LessorMatch.fromMap(el));
           }
-          if (callback != null) {
-            callback(_currentMatches);
-          }
-          for (final Function(List<LessorMatch>?) cbk
-              in updateAllMatchesCallbacks) {
-            cbk(_currentMatches);
-          }
+          _lastReceivedMatchDateTime = _currentMatches![0].time;
         }
+      }
+      if (callback != null) {
+        callback(_currentMatches);
+      }
+      for (final Function(List<LessorMatch>?) cbk
+          in updateAllMatchesCallbacks) {
+        cbk(_currentMatches);
       }
     } else {
       throw ConnectionException();
@@ -101,7 +104,7 @@ class MatchHandler {
   void setChangesAsSeen() {
     if (_currentMatches != null) {
       _unseenMatches = [];
-      _lastShowedMatchDateTime = _currentMatches![0].time;
+      _lastShowedMatchDateTime = _lastReceivedMatchDateTime;
       if (_lastShowedMatchDateTime != null) {
         RuntimeStore().getSharedPreferences()?.setInt("lastviewedmatch",
             _lastShowedMatchDateTime!.millisecondsSinceEpoch);
@@ -116,12 +119,13 @@ class MatchHandler {
   Future<void> doUpdateFromDate(Function(List<LessorMatch>?)? callback) async {
     var dio = RuntimeStore().dio;
     try {
-      DateTime? tmpdt = _firstUpdateRun && _lastShowedMatchDateTime != null
-          ? _lastShowedMatchDateTime
-          : _currentMatches![0].time;
       Response response = await dio.post(
         urlStrFromDate,
-        data: {"date": tmpdt!.millisecondsSinceEpoch},
+        data: {
+          "date": _firstUpdateRun && _lastShowedMatchDateTime != null
+              ? _lastShowedMatchDateTime!.millisecondsSinceEpoch
+              : _lastReceivedMatchDateTime.millisecondsSinceEpoch
+        },
         options: Options(
           contentType: Headers.formUrlEncodedContentType,
           headers: {"Content-Type": "application/x-www-form-urlencoded"},
@@ -145,6 +149,7 @@ class MatchHandler {
                 _currentMatches?.insert(0, curr);
               }
             }
+            _lastReceivedMatchDateTime = _currentMatches![0].time;
             //lastReceivedMatchDateTime = LessorMatch.fromMap(newResData[0]).time;
 
             for (final Function(List<LessorMatch>?) cbk in updateCallbacks) {
@@ -152,7 +157,7 @@ class MatchHandler {
             }
             if (_currentMatches != null) {
               for (final Function(List<LessorMatch>?) cbk
-              in updateAllMatchesCallbacks) {
+                  in updateAllMatchesCallbacks) {
                 cbk(_currentMatches);
               }
             }
@@ -196,12 +201,14 @@ class MatchHandler {
     _currentMatches = null;
     _unseenMatches = null;
     _firstUpdateRun = true;
+    _lastReceivedMatchDateTime =
+        DateTime.now().subtract(const Duration(days: 30));
 
     try {
       await initCurrentMatches(null);
       while (!_stop) {
         await doUpdateFromDate(null);
-        await Future.delayed(Duration(seconds: 30));
+        await Future.delayed(const Duration(seconds: 30));
       }
     } catch (e) {
       if (e is DioError || e is ConnectionException) {
@@ -219,6 +226,8 @@ class MatchHandler {
     _currentMatches = null;
     _unseenMatches = null;
     _firstUpdateRun = true;
+    _lastReceivedMatchDateTime =
+        DateTime.now().subtract(const Duration(days: 30));
   }
 
   List<LessorMatch>? getMatches() {

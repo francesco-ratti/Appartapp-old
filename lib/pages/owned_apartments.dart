@@ -53,6 +53,7 @@ class _OwnedApartments extends State<OwnedApartments> {
           builder: (BuildContext context) {
             return Scaffold(
               floatingActionButton: FloatingActionButton(
+                heroTag: null,
                 backgroundColor: Colors.brown,
                 onPressed: () {
                   Navigator.push(
@@ -94,16 +95,16 @@ class _OwnedApartments extends State<OwnedApartments> {
 
                                 Navigator.push(
                                     context,
-                            MaterialPageRoute(
-                                builder: (context) => Scaffold(
-                                    appBar: AppBar(
-                                        title: Text(
+                                    MaterialPageRoute(
+                                        builder: (context) => Scaffold(
+                                            appBar: AppBar(
+                                                title: Text(
                                                     ownedApartments![index]
                                                         .listingTitle),
-                                        backgroundColor: Colors.brown,
-                                        actions: <Widget>[
-                                          Padding(
-                                              padding:
+                                                backgroundColor: Colors.brown,
+                                                actions: <Widget>[
+                                                  Padding(
+                                                      padding:
                                                           const EdgeInsets.only(
                                                               right: 20.0),
                                                       child: GestureDetector(
@@ -126,9 +127,9 @@ class _OwnedApartments extends State<OwnedApartments> {
                                                                           RuntimeStore()
                                                                               .setOwnedApartmentsFuture(newOwnedApartments);
                                                                         })),
-                                                  );
-                                                },
-                                                child: const SizedBox(
+                                                          );
+                                                        },
+                                                        child: const SizedBox(
                                                           height: 26,
                                                           width: 26,
                                                           child: Icon(
@@ -136,16 +137,16 @@ class _OwnedApartments extends State<OwnedApartments> {
                                                             size: 26.0,
                                                           ),
                                                         ),
-                                              )),
-                                        ]),
-                                    body: ApartmentViewer(
-                                      apartmentLoaded: true,
+                                                      )),
+                                                ]),
+                                            body: ApartmentViewer(
+                                              apartmentLoaded: true,
                                               currentApartment:
                                                   ownedApartments![index],
                                             ))));
-                      },
-                    );
-                  }),
+                              },
+                            );
+                          }),
             );
           });
     });

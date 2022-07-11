@@ -45,21 +45,26 @@ class _TabWidgetTenant extends State<TabWidgetTenant> {
           ),
           Row(
             children: [
-              Container(
-                padding: const EdgeInsets.fromLTRB(30, 10, 30, 10),
-                child: Text(
-                  widget.currentTenant.name,
-                  //textAlign: TextAlign.center,
-                  style:
-                      GoogleFonts.nunito(color: Colors.white70, fontSize: 30),
+              Expanded(
+                flex: 90,
+                child: Container(
+                  padding: const EdgeInsets.fromLTRB(30, 10, 30, 10),
+                  child: Text(
+                    widget.currentTenant.name,
+                    //textAlign: TextAlign.center,
+                    style:
+                        GoogleFonts.nunito(color: Colors.white70, fontSize: 30),
+                  ),
                 ),
               ),
               const Spacer(),
               widget.apartment == null
                   ? const SizedBox()
-                  : Column(
-                      children: [
-                        ElevatedButton(
+                  : Expanded(
+                      flex: 41,
+                      child: Column(
+                        children: [
+                          ElevatedButton(
                             style: ElevatedButton.styleFrom(
                                 primary: Colors.brown,
                                 shape: const CircleBorder()),
@@ -87,13 +92,15 @@ class _TabWidgetTenant extends State<TabWidgetTenant> {
                                             widget.apartment!.images[0].image)
                                     : const Icon(
                                         Icons.apartment_rounded,
-                                      ))),
-                        Container(
-                          padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
-                          child: Text("${widget.apartment?.listingTitle} ",
-                              style: const TextStyle(color: Colors.white)),
-                        ),
-                      ],
+                                      )),
+                          ),
+                          Container(
+                            padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
+                            child: Text("${widget.apartment?.listingTitle} ",
+                                style: const TextStyle(color: Colors.white)),
+                          ),
+                        ],
+                      ),
                     ),
             ],
           ),
@@ -158,6 +165,7 @@ class _TabWidgetTenant extends State<TabWidgetTenant> {
                       ),
                     ),
                     FloatingActionButton(
+                        heroTag: null,
                         backgroundColor: Colors.brown,
                         child: const Icon(Icons.lock_open_rounded),
                         onPressed: () async {

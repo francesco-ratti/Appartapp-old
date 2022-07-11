@@ -1,6 +1,7 @@
 import 'package:appartapp/classes/lessor_match.dart';
 import 'package:appartapp/classes/runtime_store.dart';
 import 'package:appartapp/widgets/apartment_viewer.dart';
+import 'package:appartapp/widgets/match_entry.dart';
 import 'package:flutter/material.dart';
 
 class Matches extends StatefulWidget {
@@ -44,44 +45,37 @@ class _MatchesState extends State<Matches> {
                 ),
                 body: currentMatches == null
                     ? Center(
-                  child: Text("Updating... please wait"),
-                )
+                  child: Text("Caricamento in corso..."),
+                      )
                     : ListView.builder(
                     itemCount: currentMatches?.length,
                     itemBuilder: (BuildContext context, int index) {
                       LessorMatch currentMatch = currentMatches![index];
 
-                      return ListTile(
-                        title: Text(currentMatch.apartment.listingTitle),
-                        subtitle: Text(
-                            "${currentMatch.apartment.description} - ${currentMatch.time}"),
-                        onTap: () {
-                          for (final Image im
-                          in currentMatches![index].apartment.images) {
-                            precacheImage(im.image, context);
-                          }
+                          return MatchEntry(
+                            onTileTap:
+                                (BuildContext context, LessorMatch match) {
+                              for (final Image im in match.apartment.images) {
+                                precacheImage(im.image, context);
+                              }
 
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => Scaffold(
-                                      appBar: AppBar(
-                                        title: Text(currentMatches![index]
-                                            .apartment
-                                            .listingTitle),
-                                        backgroundColor: Colors.brown,
-                                      ),
-                                      body: ApartmentViewer(
-                                          apartmentLoaded: true,
-                                          currentApartment:
-                                          currentMatches![index]
-                                              .apartment,
-                                          owner: currentMatches![index]
-                                              .apartment
-                                              .owner))));
-                        },
-                      );
-                    }));
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => Scaffold(
+                                          appBar: AppBar(
+                                            title: Text(
+                                                match.apartment.listingTitle),
+                                            backgroundColor: Colors.brown,
+                                          ),
+                                          body: ApartmentViewer(
+                                              apartmentLoaded: true,
+                                              currentApartment: match.apartment,
+                                              owner: match.apartment.owner))));
+                            },
+                            match: currentMatch,
+                          );
+                        }));
           });
     });
   }

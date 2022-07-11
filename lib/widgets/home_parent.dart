@@ -2,6 +2,7 @@ import 'package:appartapp/classes/lessor_match.dart';
 import 'package:appartapp/classes/runtime_store.dart';
 import 'package:appartapp/pages/home.dart';
 import 'package:appartapp/widgets/apartment_viewer.dart';
+import 'package:appartapp/widgets/match_entry.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -25,7 +26,7 @@ class _HomeParent extends State<HomeParent> {
   void initState() {
     super.initState();
     //RuntimeStore().matchHandler.doUpdate(callback);
-    RuntimeStore().matchHandler.doUpdateFromDate(callback); //TODO
+    RuntimeStore().matchHandler.doUpdateFromDate(callback);
     RuntimeStore().matchHandler.addUpdateCallback(callback);
   }
 
@@ -61,35 +62,27 @@ class _HomeParent extends State<HomeParent> {
                       itemBuilder: (BuildContext context, int index) {
                         LessorMatch currentMatch = currentMatches![index];
 
-                        return ListTile(
-                          title: Text(currentMatch.apartment.listingTitle),
-                          subtitle: Text(
-                              "${currentMatch.apartment.description} - ${currentMatch.time}"),
-                          onTap: () {
-                            for (final Image im
-                                in currentMatches![index].apartment.images) {
-                              precacheImage(im.image, context);
-                            }
+                        for (final Image im in currentMatch.apartment.images) {
+                          precacheImage(im.image, context);
+                        }
 
+                        return MatchEntry(
+                          onTileTap: (BuildContext context, LessorMatch match) {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => Scaffold(
                                         appBar: AppBar(
-                                          title: Text(currentMatches![index]
-                                              .apartment
-                                              .listingTitle),
+                                          title: Text(
+                                              match.apartment.listingTitle),
                                           backgroundColor: Colors.brown,
                                         ),
                                         body: ApartmentViewer(
                                             apartmentLoaded: true,
-                                            currentApartment:
-                                                currentMatches![index]
-                                                    .apartment,
-                                            owner: currentMatches![index]
-                                                .apartment
-                                                .owner))));
+                                            currentApartment: match.apartment,
+                                            owner: match.apartment.owner))));
                           },
+                          match: currentMatch,
                         );
                       }),
                 ),

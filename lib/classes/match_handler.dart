@@ -116,13 +116,12 @@ class MatchHandler {
   Future<void> doUpdateFromDate(Function(List<LessorMatch>?)? callback) async {
     var dio = RuntimeStore().dio;
     try {
+      DateTime? tmpdt = _firstUpdateRun && _lastShowedMatchDateTime != null
+          ? _lastShowedMatchDateTime
+          : _currentMatches![0].time;
       Response response = await dio.post(
         urlStrFromDate,
-        data: {
-          "date": _firstUpdateRun && _lastShowedMatchDateTime != null
-              ? _lastShowedMatchDateTime!.millisecondsSinceEpoch
-              : _currentMatches![0].time.millisecondsSinceEpoch
-        },
+        data: {"date": tmpdt!.millisecondsSinceEpoch},
         options: Options(
           contentType: Headers.formUrlEncodedContentType,
           headers: {"Content-Type": "application/x-www-form-urlencoded"},
@@ -141,9 +140,9 @@ class MatchHandler {
           if (newResData.isNotEmpty) {
             for (final el in newResData) {
               LessorMatch curr = LessorMatch.fromMap(el);
-              _unseenMatches?.add(curr);
+              _unseenMatches?.insert(0, curr);
               if (!_firstUpdateRun) {
-                _currentMatches?.add(curr);
+                _currentMatches?.insert(0, curr);
               }
             }
             //lastReceivedMatchDateTime = LessorMatch.fromMap(newResData[0]).time;
@@ -153,7 +152,7 @@ class MatchHandler {
             }
             if (_currentMatches != null) {
               for (final Function(List<LessorMatch>?) cbk
-                  in updateAllMatchesCallbacks) {
+              in updateAllMatchesCallbacks) {
                 cbk(_currentMatches);
               }
             }

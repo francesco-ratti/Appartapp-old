@@ -29,7 +29,7 @@ class _MatchesState extends State<Matches> {
   @override
   void dispose() {
     super.dispose();
-    RuntimeStore().matchHandler.removeUpdateCallback(callback);
+    RuntimeStore().matchHandler.removeUpdateAllMatchesCallback(callback);
   }
 
   @override

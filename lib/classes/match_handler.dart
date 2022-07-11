@@ -23,7 +23,7 @@ class MatchHandler {
 
   DateTime lastMatchDateTime = new DateTime(1980);
 
-  bool _stop = false;
+  bool _stop = true;
 
   bool _unseenChanges =
       false; //set true when there are changes and reset false when user click on explore tenants
@@ -176,6 +176,7 @@ class MatchHandler {
 
   void startPeriodicUpdate() async {
     _stop = false;
+
     firstRun = true;
     _unseenChanges = false;
     _currentMatches = [];
@@ -190,6 +191,11 @@ class MatchHandler {
 
   void stopPeriodicUpdate() {
     _stop = true;
+
+    firstRun = true;
+    _unseenChanges = false;
+    _currentMatches = [];
+    oldResData = null;
   }
 
   getMatches() {

@@ -25,7 +25,7 @@ class MatchHandler {
 
   bool _stop = false;
 
-  bool unseenChanges =
+  bool _unseenChanges =
       false; //set true when there are changes and reset false when user click on explore tenants
 
   List<Function(List<LessorMatch>?)> updateCallbacks =
@@ -77,6 +77,37 @@ class MatchHandler {
         return [null, null, LoginResult.server_error];*/
     }
   }*/
+  void initLastViewedMatchDate() {
+    if (_stop) {
+      int? lastViewedMatchNew =
+          RuntimeStore().getSharedPreferences()?.getInt("lastviewedmatch");
+      if (lastViewedMatchNew != null) {
+        lastMatchDateTime =
+            DateTime.fromMillisecondsSinceEpoch(lastViewedMatchNew);
+      } else {
+        lastMatchDateTime = DateTime(1980);
+      }
+    } else {
+      throw Exception(
+          "Last match Datetime can be set only when matchhandler isn't running");
+    }
+  }
+
+  void removeLastViewedMatchDate() {
+    RuntimeStore().getSharedPreferences()?.remove("lastviewedmatch");
+    lastMatchDateTime = DateTime(1980);
+  }
+
+  void setChangesAsSeen() {
+    _unseenChanges = false;
+    RuntimeStore()
+        .getSharedPreferences()
+        ?.setInt("lastviewedmatch", lastMatchDateTime.millisecondsSinceEpoch);
+  }
+
+  bool hasUnseenChanges() {
+    return _unseenChanges;
+  }
 
   Future<void> doUpdateFromDate(Function(List<LessorMatch>?) callback) async {
     var dio = RuntimeStore().dio;
@@ -108,7 +139,7 @@ class MatchHandler {
             for (final Function(List<LessorMatch>?) cbk in updateCallbacks) {
               cbk(_currentMatches);
             }
-            unseenChanges = true;
+            _unseenChanges = true;
           } else if (firstRun) {
             callback(_currentMatches);
             for (final Function(List<LessorMatch>?) cbk in updateCallbacks) {
@@ -145,6 +176,11 @@ class MatchHandler {
 
   void startPeriodicUpdate() async {
     _stop = false;
+    firstRun = true;
+    _unseenChanges = false;
+    _currentMatches = [];
+    oldResData = null;
+
     while (!_stop) {
       //await doUpdate((res) {});
       await doUpdateFromDate((res) {});

@@ -78,7 +78,7 @@ class _HomeState extends State<Home> {
             icon: Stack(
               children: [
                 Icon(Icons.checklist_rounded, color: Colors.black),
-                MatchHandler().unseenChanges
+                MatchHandler().hasUnseenChanges()
                     ? Positioned(
                         left: 2,
                         bottom: 7,
@@ -120,7 +120,7 @@ class _HomeState extends State<Home> {
                 () {
               _pageIndex = index;
               if (index == 1) {
-                MatchHandler().unseenChanges = false;
+                MatchHandler().setChangesAsSeen();
                 //print(index);
               }
             },

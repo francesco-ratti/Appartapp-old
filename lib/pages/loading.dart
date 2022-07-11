@@ -16,7 +16,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 void doInitialisation(BuildContext context, User user,
     SharedPreferences sharedPreferences) async {
-  //TODO delete session cookie
 
   sharedPreferences.setBool("logged", true);
   RuntimeStore().credentialsLogin =
@@ -59,6 +58,7 @@ void doInitialisation(BuildContext context, User user,
   });
 
   RuntimeStore().matchHandler = MatchHandler();
+  RuntimeStore().matchHandler.initLastViewedMatchDate();
   RuntimeStore().matchHandler.startPeriodicUpdate();
 
   FirstArguments firstArguments =

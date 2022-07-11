@@ -498,6 +498,7 @@ class _EditProfileState extends State<EditProfile> {
                     .getSharedPreferences()
                     ?.remove("credentialslogin");
                 RuntimeStore().matchHandler.stopPeriodicUpdate();
+                RuntimeStore().matchHandler.removeLastViewedMatchDate();
                 RuntimeStore().cookieJar.deleteAll();
                 Navigator.pushReplacementNamed(context, "/loginorsignup");
               }),

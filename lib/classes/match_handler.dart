@@ -1,3 +1,4 @@
+import 'package:appartapp/classes/connection_exception.dart';
 import 'package:appartapp/classes/lessor_match.dart';
 import 'package:appartapp/classes/runtime_store.dart';
 import 'package:collection/collection.dart';
@@ -18,74 +19,69 @@ class MatchHandler {
       "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/getmatchedapartments";
   static const urlStrFromDate =
       "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/getmatchedapartmentsfromdate";
-  List<LessorMatch>? _currentMatches = [];
-  List? oldResData = null;
+  List<LessorMatch>? _currentMatches = null;
+  List<LessorMatch>? _unseenMatches = null;
 
-  DateTime lastMatchDateTime = new DateTime(1980);
+  //List? oldResData = null;
+
+  DateTime? _lastShowedMatchDateTime = null;
+
+  //DateTime? lastReceivedMatchDateTime = null;
+
+  bool _firstUpdateRun = true;
 
   bool _stop = true;
 
-  bool _unseenChanges =
-      false; //set true when there are changes and reset false when user click on explore tenants
+  List<Function(List<LessorMatch>?)>
+      updateCallbacks = ////cbk function to which only new matches will be passed
+      <Function(List<LessorMatch>?)>[];
 
-  List<Function(List<LessorMatch>?)> updateCallbacks =
+  List<Function(List<LessorMatch>?)>
+      updateAllMatchesCallbacks = //cbk function to which all matches will be passed
       <Function(List<LessorMatch>?)>[];
 
   Function deepEq = const DeepCollectionEquality().equals;
-  bool firstRun = true;
 
-  /*
-  Future<void> doUpdate(Function(List<LessorMatch>?) callback) async {
+  Future<void> initCurrentMatches(
+      Function(List<LessorMatch>?)? callback) async {
     var dio = RuntimeStore().dio;
-    try {
-      Response response = await dio.post(
-        urlStr,
-        options: Options(
-          contentType: Headers.formUrlEncodedContentType,
-          headers: {"Content-Type": "application/x-www-form-urlencoded"},
-        ),
-      );
+    Response response = await dio.post(
+      urlStr,
+      options: Options(
+        contentType: Headers.formUrlEncodedContentType,
+        headers: {"Content-Type": "application/x-www-form-urlencoded"},
+      ),
+    );
 
-      if (response.statusCode != 200) {
-        /*if (response.statusCode == 401)
-          return [null,null,LoginResult.wrong_credentials];
-        else
-          return [null,null,LoginResult.server_error];*/
-      } else {
+    if (response.statusCode == 200) {
+      _currentMatches ??= [];
+      if (response.data != null) {
         List newResData = response.data as List;
-
-        if (oldResData == null || !deepEq(oldResData, newResData)) {
-          _currentMatches = [];
-          if (newResData != null) {
-            for (final el in newResData) {
-              _currentMatches?.add(LessorMatch.fromMap(el));
-            }
-            oldResData = newResData;
-
+        if (newResData.isNotEmpty) {
+          for (final el in newResData) {
+            _currentMatches?.add(LessorMatch.fromMap(el));
+          }
+          if (callback != null) {
             callback(_currentMatches);
-            for (final Function(List<LessorMatch>?) cbk in updateCallbacks) {
-              cbk(_currentMatches);
-            }
-            if (newResData.isNotEmpty) unseenChanges = true;
+          }
+          for (final Function(List<LessorMatch>?) cbk
+              in updateAllMatchesCallbacks) {
+            cbk(_currentMatches);
           }
         }
       }
-    } on DioError catch (e) {
-      /*if (e.response?.statusCode == 401)
-        return [null, null, LoginResult.wrong_credentials];
-      else
-        return [null, null, LoginResult.server_error];*/
+    } else {
+      throw ConnectionException();
     }
-  }*/
+  }
+
   void initLastViewedMatchDate() {
     if (_stop) {
       int? lastViewedMatchNew =
           RuntimeStore().getSharedPreferences()?.getInt("lastviewedmatch");
       if (lastViewedMatchNew != null) {
-        lastMatchDateTime =
+        _lastShowedMatchDateTime =
             DateTime.fromMillisecondsSinceEpoch(lastViewedMatchNew);
-      } else {
-        lastMatchDateTime = DateTime(1980);
       }
     } else {
       throw Exception(
@@ -95,26 +91,38 @@ class MatchHandler {
 
   void removeLastViewedMatchDate() {
     RuntimeStore().getSharedPreferences()?.remove("lastviewedmatch");
-    lastMatchDateTime = DateTime(1980);
+    _lastShowedMatchDateTime = null;
+  }
+
+  bool isLastShowedMatchDateTimeAvailable() {
+    return _lastShowedMatchDateTime != null;
   }
 
   void setChangesAsSeen() {
-    _unseenChanges = false;
-    RuntimeStore()
-        .getSharedPreferences()
-        ?.setInt("lastviewedmatch", lastMatchDateTime.millisecondsSinceEpoch);
+    if (_currentMatches != null) {
+      _unseenMatches = [];
+      _lastShowedMatchDateTime = _currentMatches![0].time;
+      if (_lastShowedMatchDateTime != null) {
+        RuntimeStore().getSharedPreferences()?.setInt("lastviewedmatch",
+            _lastShowedMatchDateTime!.millisecondsSinceEpoch);
+      }
+    }
   }
 
   bool hasUnseenChanges() {
-    return _unseenChanges;
+    return _unseenMatches != null && _unseenMatches!.isNotEmpty;
   }
 
-  Future<void> doUpdateFromDate(Function(List<LessorMatch>?) callback) async {
+  Future<void> doUpdateFromDate(Function(List<LessorMatch>?)? callback) async {
     var dio = RuntimeStore().dio;
     try {
       Response response = await dio.post(
         urlStrFromDate,
-        data: {"date": lastMatchDateTime.millisecondsSinceEpoch},
+        data: {
+          "date": _firstUpdateRun && _lastShowedMatchDateTime != null
+              ? _lastShowedMatchDateTime!.millisecondsSinceEpoch
+              : _currentMatches![0].time.millisecondsSinceEpoch
+        },
         options: Options(
           contentType: Headers.formUrlEncodedContentType,
           headers: {"Content-Type": "application/x-www-form-urlencoded"},
@@ -122,6 +130,8 @@ class MatchHandler {
       );
 
       if (response.statusCode == 200) {
+        _unseenMatches ??= [];
+
         if (response.data != null) {
           List newResData = response.data as List;
 
@@ -130,75 +140,93 @@ class MatchHandler {
             */
           if (newResData.isNotEmpty) {
             for (final el in newResData) {
-              _currentMatches?.add(LessorMatch.fromMap(el));
+              LessorMatch curr = LessorMatch.fromMap(el);
+              _unseenMatches?.add(curr);
+              if (!_firstUpdateRun) {
+                _currentMatches?.add(curr);
+              }
             }
-            lastMatchDateTime = LessorMatch.fromMap(newResData[0]).time;
-            //oldResData = newResData;
+            //lastReceivedMatchDateTime = LessorMatch.fromMap(newResData[0]).time;
 
-            callback(_currentMatches);
             for (final Function(List<LessorMatch>?) cbk in updateCallbacks) {
-              cbk(_currentMatches);
+              cbk(_unseenMatches);
             }
-            _unseenChanges = true;
-          } else if (firstRun) {
-            callback(_currentMatches);
-            for (final Function(List<LessorMatch>?) cbk in updateCallbacks) {
-              cbk(_currentMatches);
+            if (_currentMatches != null) {
+              for (final Function(List<LessorMatch>?) cbk
+                  in updateAllMatchesCallbacks) {
+                cbk(_currentMatches);
+              }
             }
-          }
-        } else if (firstRun) {
-          callback(_currentMatches);
-          for (final Function(List<LessorMatch>?) cbk in updateCallbacks) {
-            cbk(_currentMatches);
+            if (callback != null && _currentMatches != null) {
+              callback(_currentMatches);
+            }
           }
         }
-        //  }
-        if (!firstRun) {
-          firstRun = false;
+        if (_firstUpdateRun) {
+          _firstUpdateRun = false;
         }
       }
-    } on DioError catch (e) {
-      /*if (e.response?.statusCode == 401)
-        return [null, null, LoginResult.wrong_credentials];
-      else
-        return [null, null, LoginResult.server_error];*/
-    }
+    } on DioError {}
   }
 
   void addUpdateCallback(Function(List<LessorMatch>?) callback) {
     updateCallbacks.add(callback);
-    callback(_currentMatches);
+    if (_unseenMatches != null) {
+      callback(_unseenMatches);
+    }
   }
 
   void removeUpdateCallback(Function(List<LessorMatch>?) callback) {
     updateCallbacks.remove(callback);
   }
 
+  void addUpdateAllMatchesCallback(Function(List<LessorMatch>?) callback) {
+    updateAllMatchesCallbacks.add(callback);
+    if (_currentMatches != null) {
+      callback(_currentMatches);
+    }
+  }
+
+  void removeUpdateAllMatchesCallback(Function(List<LessorMatch>?) callback) {
+    updateAllMatchesCallbacks.remove(callback);
+  }
+
   void startPeriodicUpdate() async {
     _stop = false;
 
-    firstRun = true;
-    _unseenChanges = false;
-    _currentMatches = [];
-    oldResData = null;
+    _currentMatches = null;
+    _unseenMatches = null;
+    _firstUpdateRun = true;
 
-    while (!_stop) {
-      //await doUpdate((res) {});
-      await doUpdateFromDate((res) {});
-      await Future.delayed(Duration(seconds: 30));
+    try {
+      await initCurrentMatches(null);
+      while (!_stop) {
+        await doUpdateFromDate(null);
+        await Future.delayed(Duration(seconds: 30));
+      }
+    } catch (e) {
+      if (e is DioError || e is ConnectionException) {
+        stopPeriodicUpdate();
+        startPeriodicUpdate();
+      } else {
+        rethrow;
+      }
     }
   }
 
   void stopPeriodicUpdate() {
     _stop = true;
 
-    firstRun = true;
-    _unseenChanges = false;
-    _currentMatches = [];
-    oldResData = null;
+    _currentMatches = null;
+    _unseenMatches = null;
+    _firstUpdateRun = true;
   }
 
-  getMatches() {
+  List<LessorMatch>? getMatches() {
     return _currentMatches;
+  }
+
+  List<LessorMatch>? getUnseenMatches() {
+    return _unseenMatches;
   }
 }

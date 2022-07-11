@@ -26,7 +26,7 @@ class _HomeParent extends State<HomeParent> {
   void initState() {
     super.initState();
     //RuntimeStore().matchHandler.doUpdate(callback);
-    RuntimeStore().matchHandler.doUpdateFromDate(callback);
+    //RuntimeStore().matchHandler.doUpdateFromDate(callback);
     RuntimeStore().matchHandler.addUpdateCallback(callback);
   }
 
@@ -49,6 +49,7 @@ class _HomeParent extends State<HomeParent> {
                     child: Text("OK"),
                     onPressed: () {
                       setState(() {
+                        RuntimeStore().matchHandler.setChangesAsSeen();
                         pressed = true;
                       });
                     },

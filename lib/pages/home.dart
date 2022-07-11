@@ -11,6 +11,8 @@ import 'package:appartapp/widgets/add_tenant_informations.dart';
 import 'package:flutter/material.dart';
 
 class Home extends StatefulWidget {
+  const Home({Key? key}) : super(key: key);
+
   @override
   _HomeState createState() => _HomeState();
 }
@@ -21,7 +23,7 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    Color bgColor = Colors.yellowAccent;
+    //Color bgColor = Colors.yellowAccent;
 
     for (final Image im in user.images) {
       precacheImage(im.image, context);
@@ -43,19 +45,19 @@ class _HomeState extends State<Home> {
           children: <Widget>[
             user.isProfileComplete()
                 ? Houses(
-                    child: Text('Esplora'),
+                    child: const Text('Esplora'),
                     firstApartmentFuture: ((ModalRoute.of(context)!
                             .settings
                             .arguments) as FirstArguments)
                         .firstApartmentFuture)
-                : AddTenantInformations(textColor: Colors.black),
+                : const AddTenantInformations(textColor: Colors.black),
             Matches(),
             Tenants(
-                child: Text('Esplora'),
+                child: const Text('Esplora'),
                 firstTenantFuture: ((ModalRoute.of(context)!.settings.arguments)
                         as FirstArguments)
                     .firstTenantFuture),
-            EmptyPage(child: Text('Chat')),
+            EmptyPage(child: const Text('Chat')),
             ProfileApartments()
             //EditProfile(),
           ],
@@ -66,7 +68,7 @@ class _HomeState extends State<Home> {
         //backgroundColor: Colors.white, //try transparent
         type: BottomNavigationBarType.shifting,
         items: <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
+          const BottomNavigationBarItem(
             icon: Icon(
               Icons.home_rounded,
               color: Colors.black,
@@ -77,36 +79,34 @@ class _HomeState extends State<Home> {
           BottomNavigationBarItem(
             icon: Stack(
               children: [
-                Icon(Icons.checklist_rounded, color: Colors.black),
-                MatchHandler().hasUnseenChanges()
+                const Icon(Icons.checklist_rounded, color: Colors.black),
+                !MatchHandler().isLastShowedMatchDateTimeAvailable() ||
+                        MatchHandler().hasUnseenChanges()
                     ? Positioned(
                         left: 2,
                         bottom: 7,
                         child: Container(
-                            padding: EdgeInsets.all(2),
-                            child: Icon(Icons.fiber_new_outlined,
+                            padding: const EdgeInsets.all(2),
+                            child: const Icon(Icons.fiber_new_outlined,
                                 color: Colors.red, size: 23)),
                       )
-                    : Container(
-                        width: 0,
-                        height: 0,
-                      )
+                    : const SizedBox()
               ],
             ),
             label: 'Matches',
           ),
-          BottomNavigationBarItem(
+          const BottomNavigationBarItem(
               icon: Icon(Icons.people_sharp, color: Colors.black),
               label: "Tenants",
               backgroundColor: Colors.white),
-          BottomNavigationBarItem(
+          const BottomNavigationBarItem(
             icon: Icon(
               Icons.chat_bubble_rounded,
               color: Colors.black,
             ),
             label: 'I miei appartamenti',
           ),
-          BottomNavigationBarItem(
+          const BottomNavigationBarItem(
             icon: Icon(
               Icons.person_outline_rounded,
               color: Colors.black,

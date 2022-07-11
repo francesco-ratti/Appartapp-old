@@ -22,8 +22,8 @@ class _MatchesState extends State<Matches> {
   void initState() {
     super.initState();
     //RuntimeStore().matchHandler.doUpdate(callback);
-    RuntimeStore().matchHandler.doUpdateFromDate(callback); //TODO
-    RuntimeStore().matchHandler.addUpdateCallback(callback);
+    //RuntimeStore().matchHandler.doUpdateFromDate(callback);
+    RuntimeStore().matchHandler.addUpdateAllMatchesCallback(callback);
   }
 
   @override

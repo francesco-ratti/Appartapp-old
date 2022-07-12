@@ -247,7 +247,7 @@ class _ContentPage extends State<ContentPage> {
                       : (currentApartment == null
                           ? RetryWidget(
                               message:
-                                  "Nessun nuovo appartamento da mostrare ancora nella tua zona",
+                                  "Nessun nuovo appartamento da mostrare nella tua zona",
                               textColor: Colors.black,
                               backgroundColor: Colors.white,
                               retryButtonText: "Cerca ancora",

@@ -85,6 +85,13 @@ class _OwnedApartments extends State<OwnedApartments> {
                                 ownedApartments![index];
 
                             return ListTile(
+                              leading: currentApartment.images[0] != null
+                                  ? CircleAvatar(
+                                      backgroundImage:
+                                          currentApartment.images[0].image)
+                                  : const Icon(
+                                      Icons.apartment_rounded,
+                                    ),
                               title: Text(currentApartment.listingTitle),
                               subtitle: Text(currentApartment.description),
                               onTap: () {
@@ -105,8 +112,8 @@ class _OwnedApartments extends State<OwnedApartments> {
                                                 actions: <Widget>[
                                                   Padding(
                                                       padding:
-                                                          const EdgeInsets.only(
-                                                              right: 20.0),
+                                                      const EdgeInsets.only(
+                                                          right: 20.0),
                                                       child: GestureDetector(
                                                         onTap: () {
                                                           Navigator.push(
@@ -115,12 +122,12 @@ class _OwnedApartments extends State<OwnedApartments> {
                                                                 builder: (context) =>
                                                                     AddApartment(
                                                                         toEdit: ownedApartments![
-                                                                            index],
+                                                                        index],
                                                                         callback:
                                                                             () {
                                                                           Future<List<Apartment>>
-                                                                              newOwnedApartments =
-                                                                              ApartmentHandler().getOwnedApartments();
+                                                                          newOwnedApartments =
+                                                                          ApartmentHandler().getOwnedApartments();
                                                                           newOwnedApartments
                                                                               .then(updateUi)
                                                                               .then((value) => Navigator.pop(context));
@@ -142,7 +149,7 @@ class _OwnedApartments extends State<OwnedApartments> {
                                             body: ApartmentViewer(
                                               apartmentLoaded: true,
                                               currentApartment:
-                                                  ownedApartments![index],
+                                              ownedApartments![index],
                                             ))));
                               },
                             );

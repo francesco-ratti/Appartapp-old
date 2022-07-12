@@ -1,3 +1,4 @@
+import 'package:appartapp/classes/apartment.dart';
 import 'package:appartapp/classes/apartment_handler.dart';
 import 'package:appartapp/classes/first_arguments.dart';
 import 'package:appartapp/classes/match_handler.dart';
@@ -30,6 +31,11 @@ class _HomeState extends State<Home> {
       _ownsApartments = ownsApartments;
       _networkError = false;
       _loadingOwnedApartments = false;
+
+      Future<List<Apartment>> newOwnedApartments =
+          ApartmentHandler().getOwnedApartments();
+      RuntimeStore().setOwnedApartmentsFuture(newOwnedApartments);
+      Navigator.pop(context);
     });
   }
 
@@ -90,69 +96,72 @@ class _HomeState extends State<Home> {
           children: <Widget>[
             user.isProfileComplete()
                 ? Houses(
-                    child: const Text('Esplora'),
-                    firstApartmentFuture: ((ModalRoute.of(context)!
-                            .settings
-                            .arguments) as FirstArguments)
-                        .firstApartmentFuture)
+                child: const Text('Esplora'),
+                firstApartmentFuture: ((ModalRoute.of(context)!
+                    .settings
+                    .arguments) as FirstArguments)
+                    .firstApartmentFuture)
                 : RetryWidget(
-                    textColor: Colors.white,
-                    backgroundColor: RuntimeStore.backgroundColor,
-                    message:
-                        "Aggiungi le tue informazioni da locatario per cercare appartamenti.\nSe non lo farai, potrai solamente inserire appartamenti da locatore.",
-                    retryButtonText: "Completa profilo",
-                    retryCallback: () {
-                      Navigator.pushNamed(context, "/edittenants");
-                    },
-                  ),
+              textColor: Colors.white,
+              backgroundColor: RuntimeStore.backgroundColor,
+              message:
+              "Aggiungi le tue informazioni da locatario per cercare appartamenti.\nSe non lo farai, potrai solamente inserire appartamenti da locatore.",
+              retryButtonText: "Completa profilo",
+              retryCallback: () {
+                Navigator.pushNamed(context, "/edittenants");
+              },
+            ),
             Matches(),
             _loadingOwnedApartments
                 ? const Center(
-                    child: CircularProgressIndicator(
-                    value: null,
-                  ))
+                child: CircularProgressIndicator(
+                  value: null,
+                ))
                 : (_networkError
-                    ? RetryWidget(
-                        retryCallback: () {
-                          setState(() {
-                            _networkError = false;
-                            _loadingOwnedApartments = true;
-                          });
-                          RuntimeStore().setOwnedApartmentsFuture(
-                              ApartmentHandler().getOwnedApartments());
-                          RuntimeStore().getOwnedApartments()!.then((value) {
-                            setState(() {
-                              _loadingOwnedApartments = false;
-                              _ownsApartments = value.isNotEmpty;
-                            });
-                          }).onError((error, stackTrace) {
-                            setState(() {
-                              _loadingOwnedApartments = false;
-                              _networkError = true;
-                            });
-                          });
-                        },
-                        textColor: Colors.white,
-                        backgroundColor: RuntimeStore.backgroundColor,
-                      )
-                    : (_ownsApartments
-                        ? Tenants(
-                            child: const Text('Esplora'),
-                            firstTenantFuture: ((ModalRoute.of(context)!
-                                    .settings
-                                    .arguments) as FirstArguments)
-                                .firstTenantFuture)
-                        : RetryWidget(
-                            retryCallback: () {
-                              MaterialPageRoute(
-                                  builder: (context) => const AddApartment());
+                ? RetryWidget(
+              retryCallback: () {
+                setState(() {
+                  _networkError = false;
+                  _loadingOwnedApartments = true;
+                });
+                RuntimeStore().setOwnedApartmentsFuture(
+                    ApartmentHandler().getOwnedApartments());
+                RuntimeStore().getOwnedApartments()!.then((value) {
+                  setState(() {
+                    _loadingOwnedApartments = false;
+                    _ownsApartments = value.isNotEmpty;
+                  });
+                }).onError((error, stackTrace) {
+                  setState(() {
+                    _loadingOwnedApartments = false;
+                    _networkError = true;
+                  });
+                });
+              },
+              textColor: Colors.white,
+              backgroundColor: RuntimeStore.backgroundColor,
+            )
+                : (_ownsApartments
+                ? Tenants(
+                child: const Text('Esplora'),
+                firstTenantFuture: ((ModalRoute.of(context)!
+                    .settings
+                    .arguments) as FirstArguments)
+                    .firstTenantFuture)
+                : RetryWidget(
+              retryCallback: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const AddApartment()));
                             },
-                            textColor: Colors.white,
-                            backgroundColor: RuntimeStore.backgroundColor,
-                            message:
-                                "Devi aggiungere un appartamento prima di poter vedere e mettere like alle persone interessate ai tuoi appartamenti.",
-                            retryButtonText: "Aggiungi un appartamento",
-                          ))),
+              textColor: Colors.white,
+              backgroundColor: RuntimeStore.backgroundColor,
+              message:
+              "Devi aggiungere un appartamento prima di poter vedere e mettere like alle persone interessate ai tuoi appartamenti.",
+              retryButtonText: "Aggiungi un appartamento",
+            ))),
             /*EmptyPage(child: const Text('Chat')),*/
             ProfileApartments()
             //EditProfile(),
@@ -180,13 +189,13 @@ class _HomeState extends State<Home> {
                 !MatchHandler().isLastShowedMatchDateTimeAvailable() ||
                     MatchHandler().hasUnseenChanges()
                     ? Positioned(
-                        left: 2,
-                        bottom: 7,
-                        child: Container(
-                            padding: const EdgeInsets.all(2),
-                            child: const Icon(Icons.fiber_new_outlined,
-                                color: Colors.red, size: 23)),
-                      )
+                  left: 2,
+                  bottom: 7,
+                  child: Container(
+                      padding: const EdgeInsets.all(2),
+                      child: const Icon(Icons.fiber_new_outlined,
+                          color: Colors.red, size: 23)),
+                )
                     : const SizedBox()
               ],
             ),

@@ -39,8 +39,6 @@ class _HousesState extends State<Houses> {
 
   @override
   Widget build(BuildContext context) {
-    final double shortestSide = MediaQuery.of(context).size.shortestSide;
-    RuntimeStore().useMobileLayout = shortestSide < 600;
 
     return Navigator(
       onGenerateRoute: (RouteSettings settings) {

@@ -137,6 +137,8 @@ class _LoadingState extends State<Loading> {
 
   @override
   Widget build(BuildContext context) {
+    final double shortestSide = MediaQuery.of(context).size.shortestSide;
+    RuntimeStore().useMobileLayout = shortestSide < 600;
     return const Scaffold(
       backgroundColor: Colors.brown,
       body: Center(

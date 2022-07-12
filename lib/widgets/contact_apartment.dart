@@ -57,11 +57,19 @@ class ContactApartment extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return backgroundColor != null
-        ? Container(
-            child: buildBody(),
-            color: backgroundColor,
-          )
-        : buildBody();
+    return backgroundColor == null
+        ? Scaffold(
+            appBar: AppBar(
+              title: Text("Contatta ${apartment.owner?.name}"),
+              backgroundColor: Colors.brown,
+            ),
+            body: buildBody())
+        : Scaffold(
+            backgroundColor: backgroundColor,
+            appBar: AppBar(
+              title: Text("Contatta ${apartment.owner?.name}"),
+              backgroundColor: Colors.brown,
+            ),
+            body: buildBody());
   }
 }

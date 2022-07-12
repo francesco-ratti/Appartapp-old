@@ -83,6 +83,7 @@ class _MatchesState extends State<Matches> {
                                               ),
                                               body: ApartmentViewer(
                                                   apartmentLoaded: true,
+                                                  showContact: true,
                                                   currentApartment:
                                                       match.apartment,
                                                   owner:

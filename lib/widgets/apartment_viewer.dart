@@ -9,15 +9,17 @@ import 'package:flutter/material.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class ApartmentViewer extends StatelessWidget {
-  bool apartmentLoaded;
-  Apartment? currentApartment;
-  User? owner;
+  final bool apartmentLoaded;
+  final Apartment? currentApartment;
+  final User? owner;
+  final bool showContact;
 
-  ApartmentViewer(
+  const ApartmentViewer(
       {Key? key,
       required this.apartmentLoaded,
       required this.currentApartment,
-      this.owner})
+      this.owner,
+      this.showContact = false})
       : super(key: key);
 
   @override
@@ -25,13 +27,15 @@ class ApartmentViewer extends StatelessWidget {
     return Container(
         color: RuntimeStore.backgroundColor,
         child: RuntimeStore().useMobileLayout
-            ? mobileLayout(apartmentLoaded, currentApartment, owner)
-            : tabletLayout(apartmentLoaded, currentApartment, owner));
+            ? mobileLayout(
+                apartmentLoaded, currentApartment, owner, showContact)
+            : tabletLayout(
+                apartmentLoaded, currentApartment, owner, showContact));
   }
 }
 
-SlidingUpPanel mobileLayout(
-    bool apartmentLoaded, Apartment? currentApartment, User? owner) {
+SlidingUpPanel mobileLayout(bool apartmentLoaded, Apartment? currentApartment,
+    User? owner, bool showContact) {
   return SlidingUpPanel(
     color: Colors.transparent.withOpacity(0.7),
     borderRadius: const BorderRadius.only(
@@ -44,6 +48,7 @@ SlidingUpPanel mobileLayout(
             scrollController: scrollController,
             currentApartment: currentApartment as Apartment,
             owner: owner,
+            showContact: showContact,
           )
         : TabWidgetLoading(),
     body: apartmentLoaded
@@ -55,8 +60,8 @@ SlidingUpPanel mobileLayout(
   );
 }
 
-Row tabletLayout(
-    bool apartmentLoaded, Apartment? currentApartment, User? owner) {
+Row tabletLayout(bool apartmentLoaded, Apartment? currentApartment, User? owner,
+    bool showContact) {
   return Row(
     children: [
       Expanded(
@@ -81,6 +86,7 @@ Row tabletLayout(
                 scrollController: ScrollController(),
                 currentApartment: currentApartment as Apartment,
                 owner: owner,
+                showContact: showContact,
               )
             : TabWidgetLoading(),
       )

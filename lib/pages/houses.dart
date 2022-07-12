@@ -163,16 +163,16 @@ class _ContentPage extends State<ContentPage> {
 
   void showCurrentApartmentFromFuture() {
     currentApartmentFuture.then((value) {
-      if (value != null) _apartmentLoaded = true;
       setState(() {
+        _apartmentLoaded = true;
         currentApartment = value;
       });
     }).onError((error, stackTrace) {
       currentApartmentFuture =
           getNewApartment(); //maybe the error was at previous page, long time ago, retry
       currentApartmentFuture.then((value) {
-        if (value != null) _apartmentLoaded = true;
         setState(() {
+          _apartmentLoaded = true;
           currentApartment = value;
         });
       }).onError((error, stackTrace) {
@@ -233,10 +233,11 @@ class _ContentPage extends State<ContentPage> {
                     }
                   },
                   dragSensitivity: 0.5,
-                  disabled: !_apartmentLoaded,
+                  disabled: !_apartmentLoaded || currentApartment == null,
                   child: _networkerror
                       ? RetryWidget(
                           textColor: Colors.white,
+                          backgroundColor: RuntimeStore.backgroundColor,
                           retryCallback: () {
                             setState(() {
                               _networkerror = false;
@@ -244,14 +245,17 @@ class _ContentPage extends State<ContentPage> {
                             currentApartmentFuture = getNewApartment();
                             showCurrentApartmentFromFuture();
                           })
-                      : (currentApartment == null
+                      : (_apartmentLoaded && currentApartment == null
                           ? RetryWidget(
                               message:
                                   "Nessun nuovo appartamento da mostrare nella tua zona",
-                              textColor: Colors.black,
-                              backgroundColor: Colors.white,
+                              textColor: Colors.white,
+                              backgroundColor: RuntimeStore.backgroundColor,
                               retryButtonText: "Cerca ancora",
                               retryCallback: () {
+                                setState(() {
+                                  _apartmentLoaded = false;
+                                });
                                 currentApartmentFuture = getNewApartment();
                                 showCurrentApartmentFromFuture();
                                 nextApartmentFuture = getNewApartment();

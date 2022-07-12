@@ -34,11 +34,11 @@ SlidingUpPanel mobileLayout(
     bool apartmentLoaded, Apartment? currentApartment, User? owner) {
   return SlidingUpPanel(
     color: Colors.transparent.withOpacity(0.7),
-    borderRadius: BorderRadius.only(
+    borderRadius: const BorderRadius.only(
       topLeft: Radius.circular(24.0),
       topRight: Radius.circular(24.0),
     ),
-    isDraggable: apartmentLoaded,
+    isDraggable: apartmentLoaded && currentApartment != null,
     panelBuilder: (scrollController) => apartmentLoaded
         ? TabWidget(
             scrollController: scrollController,
@@ -48,7 +48,7 @@ SlidingUpPanel mobileLayout(
         : TabWidgetLoading(),
     body: apartmentLoaded
         ? ApartmentModel(currentApartment: currentApartment as Apartment)
-        : Center(
+        : const Center(
             child: CircularProgressIndicator(
             value: null,
           )),
@@ -63,7 +63,7 @@ Row tabletLayout(
         flex: 100,
         child: apartmentLoaded
             ? ApartmentModel(currentApartment: currentApartment as Apartment)
-            : Center(
+            : const Center(
                 child: CircularProgressIndicator(
                 value: null,
               )),

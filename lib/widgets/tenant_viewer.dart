@@ -1,9 +1,9 @@
 import 'package:appartapp/classes/like_from_user.dart';
 import 'package:appartapp/classes/runtime_store.dart';
 import 'package:appartapp/widgets/tab_widget_lessor.dart';
-import 'package:appartapp/widgets/tenant_model.dart';
-import 'package:appartapp/widgets/tab_widget_tenant.dart';
 import 'package:appartapp/widgets/tab_widget_loading.dart';
+import 'package:appartapp/widgets/tab_widget_tenant.dart';
+import 'package:appartapp/widgets/tenant_model.dart';
 import 'package:blur/blur.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -34,17 +34,11 @@ class _TenantViewer extends State<TenantViewer> {
   Widget build(BuildContext context) {
     return Container(
         color: RuntimeStore.backgroundColor,
-        child: (widget.currentLikeFromUser == null)
-            ? (Center(
-                child: Text(
-                "Nessun nuovo utente",
-                style: TextStyle(color: Colors.white),
-              )))
-            : RuntimeStore().useMobileLayout
-                ? mobileLayout(widget.tenantLoaded, widget.lessor, widget.match,
-                    widget.currentLikeFromUser, widget.updateUI)
-                : tabletLayout(widget.tenantLoaded, widget.lessor, widget.match,
-                    widget.currentLikeFromUser, widget.updateUI));
+        child: RuntimeStore().useMobileLayout
+            ? mobileLayout(widget.tenantLoaded, widget.lessor, widget.match,
+                widget.currentLikeFromUser, widget.updateUI)
+            : tabletLayout(widget.tenantLoaded, widget.lessor, widget.match,
+                widget.currentLikeFromUser, widget.updateUI));
   }
 }
 
@@ -52,14 +46,14 @@ SlidingUpPanel mobileLayout(bool tenantLoaded, lessor, match,
     LikeFromUser? currentLikeFromUser, Function(bool value) updateUI) {
   return SlidingUpPanel(
     color: Colors.transparent.withOpacity(0.7),
-    borderRadius: BorderRadius.only(
+    borderRadius: const BorderRadius.only(
       topLeft: Radius.circular(24.0),
       topRight: Radius.circular(24.0),
     ),
-    isDraggable: tenantLoaded,
+    isDraggable: tenantLoaded && currentLikeFromUser != null,
     panelBuilder: (scrollController) => !tenantLoaded
         ? TabWidgetLoading()
-        : lessor
+        : (lessor
             ? TabWidgetLessor(
                 scrollController: scrollController,
                 currentLessor: currentLikeFromUser!.user)
@@ -69,17 +63,18 @@ SlidingUpPanel mobileLayout(bool tenantLoaded, lessor, match,
                 apartment: currentLikeFromUser.apartment,
                 match: match,
                 updateUi: updateUI,
-              ),
+              )),
     body: tenantLoaded
         ? TenantModel(
             currentTenant: currentLikeFromUser!.user,
             lessor: lessor,
             match: match)
-        : Center(
+        : const Center(
             child: CircularProgressIndicator(
             value: null,
           )),
-    defaultPanelState: lessor ? PanelState.CLOSED : PanelState.OPEN,
+    defaultPanelState:
+        lessor || !tenantLoaded ? PanelState.CLOSED : PanelState.OPEN,
   );
 }
 
@@ -92,7 +87,7 @@ Row tabletLayout(tenantLoaded, lessor, match, currentLikeFromUser, updateUI) {
               currentTenant: currentLikeFromUser!.user,
               lessor: lessor,
               match: match)
-          : Center(
+          : const Center(
               child: CircularProgressIndicator(
               value: null,
             )),

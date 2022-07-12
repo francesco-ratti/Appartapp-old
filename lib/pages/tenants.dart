@@ -167,16 +167,16 @@ class _ContentPage extends State<ContentPage> {
 
   void showCurrentTenantFromFuture() {
     currentTenantFuture.then((value) {
-      if (value != null) _tenantLoaded = true;
       setState(() {
+        _tenantLoaded = true;
         currentTenant = value;
       });
     }).onError((error, stackTrace) {
       currentTenantFuture =
           getNewTenant(); //maybe the error was at previous page, long time ago, retry
       currentTenantFuture.then((value) {
-        if (value != null) _tenantLoaded = true;
         setState(() {
+          _tenantLoaded = true;
           currentTenant = value;
         });
       }).onError((error, stackTrace) {
@@ -239,10 +239,11 @@ class _ContentPage extends State<ContentPage> {
                     }
                   },
                   dragSensitivity: 0.5,
-                  disabled: !_tenantLoaded,
+                  disabled: !_tenantLoaded || currentTenant == null,
                   child: _networkerror
                       ? RetryWidget(
                           textColor: Colors.white,
+                          backgroundColor: RuntimeStore.backgroundColor,
                           retryCallback: () {
                             setState(() {
                               _networkerror = false;
@@ -250,14 +251,17 @@ class _ContentPage extends State<ContentPage> {
                             currentTenantFuture = getNewTenant();
                             showCurrentTenantFromFuture();
                           })
-                      : (currentTenant == null
+                      : (_tenantLoaded && currentTenant == null
                           ? RetryWidget(
                               message:
                                   "Nessun nuovo locatario è interessato ai tuoi appartamenti",
-                              textColor: Colors.black,
-                              backgroundColor: Colors.white,
+                              textColor: Colors.white,
+                              backgroundColor: RuntimeStore.backgroundColor,
                               retryButtonText: "Cerca ancora",
                               retryCallback: () {
+                                setState(() {
+                                  _tenantLoaded = false;
+                                });
                                 currentTenantFuture = getNewTenant();
                                 showCurrentTenantFromFuture();
                                 nextTenantFuture = getNewTenant();

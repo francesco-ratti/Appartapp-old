@@ -182,13 +182,16 @@ class _AddApartment extends State<AddApartment> {
   bool uploading = false;
   List<File> _toUpload = [];
 
-  List<GalleryImage> existingImages=[];
-  List<Function> _onSubmitCbks=<Function>[];
-  int _totalImages=0;
+  List<GalleryImage> existingImages = [];
+  List<Function> _onSubmitCbks = <Function>[];
+  int _totalImages = 0;
 
-  int uploadCtr=0;
-  int numUploads=0;
-  void onUploadsEnd () {
+  String status = "";
+
+  int uploadCtr = 0;
+  int numUploads = 0;
+
+  void onUploadsEnd() {
     uploadCtr = 0;
     numUploads = 0;
     setState(() {
@@ -273,6 +276,7 @@ class _AddApartment extends State<AddApartment> {
                     desc(),
                     address(),
                     price(),
+                    statusMessage(),
                     sendButton(),
                   ],
                 ),
@@ -283,18 +287,16 @@ class _AddApartment extends State<AddApartment> {
   }
 
   Widget header() {
-    return Container(
-      child: Row(
-        children: <Widget>[
-          Container(child: const BackButton()),
-          Center(
-            child: Text(
-              'Il tuo appartamento',
-              style: TextStyle(fontSize: 20, color: Colors.black),
-            ),
-          )
-        ],
-      ),
+    return Row(
+      children: const <Widget>[
+        BackButton(),
+        Center(
+          child: Text(
+            'Il tuo appartamento',
+            style: TextStyle(fontSize: 20, color: Colors.black),
+          ),
+        )
+      ],
     );
   }
 
@@ -389,6 +391,9 @@ class _AddApartment extends State<AddApartment> {
           onPressed: !_isLoading
               ? () {
                   if (isReady()) {
+                    setState(() {
+                      status = "";
+                    });
                     numUploads = 0;
 
                     setState(() {
@@ -432,8 +437,13 @@ class _AddApartment extends State<AddApartment> {
                         _addressController.text,
                       );
                     }
-            }
-          }
+                  } else {
+                    setState(() {
+                      status =
+                          "Incompleto. Compila tutti i campi e aggiungi almeno una foto";
+                    });
+                  }
+                }
               : null,
           style: ElevatedButton.styleFrom(primary: Colors.black87),
           child: Text(
@@ -450,6 +460,16 @@ class _AddApartment extends State<AddApartment> {
         _descController.text.isNotEmpty &&
         _priceController.text.isNotEmpty &&
         _addressController.text.isNotEmpty &&
-        _aedController.text.isNotEmpty && _totalImages>0);
+        _aedController.text.isNotEmpty &&
+        _totalImages > 0);
+  }
+
+  Widget statusMessage() {
+    return Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Text(
+          status,
+          style: const TextStyle(fontSize: 20),
+        ));
   }
 }

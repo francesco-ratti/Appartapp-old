@@ -1,12 +1,14 @@
+import 'package:appartapp/classes/apartment_handler.dart';
 import 'package:appartapp/classes/first_arguments.dart';
 import 'package:appartapp/classes/match_handler.dart';
 import 'package:appartapp/classes/runtime_store.dart';
 import 'package:appartapp/classes/user.dart';
+import 'package:appartapp/pages/add_apartment.dart';
 import 'package:appartapp/pages/houses.dart';
 import 'package:appartapp/pages/matches.dart';
 import 'package:appartapp/pages/profile_apartments.dart';
 import 'package:appartapp/pages/tenants.dart';
-import 'package:appartapp/widgets/add_tenant_informations.dart';
+import 'package:appartapp/widgets/retry_widget.dart';
 import 'package:flutter/material.dart';
 
 class Home extends StatefulWidget {
@@ -19,6 +21,50 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   int _pageIndex = 0;
   User user = RuntimeStore().getUser() as User;
+  bool _loadingOwnedApartments = true;
+  bool _networkError = false;
+  bool _ownsApartments = true;
+
+  void callbck(bool ownsApartments) {
+    setState(() {
+      _ownsApartments = ownsApartments;
+      _networkError = false;
+      _loadingOwnedApartments = false;
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    RuntimeStore().removeApartmentAddedCbk(callbck);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    RuntimeStore().addApartmentAddedCbk(callbck);
+
+    RuntimeStore().getOwnedApartments()!.then((value) {
+      setState(() {
+        _loadingOwnedApartments = false;
+        _ownsApartments = value.isNotEmpty;
+      });
+    }).onError((error, stackTrace) {
+      RuntimeStore()
+          .setOwnedApartmentsFuture(ApartmentHandler().getOwnedApartments());
+      RuntimeStore().getOwnedApartments()!.then((value) {
+        setState(() {
+          _loadingOwnedApartments = false;
+          _ownsApartments = value.isNotEmpty;
+        });
+      }).onError((error, stackTrace) {
+        setState(() {
+          _loadingOwnedApartments = false;
+          _networkError = true;
+        });
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,13 +95,64 @@ class _HomeState extends State<Home> {
                             .settings
                             .arguments) as FirstArguments)
                         .firstApartmentFuture)
-                : const AddTenantInformations(textColor: Colors.black),
+                : RetryWidget(
+                    textColor: Colors.white,
+                    backgroundColor: RuntimeStore.backgroundColor,
+                    message:
+                        "Aggiungi le tue informazioni da locatario per cercare appartamenti.\nSe non lo farai, potrai solamente inserire appartamenti da locatore.",
+                    retryButtonText: "Completa profilo",
+                    retryCallback: () {
+                      Navigator.pushNamed(context, "/edittenants");
+                    },
+                  ),
             Matches(),
-            Tenants(
-                child: const Text('Esplora'),
-                firstTenantFuture: ((ModalRoute.of(context)!.settings.arguments)
-                        as FirstArguments)
-                    .firstTenantFuture),
+            _loadingOwnedApartments
+                ? const Center(
+                    child: CircularProgressIndicator(
+                    value: null,
+                  ))
+                : (_networkError
+                    ? RetryWidget(
+                        retryCallback: () {
+                          setState(() {
+                            _networkError = false;
+                            _loadingOwnedApartments = true;
+                          });
+                          RuntimeStore().setOwnedApartmentsFuture(
+                              ApartmentHandler().getOwnedApartments());
+                          RuntimeStore().getOwnedApartments()!.then((value) {
+                            setState(() {
+                              _loadingOwnedApartments = false;
+                              _ownsApartments = value.isNotEmpty;
+                            });
+                          }).onError((error, stackTrace) {
+                            setState(() {
+                              _loadingOwnedApartments = false;
+                              _networkError = true;
+                            });
+                          });
+                        },
+                        textColor: Colors.white,
+                        backgroundColor: RuntimeStore.backgroundColor,
+                      )
+                    : (_ownsApartments
+                        ? Tenants(
+                            child: const Text('Esplora'),
+                            firstTenantFuture: ((ModalRoute.of(context)!
+                                    .settings
+                                    .arguments) as FirstArguments)
+                                .firstTenantFuture)
+                        : RetryWidget(
+                            retryCallback: () {
+                              MaterialPageRoute(
+                                  builder: (context) => const AddApartment());
+                            },
+                            textColor: Colors.white,
+                            backgroundColor: RuntimeStore.backgroundColor,
+                            message:
+                                "Devi aggiungere un appartamento prima di poter vedere e mettere like alle persone interessate ai tuoi appartamenti.",
+                            retryButtonText: "Aggiungi un appartamento",
+                          ))),
             /*EmptyPage(child: const Text('Chat')),*/
             ProfileApartments()
             //EditProfile(),
@@ -81,7 +178,7 @@ class _HomeState extends State<Home> {
                 //const Icon(Icons.checklist_rounded, color: Colors.black),
                 const Icon(Icons.chat_bubble_rounded, color: Colors.black),
                 !MatchHandler().isLastShowedMatchDateTimeAvailable() ||
-                        MatchHandler().hasUnseenChanges()
+                    MatchHandler().hasUnseenChanges()
                     ? Positioned(
                         left: 2,
                         bottom: 7,

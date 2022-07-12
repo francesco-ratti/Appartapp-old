@@ -36,6 +36,13 @@ class _OwnedApartments extends State<OwnedApartments> {
     RuntimeStore().setOwnedApartmentsFuture(newOwnedApartments);
   }
 
+  void callbck(bool ownsApartments) {
+    Future<List<Apartment>> newOwnedApartments =
+        ApartmentHandler().getOwnedApartments();
+    newOwnedApartments.then(updateUi).then((value) => Navigator.pop(context));
+    RuntimeStore().setOwnedApartmentsFuture(newOwnedApartments);
+  }
+
   @override
   void initState() {
     Future<List<Apartment>>? oldOwnedApartments =
@@ -43,6 +50,14 @@ class _OwnedApartments extends State<OwnedApartments> {
 
     if (oldOwnedApartments != null) oldOwnedApartments.then(updateUi);
     updateApartments();
+
+    RuntimeStore().addApartmentAddedCbk(callbck);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    RuntimeStore().removeApartmentAddedCbk(callbck);
   }
 
   @override
@@ -119,21 +134,12 @@ class _OwnedApartments extends State<OwnedApartments> {
                                                           Navigator.push(
                                                             context,
                                                             MaterialPageRoute(
-                                                                builder: (context) =>
-                                                                    AddApartment(
-                                                                        toEdit: ownedApartments![
-                                                                        index],
-                                                                        callback:
-                                                                            () {
-                                                                          Future<List<Apartment>>
-                                                                          newOwnedApartments =
-                                                                          ApartmentHandler().getOwnedApartments();
-                                                                          newOwnedApartments
-                                                                              .then(updateUi)
-                                                                              .then((value) => Navigator.pop(context));
-                                                                          RuntimeStore()
-                                                                              .setOwnedApartmentsFuture(newOwnedApartments);
-                                                                        })),
+                                                                builder:
+                                                                    (context) =>
+                                                                        AddApartment(
+                                                                          toEdit:
+                                                                              ownedApartments![index],
+                                                                        )),
                                                           );
                                                         },
                                                         child: const SizedBox(

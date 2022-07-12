@@ -37,6 +37,16 @@ class RuntimeStore {
 
   late bool useMobileLayout;
 
+  List<Function(bool)> apartmentAddedCbk = [];
+
+  void addApartmentAddedCbk(Function(bool) cbk) {
+    apartmentAddedCbk.add(cbk);
+  }
+
+  void removeApartmentAddedCbk(Function(bool) cbk) {
+    apartmentAddedCbk.remove(cbk);
+  }
+
   bool getCredentialsLogin() {
     return credentialsLogin;
   }

@@ -198,8 +198,14 @@ class _AddApartment extends State<AddApartment> {
       _uploadError = false;
       Navigator.restorablePush(
           context, ErrorDialogBuilder.buildGenericConnectionErrorRoute);
+    } else {
+      if (widget.callback != null) {
+        widget.callback!();
+      }
+      for (Function(bool) fun in RuntimeStore().apartmentAddedCbk) {
+        fun(true);
+      }
     }
-    if (widget.callback != null) widget.callback!();
   }
 
   @override

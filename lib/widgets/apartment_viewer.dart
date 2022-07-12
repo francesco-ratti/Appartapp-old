@@ -24,15 +24,9 @@ class ApartmentViewer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
         color: RuntimeStore.backgroundColor,
-        child: currentApartment == null
-            ? (Center(
-                child: Text(
-                "no apartments",
-                style: TextStyle(color: Colors.white),
-              )))
-            : RuntimeStore().useMobileLayout
-                ? mobileLayout(apartmentLoaded, currentApartment, owner)
-                : tabletLayout(apartmentLoaded, currentApartment, owner));
+        child: RuntimeStore().useMobileLayout
+            ? mobileLayout(apartmentLoaded, currentApartment, owner)
+            : tabletLayout(apartmentLoaded, currentApartment, owner));
   }
 }
 

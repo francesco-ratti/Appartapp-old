@@ -150,7 +150,7 @@ class _ContentPage extends State<ContentPage> {
           "Caricamento in corso..."));
 
   late Future<LikeFromUser?> nextTenantFuture;
-  bool tenantLoaded = false;
+  bool _tenantLoaded = false;
   bool _networkerror = false;
 
   bool firstDrag = true;
@@ -167,28 +167,31 @@ class _ContentPage extends State<ContentPage> {
 
   void showCurrentTenantFromFuture() {
     currentTenantFuture.then((value) {
-      if (value != null) tenantLoaded = true;
+      if (value != null) _tenantLoaded = true;
       setState(() {
         currentTenant = value;
       });
     }).onError((error, stackTrace) {
-      setState(() {
-        _networkerror = true;
+      currentTenantFuture =
+          getNewTenant(); //maybe the error was at previous page, long time ago, retry
+      currentTenantFuture.then((value) {
+        if (value != null) _tenantLoaded = true;
+        setState(() {
+          currentTenant = value;
+        });
+      }).onError((error, stackTrace) {
+        setState(() {
+          _networkerror = true;
+        });
       });
     });
   }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    nextTenantFuture = getNewTenant();
-  }
-
-  @override
   void initState() {
     super.initState();
-
     showCurrentTenantFromFuture();
+    nextTenantFuture = getNewTenant();
   }
 
   @override
@@ -236,7 +239,7 @@ class _ContentPage extends State<ContentPage> {
                     }
                   },
                   dragSensitivity: 0.5,
-                  disabled: !tenantLoaded,
+                  disabled: !_tenantLoaded,
                   child: _networkerror
                       ? RetryWidget(
                           textColor: Colors.white,
@@ -247,13 +250,26 @@ class _ContentPage extends State<ContentPage> {
                             currentTenantFuture = getNewTenant();
                             showCurrentTenantFromFuture();
                           })
-                      : TenantViewer(
-                          tenantLoaded: tenantLoaded,
-                          lessor: false,
-                          currentLikeFromUser: currentTenant,
-                          updateUI: widget.updateUI,
-                          match: widget.match,
-                        ));
+                      : (currentTenant == null
+                          ? RetryWidget(
+                              message:
+                                  "Nessun nuovo locatario è interessato ai tuoi appartamenti",
+                              textColor: Colors.black,
+                              backgroundColor: Colors.white,
+                              retryButtonText: "Cerca ancora",
+                              retryCallback: () {
+                                currentTenantFuture = getNewTenant();
+                                showCurrentTenantFromFuture();
+                                nextTenantFuture = getNewTenant();
+                              },
+                            )
+                          : TenantViewer(
+                              tenantLoaded: _tenantLoaded,
+                              lessor: false,
+                              currentLikeFromUser: currentTenant,
+                              updateUI: widget.updateUI,
+                              match: widget.match,
+                            )));
             });
       },
     );

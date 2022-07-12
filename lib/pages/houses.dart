@@ -161,12 +161,6 @@ class _ContentPage extends State<ContentPage> {
     });
   }
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    nextApartmentFuture = getNewApartment();
-  }
-
   void showCurrentApartmentFromFuture() {
     currentApartmentFuture.then((value) {
       if (value != null) _apartmentLoaded = true;
@@ -174,8 +168,17 @@ class _ContentPage extends State<ContentPage> {
         currentApartment = value;
       });
     }).onError((error, stackTrace) {
-      setState(() {
-        _networkerror = true;
+      currentApartmentFuture =
+          getNewApartment(); //maybe the error was at previous page, long time ago, retry
+      currentApartmentFuture.then((value) {
+        if (value != null) _apartmentLoaded = true;
+        setState(() {
+          currentApartment = value;
+        });
+      }).onError((error, stackTrace) {
+        setState(() {
+          _networkerror = true;
+        });
       });
     });
   }
@@ -183,8 +186,8 @@ class _ContentPage extends State<ContentPage> {
   @override
   void initState() {
     super.initState();
-
     showCurrentApartmentFromFuture();
+    nextApartmentFuture = getNewApartment();
   }
 
   @override
@@ -195,7 +198,7 @@ class _ContentPage extends State<ContentPage> {
             settings: settings,
             builder: (BuildContext context) {
               return DismissiblePage(
-                  //backgroundColor: Colors.white,
+                //backgroundColor: Colors.white,
                   onDismissed: () {
                     if (currentApartment != null) {
                       if (finalCoord < initialCoord) {
@@ -241,10 +244,23 @@ class _ContentPage extends State<ContentPage> {
                             currentApartmentFuture = getNewApartment();
                             showCurrentApartmentFromFuture();
                           })
-                      : ApartmentViewer(
-                          apartmentLoaded: _apartmentLoaded,
-                          currentApartment: currentApartment,
-                        ));
+                      : (currentApartment == null
+                          ? RetryWidget(
+                              message:
+                                  "Nessun nuovo appartamento da mostrare ancora nella tua zona",
+                              textColor: Colors.black,
+                              backgroundColor: Colors.white,
+                              retryButtonText: "Cerca ancora",
+                              retryCallback: () {
+                                currentApartmentFuture = getNewApartment();
+                                showCurrentApartmentFromFuture();
+                                nextApartmentFuture = getNewApartment();
+                              },
+                            )
+                          : ApartmentViewer(
+                              apartmentLoaded: _apartmentLoaded,
+                              currentApartment: currentApartment,
+                            )));
             });
       },
     );

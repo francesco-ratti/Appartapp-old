@@ -35,7 +35,6 @@ class _HomeState extends State<Home> {
       Future<List<Apartment>> newOwnedApartments =
           ApartmentHandler().getOwnedApartments();
       RuntimeStore().setOwnedApartmentsFuture(newOwnedApartments);
-      Navigator.pop(context);
     });
   }
 

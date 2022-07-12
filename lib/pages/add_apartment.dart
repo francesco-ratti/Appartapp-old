@@ -206,6 +206,7 @@ class _AddApartment extends State<AddApartment> {
         fun(true);
       }
     }
+    Navigator.pop(context);
   }
 
   @override
@@ -395,7 +396,7 @@ class _AddApartment extends State<AddApartment> {
                     });
                     if (toEdit == null) {
                       doCreateApartmentPost(
-                          () {},
+                          onUploadsEnd,
                           _titleController.text,
                           _descController.text,
                           _aedController.text,

@@ -39,7 +39,9 @@ class _OwnedApartments extends State<OwnedApartments> {
   void callbck(bool ownsApartments) {
     Future<List<Apartment>> newOwnedApartments =
         ApartmentHandler().getOwnedApartments();
-    newOwnedApartments.then(updateUi).then((value) => Navigator.pop(context));
+    //newOwnedApartments.then(updateUi).then((value) => Navigator.pop(context));
+    newOwnedApartments.then(updateUi);
+
     RuntimeStore().setOwnedApartmentsFuture(newOwnedApartments);
   }
 

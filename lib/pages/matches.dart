@@ -44,38 +44,53 @@ class _MatchesState extends State<Matches> {
                   backgroundColor: Colors.brown,
                 ),
                 body: currentMatches == null
-                    ? Center(
-                  child: Text("Caricamento in corso..."),
-                      )
-                    : ListView.builder(
-                    itemCount: currentMatches?.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      LessorMatch currentMatch = currentMatches![index];
+                    ? const Center(
+                        child: CircularProgressIndicator(
+                        value: null,
+                      ))
+                    : (currentMatches!.isEmpty
+                        ? Container(
+                            child: const Center(
+                              child: Text(
+                                "Non hai ancora match.\nQui appariranno gli appartamenti che ti interessano e il cui interesse è ricambiato dal proprietario.\nTi avviseremo al più presto!",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ),
+                            color: RuntimeStore.backgroundColor,
+                          )
+                        : ListView.builder(
+                            itemCount: currentMatches?.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              LessorMatch currentMatch = currentMatches![index];
 
-                          return MatchEntry(
-                            onTileTap:
-                                (BuildContext context, LessorMatch match) {
-                              for (final Image im in match.apartment.images) {
-                                precacheImage(im.image, context);
-                              }
+                              return MatchEntry(
+                                onTileTap:
+                                    (BuildContext context, LessorMatch match) {
+                                  for (final Image im
+                                      in match.apartment.images) {
+                                    precacheImage(im.image, context);
+                                  }
 
-                              Navigator.push(
+                                  Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) => Scaffold(
                                           appBar: AppBar(
-                                            title: Text(
-                                                match.apartment.listingTitle),
-                                            backgroundColor: Colors.brown,
-                                          ),
-                                          body: ApartmentViewer(
-                                              apartmentLoaded: true,
-                                              currentApartment: match.apartment,
-                                              owner: match.apartment.owner))));
-                            },
-                            match: currentMatch,
-                          );
-                        }));
+                                            title: Text(match
+                                                    .apartment.listingTitle),
+                                                backgroundColor: Colors.brown,
+                                              ),
+                                              body: ApartmentViewer(
+                                                  apartmentLoaded: true,
+                                                  currentApartment:
+                                                      match.apartment,
+                                                  owner:
+                                                      match.apartment.owner))));
+                                },
+                                match: currentMatch,
+                              );
+                            })));
           });
     });
   }

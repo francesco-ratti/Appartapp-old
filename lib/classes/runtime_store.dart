@@ -13,8 +13,11 @@ import 'match_handler.dart';
 
 class RuntimeStore {
   //SINGLETON PATTERN
+
+  static const backgroundColor = Color(0xff404040);
+
   //static const backgroundColor = Color(0xff282828);
-  static const backgroundColor = Color.fromRGBO(105, 105, 105, 100);
+  //static const backgroundColor = Color.fromRGBO(105, 105, 105, 100);
 
   static final RuntimeStore _runtimeStore = RuntimeStore._internal();
 

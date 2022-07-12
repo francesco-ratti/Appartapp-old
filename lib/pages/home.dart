@@ -2,7 +2,6 @@ import 'package:appartapp/classes/first_arguments.dart';
 import 'package:appartapp/classes/match_handler.dart';
 import 'package:appartapp/classes/runtime_store.dart';
 import 'package:appartapp/classes/user.dart';
-import 'package:appartapp/pages/empty_page.dart';
 import 'package:appartapp/pages/houses.dart';
 import 'package:appartapp/pages/matches.dart';
 import 'package:appartapp/pages/profile_apartments.dart';
@@ -57,7 +56,7 @@ class _HomeState extends State<Home> {
                 firstTenantFuture: ((ModalRoute.of(context)!.settings.arguments)
                         as FirstArguments)
                     .firstTenantFuture),
-            EmptyPage(child: const Text('Chat')),
+            /*EmptyPage(child: const Text('Chat')),*/
             ProfileApartments()
             //EditProfile(),
           ],
@@ -79,7 +78,8 @@ class _HomeState extends State<Home> {
           BottomNavigationBarItem(
             icon: Stack(
               children: [
-                const Icon(Icons.checklist_rounded, color: Colors.black),
+                //const Icon(Icons.checklist_rounded, color: Colors.black),
+                const Icon(Icons.chat_bubble_rounded, color: Colors.black),
                 !MatchHandler().isLastShowedMatchDateTimeAvailable() ||
                         MatchHandler().hasUnseenChanges()
                     ? Positioned(
@@ -97,15 +97,15 @@ class _HomeState extends State<Home> {
           ),
           const BottomNavigationBarItem(
               icon: Icon(Icons.people_sharp, color: Colors.black),
-              label: "Tenants",
+              label: "Locatari",
               backgroundColor: Colors.white),
-          const BottomNavigationBarItem(
+          /*const BottomNavigationBarItem(
             icon: Icon(
               Icons.chat_bubble_rounded,
               color: Colors.black,
             ),
             label: 'I miei appartamenti',
-          ),
+          ),*/
           const BottomNavigationBarItem(
             icon: Icon(
               Icons.person_outline_rounded,

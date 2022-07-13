@@ -165,32 +165,33 @@ class _ContentPage extends State<ContentPage> {
     });
   }
 
-  void showCurrentTenantFromFuture() {
+  void showCurrentTenantFromFuture({bool retryIfEmptyOrError = false}) {
     currentTenantFuture.then((value) {
-      setState(() {
-        _tenantLoaded = true;
-        currentTenant = value;
-      });
-    }).onError((error, stackTrace) {
-      currentTenantFuture =
-          getNewTenant(); //maybe the error was at previous page, long time ago, retry
-      currentTenantFuture.then((value) {
+      if (value != null || !retryIfEmptyOrError) {
         setState(() {
           _tenantLoaded = true;
           currentTenant = value;
         });
-      }).onError((error, stackTrace) {
+      } else {
+        showCurrentTenantFromFuture();
+      }
+    }).onError((error, stackTrace) {
+      if (retryIfEmptyOrError) {
+        currentTenantFuture =
+            getNewTenant(); //maybe the error was at previous page, long time ago, retry
+        showCurrentTenantFromFuture();
+      } else {
         setState(() {
           _networkerror = true;
         });
-      });
+      }
     });
   }
 
   @override
   void initState() {
     super.initState();
-    showCurrentTenantFromFuture();
+    showCurrentTenantFromFuture(retryIfEmptyOrError: true);
     nextTenantFuture = getNewTenant();
   }
 
@@ -264,7 +265,6 @@ class _ContentPage extends State<ContentPage> {
                                 });
                                 currentTenantFuture = getNewTenant();
                                 showCurrentTenantFromFuture();
-                                nextTenantFuture = getNewTenant();
                               },
                             )
                           : TenantViewer(

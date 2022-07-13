@@ -1,14 +1,11 @@
 import 'dart:io';
-import 'dart:ui';
 
-import 'package:flutter/material.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dismissible_page/dismissible_page.dart';
+import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker_gallery_camera/image_picker_gallery_camera.dart';
-import 'package:image_picker_platform_interface/image_picker_platform_interface.dart';
-import 'package:carousel_slider/carousel_slider.dart';
-
-class ImgGallery extends StatefulWidget {
+import 'package:image_picker_platform_interface/image_picker_platform_interfacegGallery extends StatefulWidget {
 
   final Function(List<File>) filesToUploadCbk; //will be called ONLY when new images are added or new images (ones which have been added during current "session", the ones which have to be uploaded) are removed
   Function? onSubmitCbksCbk; //will be called when online images are removed. Updates OnSubmitCallbacks list, which has to be called on submit.

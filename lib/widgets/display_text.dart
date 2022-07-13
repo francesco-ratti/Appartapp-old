@@ -1,13 +1,17 @@
-import 'package:blur/blur.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class DisplayText extends StatelessWidget {
   final String title;
-  final String content;
+  final String? content;
+  final Widget? contentWidget;
 
-  DisplayText({Key? key, required this.title, required this.content})
+  DisplayText(
+      {Key? key,
+      required this.title,
+      this.content = null,
+      this.contentWidget = null})
       : super(key: key);
 
   @override
@@ -21,10 +25,19 @@ class DisplayText extends StatelessWidget {
               title,
               style: GoogleFonts.nunito(color: Colors.white70, fontSize: 15),
             ),
-            Text(
-              content,
-              style: GoogleFonts.nunito(color: Colors.white, fontSize: 20),
-            ),
+            content == null
+                ? SizedBox()
+                : Text(
+                    content!,
+                    style:
+                        GoogleFonts.nunito(color: Colors.white, fontSize: 20),
+                  ),
+            contentWidget == null
+                ? SizedBox()
+                : Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 10.0, 0, 0),
+                    child: contentWidget as Widget,
+                  )
           ],
         ));
   }

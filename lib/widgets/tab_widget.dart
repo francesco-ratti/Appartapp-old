@@ -26,57 +26,87 @@ class TabWidget extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) => ListView(
-        padding: const EdgeInsets.all(6),
-        controller: scrollController,
-        //physics: Scroll,
-        children: [
-          const Divider(
-            color: Colors.white,
-            indent: 180,
-            thickness: 2,
-            endIndent: 180,
-          ),
-          Row(
-            children: [
-              SingleChildScrollView(
-                //padding: EdgeInsets.fromLTRB(30, 10, 10, 30),
-                child: Text(
-                  currentApartment.listingTitle,
-                  //textAlign: TextAlign.center,
-                  style:
-                      GoogleFonts.nunito(color: Colors.white70, fontSize: 30),
-                ),
-              ),
-              showContact ? const Spacer() : const SizedBox(),
-              showContact
-                  ? ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        primary: Colors.brown,
-                        shape: const CircleBorder(),
+  Widget build(BuildContext context) =>
+      ListView(padding: const EdgeInsets.all(6), controller: scrollController,
+          //physics: Scroll,
+          children: [
+            const Divider(
+              color: Colors.white,
+              indent: 180,
+              thickness: 2,
+              endIndent: 180,
+            ),
+            Row(
+              children: [
+                Expanded(
+                  //padding: EdgeInsets.fromLTRB(30, 10, 10, 30),
+                  child: Text(
+                    currentApartment.listingTitle,
+                    //textAlign: TextAlign.center,
+                    style:
+                        GoogleFonts.nunito(color: Colors.white70, fontSize: 30),
+                  ),
+                )
+              ],
+            ),
+            owner == null
+                ? SizedBox()
+                : DisplayText(
+                    title: "Questo appartamento interessa a:",
+                    content: "${owner?.name}"),
+            Row(
+              children: [
+                //showContact ? const Spacer() : const SizedBox(),
+                owner == null
+                    ? const SizedBox()
+                    : Expanded(
+                        child: Column(
+                          children: [
+                            ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  primary: Colors.brown,
+                                  shape: const CircleBorder(),
+                                ),
+                                onPressed: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => Scaffold(
+                                              appBar: AppBar(
+                                                title: Text(
+                                                    "${owner?.name} ${owner?.surname}"),
+                                                backgroundColor: Colors.brown,
+                                              ),
+                                              body: TenantViewer(
+                                                tenantLoaded: true,
+                                                lessor: true,
+                                                currentLikeFromUser:
+                                                    LikeFromUser(null, owner!),
+                                                updateUI: updateUI,
+                                                match: false,
+                                              ))));
+                                },
+                                child: Container(
+                                    width: 70,
+                                    height: 70,
+                                    child: owner!.images[0] != null
+                                        ? CircleAvatar(
+                                            backgroundImage:
+                                                owner!.images[0].image)
+                                        : const Icon(
+                                            Icons.person_pin_rounded,
+                                          ))),
+                            Container(
+                              padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
+                              child: Text("${owner?.name} ",
+                                  style: const TextStyle(color: Colors.white)),
+                            ),
+                          ],
+                        ),
                       ),
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => ContactApartment(
-                                    textColor: Colors.black,
-                                    backgroundColor: Colors.white,
-                                    apartment: currentApartment)));
-                      },
-                      child: Container(
-                          width: 70,
-                          height: 70,
-                          child: const Icon(
-                            Icons.messenger,
-                          )))
-                  : const SizedBox(),
-              const Spacer(),
-              owner == null
-                  ? const SizedBox()
-                  : Column(
-                      children: [
-                        ElevatedButton(
+                showContact
+                    ? Expanded(
+                        child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
                               primary: Colors.brown,
                               shape: const CircleBorder(),
@@ -85,46 +115,28 @@ class TabWidget extends StatelessWidget {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => Scaffold(
-                                          appBar: AppBar(
-                                            title: Text(
-                                                "${owner?.name} ${owner?.surname}"),
-                                            backgroundColor: Colors.brown,
-                                          ),
-                                          body: TenantViewer(
-                                            tenantLoaded: true,
-                                            lessor: true,
-                                            currentLikeFromUser:
-                                                LikeFromUser(null, owner!),
-                                            updateUI: updateUI,
-                                            match: false,
-                                          ))));
+                                      builder: (context) => ContactApartment(
+                                          textColor: Colors.black,
+                                          backgroundColor: Colors.white,
+                                          apartment: currentApartment)));
                             },
                             child: Container(
                                 width: 70,
                                 height: 70,
-                                child: owner!.images[0] != null
-                                    ? CircleAvatar(
-                                        backgroundImage: owner!.images[0].image)
-                                    : const Icon(
-                                        Icons.person_pin_rounded,
-                                      ))),
-                        Container(
-                          padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
-                          child: Text("${owner?.name} ",
-                              style: const TextStyle(color: Colors.white)),
-                        ),
-                      ],
-                    )
-            ],
-          ),
-          DisplayText(
-              title: "Descrizione", content: currentApartment.description),
-          DisplayText(title: "Prezzo", content: "${currentApartment.price}€"),
-          DisplayText(title: "Indirizzo", content: currentApartment.address),
-          DisplayText(
-              title: "Spese aggiuntive",
-              content: currentApartment.additionalExpenseDetail),
-        ],
-      );
+                                child: const Icon(
+                                  Icons.messenger,
+                                ))),
+                      )
+                    : const SizedBox(),
+              ],
+            ),
+            DisplayText(
+                title: "Descrizione", content: currentApartment.description),
+            DisplayText(title: "Prezzo", content: "${currentApartment.price}€"),
+            DisplayText(title: "Indirizzo", content: currentApartment.address),
+            DisplayText(
+                title: "Spese aggiuntive",
+                content: currentApartment.additionalExpenseDetail),
+            //Padding(padding: EdgeInsets.fromLTRB(0, 50, 0, 0)),
+          ]);
 }

@@ -27,13 +27,11 @@ class AddApartment extends StatefulWidget {
   final String removeImagesUrlStr =
       "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/deleteapartmentimage";
 
-
   final String addImagesUrlStr =
       "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/addapartmentimage";
 }
 
 class _AddApartment extends State<AddApartment> {
-
   Apartment? toEdit;
 
   bool _isLoading = false;
@@ -62,7 +60,7 @@ class _AddApartment extends State<AddApartment> {
 
       for (final File file in files) {
         MultipartFile mpfile =
-        await MultipartFile.fromFile(file.path, filename: "filename.jpg");
+            await MultipartFile.fromFile(file.path, filename: "filename.jpg");
         formData.files.add(MapEntry("images", mpfile));
       }
 
@@ -215,19 +213,18 @@ class _AddApartment extends State<AddApartment> {
   @override
   void initState() {
     super.initState();
-    if (toEdit!=null) {
-      _titleController.text=toEdit!.listingTitle;
-      _descController.text=toEdit!.description;
-      _priceController.text=toEdit!.price.toString();
-      _aedController.text=toEdit!.additionalExpenseDetail;
-      _addressController.text=toEdit!.address;
+    if (toEdit != null) {
+      _titleController.text = toEdit!.listingTitle;
+      _descController.text = toEdit!.description;
+      _priceController.text = toEdit!.price.toString();
+      _aedController.text = toEdit!.additionalExpenseDetail;
+      _addressController.text = toEdit!.address;
 
-      for (int i=0; i<toEdit!.imagesDetails.length; i++) {
-        Map im=toEdit!.imagesDetails[i];
-        existingImages.add(
-            GalleryImage(
-                toEdit!.images[i],
-                    () => () {
+      for (int i = 0; i < toEdit!.imagesDetails.length; i++) {
+        Map im = toEdit!.imagesDetails[i];
+        existingImages.add(GalleryImage(
+            toEdit!.images[i],
+            () => () {
                   numUploads++;
                   removeImage(() {
                     uploadCtr++;
@@ -238,8 +235,7 @@ class _AddApartment extends State<AddApartment> {
                       im['id'].toString(),
                       toEdit!.id
                           .toString()); //returns a cbk function which will be invoked at submit
-                })
-        );
+                }));
       }
     }
   }
@@ -253,13 +249,17 @@ class _AddApartment extends State<AddApartment> {
         progressIndicator: const CircularProgressIndicator(),
         child: SafeArea(
           child: Scaffold(
+            appBar: AppBar(
+              title: Text("Il tuo appartamento"),
+              backgroundColor: Colors.brown,
+            ),
             body: Container(
               color: Colors.white,
               child: Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: ListView(
                   children: <Widget>[
-                    header(),
+                    //header(),
                     ImgGallery(
                       filesToUploadCbk: (imageList) {
                         _toUpload = imageList;
@@ -447,7 +447,7 @@ class _AddApartment extends State<AddApartment> {
               : null,
           style: ElevatedButton.styleFrom(primary: Colors.black87),
           child: Text(
-            toEdit==null ? 'AGGIUNGI' : 'MODIFICA',
+            toEdit == null ? 'AGGIUNGI' : 'MODIFICA',
             style: const TextStyle(color: Colors.white),
           ),
         ),

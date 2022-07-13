@@ -5,6 +5,7 @@ class ErrorDialogBuilder {
       BuildContext context, Object? arguments) {
     return CupertinoDialogRoute<void>(
       context: context,
+      barrierDismissible: false,
       builder: (BuildContext context) {
         return CupertinoAlertDialog(
             title: const Text("Errore"),
@@ -26,6 +27,7 @@ class ErrorDialogBuilder {
       BuildContext context, Object? arguments) {
     return CupertinoDialogRoute<void>(
       context: context,
+      barrierDismissible: false,
       builder: (BuildContext context) {
         return CupertinoAlertDialog(
             title: const Text("Errore"),

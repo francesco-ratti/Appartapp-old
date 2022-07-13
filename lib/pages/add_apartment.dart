@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:appartapp/classes/apartment.dart';
 import 'package:appartapp/classes/runtime_store.dart';
-import 'package:appartapp/widgets/ImgGallery.dart';
+import 'package:appartapp/widgets/img_gallery.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';

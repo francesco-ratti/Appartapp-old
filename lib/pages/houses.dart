@@ -159,32 +159,33 @@ class _ContentPage extends State<ContentPage> {
     });
   }
 
-  void showCurrentApartmentFromFuture() {
+  void showCurrentApartmentFromFuture({bool retryIfEmptyOrError = false}) {
     currentApartmentFuture.then((value) {
-      setState(() {
-        _apartmentLoaded = true;
-        currentApartment = value;
-      });
-    }).onError((error, stackTrace) {
-      currentApartmentFuture =
-          getNewApartment(); //maybe the error was at previous page, long time ago, retry
-      currentApartmentFuture.then((value) {
+      if (value != null || !retryIfEmptyOrError) {
         setState(() {
           _apartmentLoaded = true;
           currentApartment = value;
         });
-      }).onError((error, stackTrace) {
+      } else {
+        showCurrentApartmentFromFuture(retryIfEmptyOrError: false);
+      }
+    }).onError((error, stackTrace) {
+      if (retryIfEmptyOrError) {
+        currentApartmentFuture =
+            getNewApartment(); //maybe the error was at previous page, long time ago, retry
+        showCurrentApartmentFromFuture(retryIfEmptyOrError: false);
+      } else {
         setState(() {
           _networkerror = true;
         });
-      });
+      }
     });
   }
 
   @override
   void initState() {
     super.initState();
-    showCurrentApartmentFromFuture();
+    showCurrentApartmentFromFuture(retryIfEmptyOrError: true);
     nextApartmentFuture = getNewApartment();
   }
 
@@ -256,7 +257,6 @@ class _ContentPage extends State<ContentPage> {
                                 });
                                 currentApartmentFuture = getNewApartment();
                                 showCurrentApartmentFromFuture();
-                                nextApartmentFuture = getNewApartment();
                               },
                             )
                           : ApartmentViewer(

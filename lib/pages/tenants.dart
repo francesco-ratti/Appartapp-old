@@ -173,13 +173,13 @@ class _ContentPage extends State<ContentPage> {
           currentTenant = value;
         });
       } else {
-        showCurrentTenantFromFuture();
+        showCurrentTenantFromFuture(retryIfEmptyOrError: false);
       }
     }).onError((error, stackTrace) {
       if (retryIfEmptyOrError) {
         currentTenantFuture =
             getNewTenant(); //maybe the error was at previous page, long time ago, retry
-        showCurrentTenantFromFuture();
+        showCurrentTenantFromFuture(retryIfEmptyOrError: false);
       } else {
         setState(() {
           _networkerror = true;

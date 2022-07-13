@@ -36,13 +36,13 @@ class _OwnedApartments extends State<OwnedApartments> {
     RuntimeStore().setOwnedApartmentsFuture(newOwnedApartments);
   }
 
-  void callbck(bool ownsApartments) {
-    Future<List<Apartment>> newOwnedApartments =
+  void callbck(bool ownsApartments) async {
+    Future<List<Apartment>> newOwnedApartmentsFuture =
         ApartmentHandler().getOwnedApartments();
-    //newOwnedApartments.then(updateUi).then((value) => Navigator.pop(context));
-    newOwnedApartments.then(updateUi);
+    List<Apartment> newOwnedApartments = await newOwnedApartmentsFuture;
+    updateUi(newOwnedApartments);
 
-    RuntimeStore().setOwnedApartmentsFuture(newOwnedApartments);
+    RuntimeStore().setOwnedApartmentsFuture(newOwnedApartmentsFuture);
   }
 
   @override

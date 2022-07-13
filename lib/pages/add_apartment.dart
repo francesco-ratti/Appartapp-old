@@ -189,6 +189,16 @@ class _AddApartment extends State<AddApartment> {
   int uploadCtr = 0;
   int numUploads = 0;
 
+  void cbkExecutor() async {
+    if (widget.callback != null) {
+      await widget.callback!();
+    }
+    for (Function(bool) fun in RuntimeStore().apartmentAddedCbk) {
+      await fun(true);
+    }
+    Navigator.pop(context);
+  }
+
   void onUploadsEnd() {
     uploadCtr = 0;
     numUploads = 0;
@@ -200,14 +210,8 @@ class _AddApartment extends State<AddApartment> {
       Navigator.restorablePush(
           context, ErrorDialogBuilder.buildGenericConnectionErrorRoute);
     } else {
-      if (widget.callback != null) {
-        widget.callback!();
-      }
-      for (Function(bool) fun in RuntimeStore().apartmentAddedCbk) {
-        fun(true);
-      }
+      cbkExecutor();
     }
-    Navigator.pop(context);
   }
 
   @override

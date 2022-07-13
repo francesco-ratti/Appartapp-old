@@ -1,3 +1,4 @@
+import 'package:appartapp/classes/enum_background.dart';
 import 'package:appartapp/classes/enum_gender.dart';
 import 'package:appartapp/classes/enum_month.dart';
 import 'package:appartapp/classes/enum_temporalq.dart';
@@ -6,6 +7,8 @@ import 'package:appartapp/classes/runtime_store.dart';
 import 'package:appartapp/classes/user.dart';
 import 'package:appartapp/classes/user_handler.dart';
 import 'package:appartapp/widgets/error_dialog_builder.dart';
+import 'package:appartapp/widgets/ignore_background.dart';
+import 'package:appartapp/widgets/like_background.dart';
 import 'package:appartapp/widgets/retry_widget.dart';
 import 'package:appartapp/widgets/tenant_viewer.dart';
 import 'package:dio/dio.dart';
@@ -27,7 +30,15 @@ class Tenants extends StatefulWidget {
 class _Tenants extends State<Tenants> {
   int _currentRoute = 0;
 
+  late BackgroundType backgroundType;
+
   bool match = false;
+
+  @override
+  void initState() {
+    super.initState();
+    backgroundType = BackgroundType.like;
+  }
 
   void updateUI(bool value) {
     setState(() {
@@ -42,19 +53,49 @@ class _Tenants extends State<Tenants> {
         return MaterialPageRoute(
           settings: settings,
           builder: (BuildContext context) {
-            return Container(
+            return /*Container(
                 decoration: const BoxDecoration(
                   image: DecorationImage(
                     image: AssetImage("assets/background.gif"),
                     fit: BoxFit.cover,
                   ),
                 ),
-                child: ContentPage(
+                child: */
+                Stack(children: [
+              backgroundType == BackgroundType.like
+                  ? LikeBackground()
+                  : (backgroundType == BackgroundType.ignore
+                      ? IgnoreBackground()
+                      : SizedBox()),
+              ContentPage(
                   currentTenantFuture: widget.firstTenantFuture,
                   updateUI: updateUI,
                   match: match,
                   whoCreatedMe: "Tenants creation",
-                ));
+                  backgroundUpdateCbk: (BackgroundType newBackground) {
+                    if (backgroundType != newBackground) {
+                      setState(() {
+                        backgroundType = newBackground;
+                        /*
+                          switch (newBackground) {
+                            case BackgroundType.both:
+                              backgroundImgStr = widget.bothBackgroundImgStr;
+                              break;
+
+                            case BackgroundType.like:
+                              backgroundType = widget.likeBackgroundImgStr;
+                              break;
+                            case BackgroundType.ignore:
+                              backgroundType = widget.ignoreBackgroundImgStr;
+                              break;
+                            default:
+                              backgroundImgStr = widget.bothBackgroundImgStr;
+                              break;
+                          }*/
+                      });
+                    }
+                  })
+            ]);
           },
         );
       },
@@ -70,6 +111,9 @@ class ContentPage extends StatefulWidget {
       "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/likeuser";
   final ignoreUrlStr =
       "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/ignoreuser";
+
+  final Function(BackgroundType) backgroundUpdateCbk;
+
 //------------------------
   Future<void> _networkFunction(BuildContext context, String urlString,
       int userId, int apartmentId) async {
@@ -119,7 +163,8 @@ class ContentPage extends StatefulWidget {
       required this.currentTenantFuture,
       required this.updateUI,
       required this.match,
-      required this.whoCreatedMe})
+      required this.whoCreatedMe,
+      required this.backgroundUpdateCbk})
       : super(key: key);
 }
 
@@ -193,6 +238,8 @@ class _ContentPage extends State<ContentPage> {
     super.initState();
     showCurrentTenantFromFuture(retryIfEmptyOrError: true);
     nextTenantFuture = getNewTenant();
+
+    _networkerror = false;
   }
 
   @override
@@ -222,10 +269,12 @@ class _ContentPage extends State<ContentPage> {
                         MaterialPageRoute(
                             builder: (context) => ContentPage(
                               currentTenantFuture: nextTenantFuture,
-                              updateUI: widget.updateUI,
-                              match: widget.match,
-                              whoCreatedMe: "Content creation",
-                            )));
+                                  updateUI: widget.updateUI,
+                                  match: widget.match,
+                                  whoCreatedMe: "Content creation",
+                                  backgroundUpdateCbk:
+                                      widget.backgroundUpdateCbk,
+                                )));
                   },
                   direction: widget.match
                       ? DismissiblePageDismissDirection.endToStart
@@ -237,6 +286,11 @@ class _ContentPage extends State<ContentPage> {
                       firstDrag = false;
                     } else {
                       finalCoord = value;
+                      if (finalCoord < initialCoord) {
+                        widget.backgroundUpdateCbk(BackgroundType.like);
+                      } else {
+                        widget.backgroundUpdateCbk(BackgroundType.ignore);
+                      }
                     }
                   },
                   dragSensitivity: 0.5,

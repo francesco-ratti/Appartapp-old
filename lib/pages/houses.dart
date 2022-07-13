@@ -1,8 +1,11 @@
 import 'package:appartapp/classes/apartment.dart';
 import 'package:appartapp/classes/apartment_handler.dart';
+import 'package:appartapp/classes/enum_background.dart';
 import 'package:appartapp/classes/runtime_store.dart';
 import 'package:appartapp/widgets/apartment_viewer.dart';
 import 'package:appartapp/widgets/error_dialog_builder.dart';
+import 'package:appartapp/widgets/ignore_background.dart';
+import 'package:appartapp/widgets/like_background.dart';
 import 'package:appartapp/widgets/retry_widget.dart';
 import 'package:dio/dio.dart';
 import 'package:dismissible_page/dismissible_page.dart';
@@ -11,6 +14,11 @@ import 'package:flutter/material.dart';
 class Houses extends StatefulWidget {
   Future<Apartment?> firstApartmentFuture;
 
+  /*
+  final String bothBackgroundImgStr="assets/background.gif";
+  final String likeBackgroundImgStr="assets/GreenBackground.jpg";
+  final String ignoreBackgroundImgStr="assets/RedBackground.jpg";
+   */
   Houses({required this.child, required this.firstApartmentFuture});
 
   final Widget child;
@@ -21,6 +29,8 @@ class Houses extends StatefulWidget {
 
 class _HousesState extends State<Houses> {
   int _currentRoute = 0;
+
+  late BackgroundType backgroundType;
 
   /*
 
@@ -38,8 +48,14 @@ class _HousesState extends State<Houses> {
    */
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
+    super.initState();
+    //backgroundImgStr=widget.likeBackgroundImgStr;
+    backgroundType = BackgroundType.like;
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Navigator(
       onGenerateRoute: (RouteSettings settings) {
         return MaterialPageRoute(
@@ -58,19 +74,50 @@ class _HousesState extends State<Houses> {
             //     child: Text("Errore 2"),
             //   );
             // }
-            return Container(
+            return /*Container(
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: AssetImage("assets/background.gif"),
+                    image: AssetImage(backgroundImgStr),
                     fit: BoxFit.cover,
                   ),
                 ),
-                child: ContentPage(
+                child:*/
+                Stack(children: [
+              backgroundType == BackgroundType.like
+                  ? LikeBackground()
+                  : (backgroundType == BackgroundType.ignore
+                      ? IgnoreBackground()
+                      : SizedBox()),
+              ContentPage(
                   currentApartmentFuture: widget.firstApartmentFuture,
+                  backgroundUpdateCbk: (BackgroundType newBackground) {
+                    if (backgroundType != newBackground) {
+                      setState(() {
+                        backgroundType = newBackground;
+                        /*
+                          switch (newBackground) {
+                            case BackgroundType.both:
+                              backgroundImgStr = widget.bothBackgroundImgStr;
+                              break;
+
+                            case BackgroundType.like:
+                              backgroundType = widget.likeBackgroundImgStr;
+                              break;
+                            case BackgroundType.ignore:
+                              backgroundType = widget.ignoreBackgroundImgStr;
+                              break;
+                            default:
+                              backgroundImgStr = widget.bothBackgroundImgStr;
+                              break;
+                          }*/
+                      });
+                    }
+                  }
                   // updateHouses: () {setState(() {
 
                   // });}
-                ));
+                  )
+            ]);
           },
         );
       },
@@ -83,6 +130,8 @@ class ContentPage extends StatefulWidget {
       "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/likeapartment";
   final ignoreUrlStr =
       "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/ignoreapartment";
+
+  final Function(BackgroundType) backgroundUpdateCbk;
 
   Future<void> _networkFunction(
       BuildContext context, String urlString, int apartmentId) async {
@@ -126,6 +175,7 @@ class ContentPage extends StatefulWidget {
 
   ContentPage({
     required this.currentApartmentFuture,
+    required this.backgroundUpdateCbk,
     //required this.updateHouses,
   });
 }
@@ -185,6 +235,8 @@ class _ContentPage extends State<ContentPage> {
   @override
   void initState() {
     super.initState();
+    _networkerror = false;
+
     showCurrentApartmentFromFuture(retryIfEmptyOrError: true);
     nextApartmentFuture = getNewApartment();
   }
@@ -201,8 +253,10 @@ class _ContentPage extends State<ContentPage> {
                   onDismissed: () {
                     if (currentApartment != null) {
                       if (finalCoord < initialCoord) {
+                        //widget.backgroundImgStrUpdateCbk(BackgroundType.like);
                         widget.likeApartment(context, currentApartment!.id);
                       } else {
+                        //widget.backgroundImgStrUpdateCbk(BackgroundType.ignore);
                         widget.ignoreApartment(context, currentApartment!.id);
                       }
                     }
@@ -213,6 +267,8 @@ class _ContentPage extends State<ContentPage> {
                         MaterialPageRoute(
                             builder: (context) => ContentPage(
                                   currentApartmentFuture: nextApartmentFuture,
+                                  backgroundUpdateCbk:
+                                      widget.backgroundUpdateCbk,
                                 )));
 
                     // ApartmentHandler()
@@ -229,6 +285,11 @@ class _ContentPage extends State<ContentPage> {
                       firstDrag = false;
                     } else {
                       finalCoord = value;
+                      if (finalCoord < initialCoord) {
+                        widget.backgroundUpdateCbk(BackgroundType.like);
+                      } else {
+                        widget.backgroundUpdateCbk(BackgroundType.ignore);
+                      }
                     }
                   },
                   dragSensitivity: 0.5,

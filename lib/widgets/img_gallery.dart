@@ -1,12 +1,11 @@
 import 'dart:io';
-import 'dart:ui';
 
-import 'package:flutter/material.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dismissible_page/dismissible_page.dart';
+import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker_gallery_camera/image_picker_gallery_camera.dart';
 import 'package:image_picker_platform_interface/image_picker_platform_interface.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 
 class ImgGallery extends StatefulWidget {
   final Function(List<File>)
@@ -49,13 +48,18 @@ class _ImgGalleryState extends State<ImgGallery> {
 
   Future<void> getImage(ImgSource source) async {
     final PickedFile image = await ImagePickerGC.pickImage(
-      context: context,
-      source: source,
-      cameraIcon: Icon(
-        Icons.add,
-        color: Colors.red,
-      ),
-    );
+        context: context,
+        source: source,
+        cameraText: Text("Fotocamera"),
+        galleryText: Text("Galleria"),
+        cameraIcon: Icon(
+          Icons.camera,
+          color: Colors.brown,
+        ),
+        galleryIcon: Icon(
+          Icons.image,
+          color: Colors.brown,
+        ));
 
     CroppedFile? croppedFile = await ImageCropper().cropImage(
       sourcePath: image.path,
@@ -72,13 +76,13 @@ class _ImgGalleryState extends State<ImgGallery> {
       maxWidth: 1920,
       uiSettings: [
         AndroidUiSettings(
-            toolbarTitle: 'Cropper',
-            toolbarColor: Colors.deepOrange,
+            toolbarTitle: 'Ritaglia la foto',
+            toolbarColor: Colors.brown,
             toolbarWidgetColor: Colors.white,
             initAspectRatio: CropAspectRatioPreset.original,
             lockAspectRatio: false),
         IOSUiSettings(
-          title: 'Cropper',
+          title: 'Ritaglia la foto',
         ),
 
         /// this settings is required for Web

@@ -12,10 +12,27 @@ class LoginOrSignup extends StatefulWidget {
 }
 
 class _LoginOrSignupState extends State<LoginOrSignup> {
+  bool _isLoading = false;
+  bool _firebaseError = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _isLoading = false;
+    _firebaseError = false;
+    Authentication.initializeFirebase()
+        .then((value) {})
+        .onError((error, stackTrace) {
+      setState(() {
+        _firebaseError = true;
+        _isLoading = false;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     Color bgColor = Colors.white;
-    bool _isLoading = false;
 
     return Scaffold(
         backgroundColor: bgColor,
@@ -50,32 +67,21 @@ class _LoginOrSignupState extends State<LoginOrSignup> {
                       Navigator.pushNamed(context, '/signup');
                     },
                   ),
-                  FutureBuilder(
-                    future: Authentication.initializeFirebase(),
-                    builder: (context, snapshot) {
-                      if (snapshot.hasError) {
-                        return const Text(
+                  _firebaseError
+                      ? const Text(
                           'Error initializing Firebase',
                           style: TextStyle(color: Colors.black),
-                        );
-                      } else if (snapshot.connectionState ==
-                          ConnectionState.done) {
-                        return GoogleSignInButton(
+                        )
+                      : GoogleSignInButton(
                           isLoadingCbk: (bool isLoading) {
-                            setState(() {
-                              _isLoading = isLoading;
-                            });
+                            if (isLoading != _isLoading) {
+                              setState(() {
+                                _isLoading = isLoading;
+                              });
+                            }
                           },
                           parentContext: context,
-                        );
-                      }
-                      return const CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation<Color>(
-                          Colors.orange,
-                        ),
-                      );
-                    },
-                  ),
+                        )
                 ]),
           ),
           inAsyncCall: _isLoading,

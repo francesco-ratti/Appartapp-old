@@ -529,7 +529,17 @@ class _EditProfileState extends State<EditProfile> {
                   _isLoading = true;
                 });
                 if (!RuntimeStore().credentialsLogin) {
-                  await Authentication.signOut(context: context);
+                  try {
+                    await Authentication.initializeFirebase();
+                    await Authentication.signOut(context: context);
+                  } on Exception {
+                    setState(() {
+                      _isLoading = false;
+                      Navigator.restorablePush(
+                          context, ErrorDialogBuilder.buildGenericErrorRoute);
+                      ;
+                    });
+                  }
                 }
                 RuntimeStore().getSharedPreferences()?.remove("logged");
                 RuntimeStore()

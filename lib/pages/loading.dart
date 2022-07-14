@@ -66,7 +66,8 @@ void doInitialisation(BuildContext context, User user,
   FirstArguments firstArguments =
       FirstArguments(firstApartmentFuture, firstTenantFuture);
 
-  Navigator.pushReplacementNamed(context, '/home', arguments: firstArguments);
+  Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false,
+      arguments: firstArguments);
 }
 
 class Loading extends StatefulWidget {

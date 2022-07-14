@@ -5,6 +5,7 @@ import 'package:appartapp/classes/login_handler.dart';
 import 'package:appartapp/classes/runtime_store.dart';
 import 'package:appartapp/classes/user.dart';
 import 'package:appartapp/pages/reinsert_password.dart';
+import 'package:appartapp/utils/authentication.dart';
 import 'package:appartapp/widgets/error_dialog_builder.dart';
 import 'package:appartapp/widgets/img_gallery.dart';
 import 'package:dio/dio.dart';
@@ -492,7 +493,13 @@ class _EditProfileState extends State<EditProfile> {
           ElevatedButton(
               child: Text("Esci"),
               style: ElevatedButton.styleFrom(primary: Colors.red),
-              onPressed: () {
+              onPressed: () async {
+                setState(() {
+                  _isLoading = true;
+                });
+                if (!RuntimeStore().credentialsLogin) {
+                  await Authentication.signOut(context: context);
+                }
                 RuntimeStore().getSharedPreferences()?.remove("logged");
                 RuntimeStore()
                     .getSharedPreferences()

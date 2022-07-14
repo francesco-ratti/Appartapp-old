@@ -11,12 +11,12 @@ class ErrorDialogBuilder {
             title: const Text("Errore"),
             actions: [
               CupertinoDialogAction(
-                  child: Text("OK"),
+                  child: const Text("OK"),
                   onPressed: () {
                     Navigator.pop(context);
                   })
             ],
-            content: Center(
+            content: const Center(
               child: Text("Errore di connessione"),
             ));
       },
@@ -33,13 +33,13 @@ class ErrorDialogBuilder {
             title: const Text("Errore"),
             actions: [
               CupertinoDialogAction(
-                  child: Text("Riprova"),
+                  child: const Text("Riprova"),
                   onPressed: () {
                     Navigator.pushNamedAndRemoveUntil(
                         context, '/', (route) => false);
                   })
             ],
-            content: Center(
+            content: const Center(
               child: Text("Errore di connessione"),
             ));
       },
@@ -55,12 +55,12 @@ class ErrorDialogBuilder {
             title: const Text("Errore"),
             actions: [
               CupertinoDialogAction(
-                  child: Text("OK"),
+                  child: const Text("OK"),
                   onPressed: () {
                     Navigator.pop(context);
                   })
             ],
-            content: Center(
+            content: const Center(
               child: Text(
                   "Errore nell'eseguire l'operazione richiesta. Assicurati che la connessione sia funzionante e che le credenziali siano valide"),
             ));
@@ -77,12 +77,12 @@ class ErrorDialogBuilder {
             title: const Text("Errore"),
             actions: [
               CupertinoDialogAction(
-                  child: Text("OK"),
+                  child: const Text("OK"),
                   onPressed: () {
                     Navigator.pop(context);
                   })
             ],
-            content: Center(
+            content: const Center(
               child: Text("Errore nell'eseguire l'operazione richiesta."),
             ));
       },
@@ -98,12 +98,12 @@ class ErrorDialogBuilder {
             title: const Text("Errore"),
             actions: [
               CupertinoDialogAction(
-                  child: Text("OK"),
+                  child: const Text("OK"),
                   onPressed: () {
                     Navigator.pop(context);
                   })
             ],
-            content: Center(
+            content: const Center(
               child: Text("Credentiali errate"),
             ));
       },

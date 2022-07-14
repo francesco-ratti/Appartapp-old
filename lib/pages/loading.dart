@@ -31,6 +31,7 @@ void doInitialisation(BuildContext context, User user,
   }).onError((error, stackTrace) {
     Navigator.restorablePush(
         context, ErrorDialogBuilder.buildConnectionErrorReloadAppRoute);
+    return;
   });
 
   Future<Apartment?> firstApartmentFuture = Future(() {
@@ -51,6 +52,7 @@ void doInitialisation(BuildContext context, User user,
   }).onError((error, stackTrace) {
     Navigator.restorablePush(
         context, ErrorDialogBuilder.buildConnectionErrorReloadAppRoute);
+    return;
   });
 
   Future<LikeFromUser?> firstTenantFuture = Future(() {

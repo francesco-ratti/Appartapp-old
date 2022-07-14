@@ -1,10 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
-
-import '../classes/runtime_store.dart';
 
 
 class Authentication {
@@ -49,8 +47,6 @@ class Authentication {
         await auth.signInWithCredential(credential);
 
         user = userCredential.user;
-        RuntimeStore().getSharedPreferences()?.setBool("credentialslogin", false);
-        RuntimeStore().credentialsLogin=false;
       } on FirebaseAuthException catch (e) {
         if (e.code == 'account-exists-with-different-credential') {
           // handle the error here

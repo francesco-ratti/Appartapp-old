@@ -66,6 +66,7 @@ class _LoginOrSignupState extends State<LoginOrSignup> {
                               _isLoading = isLoading;
                             });
                           },
+                          parentContext: context,
                         );
                       }
                       return const CircularProgressIndicator(

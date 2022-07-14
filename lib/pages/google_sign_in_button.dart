@@ -13,11 +13,13 @@ import 'package:flutter_signin_button/button_view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class GoogleSignInButton extends StatefulWidget {
+  final BuildContext parentContext;
   final String urlStr =
       "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/login";
   final Function(bool) isLoadingCbk;
 
-  const GoogleSignInButton({Key? key, required this.isLoadingCbk})
+  const GoogleSignInButton(
+      {Key? key, required this.isLoadingCbk, required this.parentContext})
       : super(key: key);
 
   @override
@@ -88,8 +90,12 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
               switch (loginResult) {
                 case LoginResult.ok:
                   AppUser.User appUser = res[0];
+                  RuntimeStore()
+                      .getSharedPreferences()
+                      ?.setBool("credentialslogin", false);
+                  RuntimeStore().setCredentialsLogin(false);
                   doInitialisation(
-                      context,
+                      widget.parentContext,
                       appUser,
                       RuntimeStore().getSharedPreferences()
                           as SharedPreferences);

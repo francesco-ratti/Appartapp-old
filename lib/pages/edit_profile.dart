@@ -250,6 +250,10 @@ class _EditProfileState extends State<EditProfile> {
           Padding(
               padding: EdgeInsets.all(8.0),
               child: TextField(
+                style: TextStyle(
+                    color: RuntimeStore().credentialsLogin
+                        ? Colors.black
+                        : Colors.grey),
                 enabled: RuntimeStore().credentialsLogin,
                 obscureText: false,
                 decoration: InputDecoration(
@@ -261,6 +265,10 @@ class _EditProfileState extends State<EditProfile> {
           Padding(
               padding: EdgeInsets.all(8.0),
               child: TextField(
+                style: TextStyle(
+                    color: RuntimeStore().credentialsLogin
+                        ? Colors.black
+                        : Colors.grey),
                 enabled: RuntimeStore().credentialsLogin,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
@@ -271,6 +279,10 @@ class _EditProfileState extends State<EditProfile> {
           Padding(
               padding: EdgeInsets.all(8.0),
               child: TextField(
+                style: TextStyle(
+                    color: RuntimeStore().credentialsLogin
+                        ? Colors.black
+                        : Colors.grey),
                 enabled: RuntimeStore().credentialsLogin,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
@@ -281,24 +293,29 @@ class _EditProfileState extends State<EditProfile> {
           Padding(
               padding: EdgeInsets.all(8.0),
               child: TextField(
+                style: TextStyle(
+                    color: RuntimeStore().credentialsLogin
+                        ? Colors.black
+                        : Colors.grey),
                 controller: birthdayController,
                 readOnly: true,
-                onTap: () {
-                  if (RuntimeStore().credentialsLogin) {
-                    showDatePicker(
-                            context: context,
-                            initialDate: _birthday,
-                            lastDate: DateTime.now(),
-                            firstDate: DateTime(1900))
-                        .then((value) {
-                      if (value != null) {
-                        setState(() {
-                          _birthday = value;
+                enabled: RuntimeStore().credentialsLogin,
+                onTap: RuntimeStore().credentialsLogin
+                    ? () {
+                        showDatePicker(
+                                context: context,
+                                initialDate: _birthday,
+                                lastDate: DateTime.now(),
+                                firstDate: DateTime(1900))
+                            .then((value) {
+                          if (value != null) {
+                            setState(() {
+                              _birthday = value;
+                            });
+                          }
                         });
                       }
-                    });
-                  }
-                },
+                    : null,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: 'Data di nascita',
@@ -306,30 +323,44 @@ class _EditProfileState extends State<EditProfile> {
               )),
           Padding(
               padding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 0.0),
-              child: Text("Genere")),
+              child: Text(
+                "Genere",
+                style: TextStyle(
+                    color: RuntimeStore().credentialsLogin
+                        ? Colors.black
+                        : Colors.grey),
+              )),
           Padding(
               padding: EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 8.0),
-              child: Row(children: [
-                Expanded(
-                    child: DropdownButton<Gender>(
-                  hint: Text("Scegli il tuo genere"),
-                  // Not necessary for Option 1
-                  value: _gender,
-                  onChanged: RuntimeStore().credentialsLogin
-                      ? (newValue) {
-                          setState(() {
-                            _gender = newValue;
-                          });
-                        }
-                      : null,
-                  items: Gender.values.map((gender) {
-                    return DropdownMenuItem(
-                      child: Text(gender.toItalianString()),
-                      value: gender,
-                    );
-                  }).toList(),
-                ))
-              ])),
+              child: //Row(children: [
+                  Expanded(
+                      child: DropdownButton<Gender>(
+                hint: Text("Scegli il tuo genere"),
+                value: _gender,
+                onChanged: RuntimeStore().credentialsLogin
+                    ? (newValue) {
+                        setState(() {
+                          _gender = newValue;
+                        });
+                      }
+                    : null,
+                items: Gender.values.map((gender) {
+                  return DropdownMenuItem(
+                    child: Text(gender.toItalianString()),
+                    value: gender,
+                  );
+                }).toList(),
+              ))
+              //  ])
+              ),
+          RuntimeStore().credentialsLogin
+              ? SizedBox()
+              : Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Text(
+                    "I dati anagrafici sono ottenuti da Google, se li hai modificati esci e accedi nuovamente per aggiornarli",
+                    style: TextStyle(color: Colors.grey),
+                  )),
           RuntimeStore().credentialsLogin
               ? ElevatedButton(
                   child: Text("Modifica"),

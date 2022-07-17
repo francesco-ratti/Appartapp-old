@@ -12,6 +12,10 @@ class ApartmentHandler {
       "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/getallnewapartments";
   static final String urlStrGetOwnedApartments =
       "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/getownedapartments";
+  static final likeApartmentUrlStr =
+      "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/likeapartment";
+  static final ignoreApartmentUrlStr =
+      "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/ignoreapartment";
 
   static Future<List<Apartment>> getOwnedApartments() async {
     var dio = RuntimeStore().dio; //ok
@@ -82,5 +86,36 @@ class ApartmentHandler {
         ]);
 
      */
+  }
+
+  static Future<void> _likeDislikeApartment(
+      String urlString, int apartmentId, Function onError) async {
+    var dio = RuntimeStore().dio; //ok
+    try {
+      Response response = await dio.post(
+        urlString,
+        data: {
+          "apartmentid": apartmentId,
+        },
+        options: Options(
+          contentType: Headers.formUrlEncodedContentType,
+          headers: {"Content-Type": "application/x-www-form-urlencoded"},
+        ),
+      );
+
+      if (response.statusCode != 200) {
+        onError();
+      }
+    } on DioError {
+      onError();
+    }
+  }
+
+  static void likeApartment(int apartmentId, Function onError) async {
+    await _likeDislikeApartment(likeApartmentUrlStr, apartmentId, onError);
+  }
+
+  static void ignoreApartment(int apartmentId, Function onError) async {
+    await _likeDislikeApartment(ignoreApartmentUrlStr, apartmentId, onError);
   }
 }

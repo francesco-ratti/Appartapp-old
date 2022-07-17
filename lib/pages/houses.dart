@@ -7,7 +7,6 @@ import 'package:appartapp/widgets/error_dialog_builder.dart';
 import 'package:appartapp/widgets/ignore_background.dart';
 import 'package:appartapp/widgets/like_background.dart';
 import 'package:appartapp/widgets/retry_widget.dart';
-import 'package:dio/dio.dart';
 import 'package:dismissible_page/dismissible_page.dart';
 import 'package:flutter/material.dart';
 
@@ -19,7 +18,8 @@ class Houses extends StatefulWidget {
   final String likeBackgroundImgStr="assets/GreenBackground.jpg";
   final String ignoreBackgroundImgStr="assets/RedBackground.jpg";
    */
-  Houses({required this.child, required this.firstApartmentFuture});
+  Houses({Key? key, required this.child, required this.firstApartmentFuture})
+      : super(key: key);
 
   final Widget child;
 
@@ -28,7 +28,6 @@ class Houses extends StatefulWidget {
 }
 
 class _HousesState extends State<Houses> {
-  int _currentRoute = 0;
 
   late BackgroundType backgroundType;
 
@@ -126,45 +125,9 @@ class _HousesState extends State<Houses> {
 }
 
 class ContentPage extends StatefulWidget {
-  final likeUrlStr =
-      "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/likeapartment";
-  final ignoreUrlStr =
-      "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/ignoreapartment";
-
   final Function(BackgroundType) backgroundUpdateCbk;
 
-  Future<void> _networkFunction(
-      BuildContext context, String urlString, int apartmentId) async {
-    var dio = RuntimeStore().dio; //ok
-    try {
-      Response response = await dio.post(
-        urlString,
-        data: {
-          "apartmentid": apartmentId,
-        },
-        options: Options(
-          contentType: Headers.formUrlEncodedContentType,
-          headers: {"Content-Type": "application/x-www-form-urlencoded"},
-        ),
-      );
 
-      if (response.statusCode != 200) {
-        Navigator.restorablePush(
-            context, ErrorDialogBuilder.buildGenericConnectionErrorRoute);
-      }
-    } on DioError {
-      Navigator.restorablePush(
-          context, ErrorDialogBuilder.buildConnectionErrorRoute);
-    }
-  }
-
-  void likeApartment(BuildContext context, int apartmentId) async {
-    await _networkFunction(context, likeUrlStr, apartmentId);
-  }
-
-  void ignoreApartment(BuildContext context, int apartmentId) async {
-    await _networkFunction(context, ignoreUrlStr, apartmentId);
-  }
 
 //Function updateHouses;
   Future<Apartment?> currentApartmentFuture;
@@ -254,10 +217,20 @@ class _ContentPage extends State<ContentPage> {
                     if (currentApartment != null) {
                       if (finalCoord < initialCoord) {
                         //widget.backgroundImgStrUpdateCbk(BackgroundType.like);
-                        widget.likeApartment(context, currentApartment!.id);
+                        ApartmentHandler.likeApartment(currentApartment!.id,
+                            () {
+                          //onError
+                          Navigator.restorablePush(context,
+                              ErrorDialogBuilder.buildConnectionErrorRoute);
+                        });
                       } else {
                         //widget.backgroundImgStrUpdateCbk(BackgroundType.ignore);
-                        widget.ignoreApartment(context, currentApartment!.id);
+                        ApartmentHandler.ignoreApartment(currentApartment!.id,
+                            () {
+                          //onError
+                          Navigator.restorablePush(context,
+                              ErrorDialogBuilder.buildConnectionErrorRoute);
+                        });
                       }
                     }
                     Navigator.of(context).pop();

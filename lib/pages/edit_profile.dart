@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:appartapp/entities/user.dart';
 import 'package:appartapp/enums/enum_gender.dart';
 import 'package:appartapp/model/login_handler.dart';
+import 'package:appartapp/model/user_handler.dart';
 import 'package:appartapp/pages/reinsert_password.dart';
 import 'package:appartapp/utils_classes/google_authentication.dart';
 import 'package:appartapp/utils_classes/runtime_store.dart';
@@ -13,14 +14,6 @@ import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
 class EditProfile extends StatefulWidget {
-  String urlStr =
-      "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/edituser";
-  String urlPwdStr =
-      "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/editsensitive";
-  String addImagesUrlStr =
-      "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/adduserimage";
-  String removeImagesUrlStr =
-      "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/deleteuserimage";
   Color bgColor = Colors.white;
 
   @override
@@ -62,88 +55,6 @@ class _EditProfileState extends State<EditProfile> {
     });
   }
 
-  void addImages(Function cbk, List<File> files) async {
-    var dio = RuntimeStore().dio; //ok
-    try {
-      var formData = FormData();
-
-      for (final File file in files) {
-        MultipartFile mpfile =
-            await MultipartFile.fromFile(file.path, filename: "filename.jpg");
-        formData.files.add(MapEntry("images", mpfile));
-      }
-
-      Response response = await dio.post(
-        widget.addImagesUrlStr,
-        data: formData,
-        options: Options(
-          contentType: Headers.formUrlEncodedContentType,
-          headers: {"Content-Type": "multipart/form-data"},
-        ),
-      );
-
-      if (response.statusCode != 200) {
-        _uploadError = true;
-      }
-
-      cbk();
-    } on DioError {
-      _uploadError = true;
-      cbk();
-    }
-  }
-
-  void removeImage(Function cbk, String id) async {
-    var dio = RuntimeStore().dio; //ok
-    try {
-      Response response = await dio.post(
-        widget.removeImagesUrlStr,
-        data: {"id": id},
-        options: Options(
-          contentType: Headers.formUrlEncodedContentType,
-          headers: {"Content-Type": "application/x-www-form-urlencoded"},
-        ),
-      );
-
-      if (response.statusCode != 200) {
-        _uploadError = true;
-      }
-
-      cbk();
-    } on DioError {
-      _uploadError = true;
-      cbk();
-    }
-  }
-
-  void doUpdate(Function cbk, String name, String surname, DateTime birthday,
-      Gender gender) async {
-    var dio = RuntimeStore().dio; //ok
-    try {
-      Response response = await dio.post(
-        widget.urlStr,
-        data: {
-          "name": name,
-          "surname": surname,
-          "birthday": birthday.millisecondsSinceEpoch.toString(),
-          "gender": gender.toShortString(),
-        },
-        options: Options(
-          contentType: Headers.formUrlEncodedContentType,
-          headers: {"Content-Type": "application/x-www-form-urlencoded"},
-        ),
-      );
-
-      if (response.statusCode != 200) {
-        _uploadError = true;
-      }
-      cbk();
-    } on DioError catch (e) {
-      _uploadError = true;
-      cbk();
-    }
-  }
-
   final emailController = TextEditingController();
   final nameController = TextEditingController();
   final surnameController = TextEditingController();
@@ -180,16 +91,19 @@ class _EditProfileState extends State<EditProfile> {
       Map im = RuntimeStore().getUser()!.imagesDetails[i];
       existingImages.add(GalleryImage(
           RuntimeStore().getUser()!.images[i],
-          () => () {
-                removeImage(() {
-                  uploadCtr++;
-                  if (uploadCtr == numUploads) {
-                    onUploadsEnd();
-                  }
-                },
-                    im['id']
-                        .toString()); //returns a cbk function which will be invoked at submit
-              }));
+              () =>
+              () {
+            UserHandler.removeImage(() {
+              uploadCtr++;
+              if (uploadCtr == numUploads) {
+                onUploadsEnd();
+              }
+            },
+                im['id']
+                    .toString(), () {
+                  _uploadError = true;
+                }); //returns a cbk function which will be invoked at submit
+          }));
     }
     /*
     for (Map im in RuntimeStore()
@@ -389,22 +303,36 @@ class _EditProfileState extends State<EditProfile> {
                         fun();
                       }
                       if (_images.isNotEmpty) {
-                        addImages(() {
-                          uploadCtr++;
-                          if (uploadCtr == numUploads) {
-                            onUploadsEnd();
-                          }
-                        }, _images);
+                        UserHandler.addImages(
+                            () {
+                              uploadCtr++;
+                              if (uploadCtr == numUploads) {
+                                onUploadsEnd();
+                              }
+                            },
+                            _images,
+                            () {
+                              _uploadError = true;
+                            });
                       }
 
-                      doUpdate(() {
-                        uploadCtr++;
-                        if (uploadCtr == numUploads) {
-                          onUploadsEnd();
-                        }
-                      }, name, surname, _birthday, _gender as Gender);
+                      UserHandler.editInformation(
+                          () {
+                            uploadCtr++;
+                            if (uploadCtr == numUploads) {
+                              onUploadsEnd();
+                            }
+                          },
+                          name,
+                          surname,
+                          _birthday,
+                          _gender as Gender,
+                          () {
+                            _uploadError = true;
+                          });
 
-                      if (email != RuntimeStore().getUser()?.email) {
+                      String oldEmail = RuntimeStore().getUser()!.email;
+                      if (email != oldEmail) {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -413,86 +341,28 @@ class _EditProfileState extends State<EditProfile> {
                                         "Reinserisci la tua password per modificare l'email",
                                     callback: (String password,
                                         Function(bool, String) updateUi) async {
-                                      updateUi(true, "");
-                                      var dio = RuntimeStore().dio; //ok
-                                      try {
-                                        Response response = await dio.post(
-                                          widget.urlPwdStr,
-                                          data: {
-                                            "newemail": email,
-                                            "password": password,
-                                          },
-                                          options: Options(
-                                            contentType: Headers
-                                                .formUrlEncodedContentType,
-                                            headers: {
-                                              "Content-Type":
-                                                  "application/x-www-form-urlencoded"
-                                            },
-                                          ),
-                                        );
-
-                                        if (response.statusCode == 200) {
-                                          Map responseMap = response.data;
-                                          User newUser =
-                                              User.fromMap(responseMap);
-                                          RuntimeStore().setUser(newUser);
-                                          setState(() {
-                                            user = newUser;
-                                            init();
-                                          });
-                                          //updateUi(false, "");
-                                          Navigator.pop(context);
-                                        } else if (response.statusCode == 401) {
-                                          //unauthorized
-                                          String oldEmail = RuntimeStore()
-                                              .getUser()
-                                              ?.email as String;
-                                          emailController.text = oldEmail;
-                                          updateUi(false, "Password errata");
-                                        } else {
-                                          String oldEmail = RuntimeStore()
-                                              .getUser()
-                                              ?.email as String;
-                                          emailController.text = oldEmail;
-
-                                          updateUi(false, "");
-                                          Navigator.restorablePush(
-                                              context,
-                                              ErrorDialogBuilder
-                                                  .buildGenericConnectionErrorRoute);
-                                        }
-                                      } on DioError catch (e) {
-                                        updateUi(false, "");
-                                        String oldEmail = RuntimeStore()
-                                            .getUser()
-                                            ?.email as String;
-                                        emailController.text = oldEmail;
-
-                                        if (e.type ==
-                                                DioErrorType.connectTimeout ||
-                                            e.type ==
-                                                DioErrorType.receiveTimeout ||
-                                            e.type == DioErrorType.other ||
-                                            e.type ==
-                                                DioErrorType.sendTimeout ||
-                                            e.type == DioErrorType.cancel) {
-                                          Navigator.restorablePush(
-                                              context,
-                                              ErrorDialogBuilder
-                                                  .buildConnectionErrorRoute);
-                                        } else if (e.response?.statusCode ==
-                                            401) {
-                                          //unauthorized
-                                          updateUi(false, "Password errata");
-                                        } else {
-                                          Navigator.restorablePush(
-                                              context,
-                                              ErrorDialogBuilder
-                                                  .buildGenericConnectionErrorRoute);
-                                        }
-                                      }
+                                      UserHandler.updateEmail(
+                                          email, password, updateUi,
+                                          (User newUser) {
+                                        //onComplete
+                                        RuntimeStore().setUser(newUser);
+                                        setState(() {
+                                          user = newUser;
+                                          init();
+                                        });
+                                        //updateUi(false, "");
+                                        Navigator.pop(context);
+                                      }, () {
+                                        //onConnectionError
+                                        Navigator.restorablePush(
+                                            context,
+                                            ErrorDialogBuilder
+                                                .buildConnectionErrorRoute);
+                                      });
                                     })));
+                        setState(() {
+                          emailController.text = oldEmail;
+                        });
                       }
                     } else {
                       setState(() {
@@ -510,11 +380,11 @@ class _EditProfileState extends State<EditProfile> {
           ),
           RuntimeStore().credentialsLogin
               ? ElevatedButton(
-                  child: Text("Aggiorna la password"),
-                  style: ElevatedButton.styleFrom(primary: Colors.brown),
-                  onPressed: () {
-                    Navigator.pushNamed(context, "/editpassword");
-                  })
+              child: Text("Aggiorna la password"),
+              style: ElevatedButton.styleFrom(primary: Colors.brown),
+              onPressed: () {
+                Navigator.pushNamed(context, "/editpassword");
+              })
               : const SizedBox(),
           ElevatedButton(
               child: Text("Modifica informazioni locatario"),

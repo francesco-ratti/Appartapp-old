@@ -1,3 +1,4 @@
+import 'package:appartapp/entities/user.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
@@ -30,50 +31,50 @@ class _InsertPasswordState extends State<InsertPassword> {
         body: ModalProgressHUD(
           child: LayoutBuilder(
               builder: (context, constraints) => ListView(children: [
-                    Container(
-                        constraints: BoxConstraints(
-                          minHeight: constraints.maxHeight,
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Padding(
-                                padding: const EdgeInsets.all(16.0),
-                                child: Text(
-                                  _status,
-                                  style: const TextStyle(fontSize: 20),
-                                )),
-                            Padding(
-                                padding: EdgeInsets.all(16.0),
-                                child: Text(widget.description)),
-                            Padding(
-                                padding: EdgeInsets.all(16.0),
-                                child: TextField(
-                                  obscureText: true,
-                                  decoration: InputDecoration(
-                                    border: OutlineInputBorder(),
-                                    labelText: 'Password',
-                                  ),
-                                  controller: passwordController,
-                                )),
-                            ElevatedButton(
-                child: Text("Modifica"),
-                style: ElevatedButton.styleFrom(primary: Colors.brown),
-                                onPressed: () {
-                                  String password =
-                                      passwordController.text.trim();
-                                  widget.callback(password,
+                Container(
+                    constraints: BoxConstraints(
+                      minHeight: constraints.maxHeight,
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Text(
+                              _status,
+                              style: const TextStyle(fontSize: 20),
+                            )),
+                        Padding(
+                            padding: EdgeInsets.all(16.0),
+                            child: Text(widget.description)),
+                        Padding(
+                            padding: EdgeInsets.all(16.0),
+                            child: TextField(
+                              obscureText: true,
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(),
+                                labelText: 'Password',
+                              ),
+                              controller: passwordController,
+                            )),
+                        ElevatedButton(
+                            child: Text("Modifica"),
+                            style: ElevatedButton.styleFrom(primary: Colors.brown),
+                            onPressed: () {
+                              String password =
+                              passwordController.text.trim();
+                              widget.callback(password,
                                       (bool isLoading, String status) {
                                     setState(() {
                                       _status = status;
                                       _isLoading = isLoading;
                                     });
                                   });
-                                }),
-                          ],
-                        ))
-                  ])),
+                            }),
+                      ],
+                    ))
+              ])),
           inAsyncCall: _isLoading,
           // demo of some additional parameters
           opacity: 0.5,

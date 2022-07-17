@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:appartapp/entities/like_from_user.dart';
 import 'package:appartapp/entities/user.dart';
+import 'package:appartapp/enums/enum_gender.dart';
 import 'package:appartapp/enums/enum_month.dart';
 import 'package:appartapp/enums/enum_temporalq.dart';
 import 'package:appartapp/exceptions/connection_exception.dart';
@@ -23,6 +26,11 @@ class UserHandler {
       "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/likeuser";
   static const ignoreUserUrlStr =
       "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/ignoreuser";
+
+  static const String addImagesUrlStr =
+      "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/adduserimage";
+  static const String removeImagesUrlStr =
+      "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/deleteuserimage";
 
   static Future<LikeFromUser?> getNewLikeFromUser(
       Function(LikeFromUser) callback) async {
@@ -72,8 +80,7 @@ class UserHandler {
     }
   }
 
-  static void editTenantInformation(
-      String bio,
+  static void editTenantInformation(String bio,
       String reason,
       String job,
       String income,
@@ -114,8 +121,7 @@ class UserHandler {
     }
   }
 
-  static Future<void> _likeIgnoreNetworkFunction(
-      String urlString, int userId, int apartmentId, Function onError) async {
+  static Future<void> _likeIgnoreNetworkFunction(String urlString, int userId, int apartmentId, Function onError) async {
     var dio = RuntimeStore().dio; //ok
     try {
       Response response = await dio.post(
@@ -147,5 +153,139 @@ class UserHandler {
       int tenantId, int apartmentId, Function onError) async {
     await _likeIgnoreNetworkFunction(
         ignoreUserUrlStr, tenantId, apartmentId, onError);
+  }
+
+  static void addImages(
+      Function cbk, List<File> files, Function onError) async {
+    var dio = RuntimeStore().dio; //ok
+    try {
+      var formData = FormData();
+
+      for (final File file in files) {
+        MultipartFile mpfile =
+            await MultipartFile.fromFile(file.path, filename: "filename.jpg");
+        formData.files.add(MapEntry("images", mpfile));
+      }
+
+      Response response = await dio.post(
+        addImagesUrlStr,
+        data: formData,
+        options: Options(
+          contentType: Headers.formUrlEncodedContentType,
+          headers: {"Content-Type": "multipart/form-data"},
+        ),
+      );
+
+      if (response.statusCode != 200) {
+        onError();
+      }
+
+      cbk();
+    } on DioError {
+      onError();
+      cbk();
+    }
+  }
+
+  static void removeImage(Function cbk, String id, Function onError) async {
+    var dio = RuntimeStore().dio; //ok
+    try {
+      Response response = await dio.post(
+        removeImagesUrlStr,
+        data: {"id": id},
+        options: Options(
+          contentType: Headers.formUrlEncodedContentType,
+          headers: {"Content-Type": "application/x-www-form-urlencoded"},
+        ),
+      );
+
+      if (response.statusCode != 200) {
+        onError();
+      }
+
+      cbk();
+    } on DioError {
+      onError();
+      cbk();
+    }
+  }
+
+  static void editInformation(Function cbk, String name, String surname,
+      DateTime birthday, Gender gender, Function onError) async {
+    var dio = RuntimeStore().dio; //ok
+    try {
+      Response response = await dio.post(
+        editUserUrlStr,
+        data: {
+          "name": name,
+          "surname": surname,
+          "birthday": birthday.millisecondsSinceEpoch.toString(),
+          "gender": gender.toShortString(),
+        },
+        options: Options(
+          contentType: Headers.formUrlEncodedContentType,
+          headers: {"Content-Type": "application/x-www-form-urlencoded"},
+        ),
+      );
+
+      if (response.statusCode != 200) {
+        onError();
+      }
+      cbk();
+    } on DioError {
+      onError();
+      cbk();
+    }
+  }
+
+  static void updateEmail(
+      String email,
+      String password,
+      Function(bool, String) updateUi,
+      Function(User) onComplete,
+      Function onConnectionError) async {
+    updateUi(true, "");
+    var dio = RuntimeStore().dio; //ok
+    try {
+      Response response = await dio.post(
+        editSensitiveUrlStr,
+        data: {
+          "newemail": email,
+          "password": password,
+        },
+        options: Options(
+          contentType: Headers.formUrlEncodedContentType,
+          headers: {"Content-Type": "application/x-www-form-urlencoded"},
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        Map responseMap = response.data;
+        User newUser = User.fromMap(responseMap);
+
+        onComplete(newUser);
+      } else if (response.statusCode == 401) {
+        //unauthorized
+        updateUi(false, "Password errata");
+      } else {
+        updateUi(false, "");
+        onConnectionError();
+      }
+    } on DioError catch (e) {
+      updateUi(false, "");
+
+      if (e.type == DioErrorType.connectTimeout ||
+          e.type == DioErrorType.receiveTimeout ||
+          e.type == DioErrorType.other ||
+          e.type == DioErrorType.sendTimeout ||
+          e.type == DioErrorType.cancel) {
+        onConnectionError();
+      } else if (e.response?.statusCode == 401) {
+        //unauthorized
+        updateUi(false, "Password errata");
+      } else {
+        onConnectionError();
+      }
+    }
   }
 }

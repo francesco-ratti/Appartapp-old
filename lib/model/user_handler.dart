@@ -1,4 +1,5 @@
 import 'package:appartapp/entities/like_from_user.dart';
+import 'package:appartapp/entities/user.dart';
 import 'package:appartapp/enums/enum_month.dart';
 import 'package:appartapp/enums/enum_temporalq.dart';
 import 'package:appartapp/exceptions/connection_exception.dart';
@@ -6,16 +7,16 @@ import 'package:appartapp/utils_classes/runtime_store.dart';
 import 'package:dio/dio.dart';
 
 class UserHandler {
-  static final String urlStrGetNextNewUser =
+  static const String urlStrGetNextNewUser =
       "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/getnextnewuser";
 
-  static final String editUserUrlStr =
+  static const String editUserUrlStr =
       "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/edituser";
 
   /*final String urlStrGetAllNewUsers =
       "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/getallnewusers";*/
 
-  static final String editSensitiveUrlStr =
+  static const String editSensitiveUrlStr =
       "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/editsensitive";
 
   static Future<LikeFromUser?> getNewLikeFromUser(
@@ -66,7 +67,7 @@ class UserHandler {
     }
   }
 
-  static void editUser(
+  static void editTenantInformation(
       String bio,
       String reason,
       String job,
@@ -74,7 +75,7 @@ class UserHandler {
       String pets,
       Month? month,
       TemporalQ? smoker,
-      Function(Response) onComplete,
+      Function(User) onComplete,
       Function onError) async {
     var dio = RuntimeStore().dio; //ok
     try {
@@ -96,7 +97,10 @@ class UserHandler {
       );
 
       if (response.statusCode == 200) {
-        onComplete(response);
+        Map responseMap = response.data;
+        User user = User.fromMap(responseMap);
+
+        onComplete(user);
       } else {
         onError();
       }

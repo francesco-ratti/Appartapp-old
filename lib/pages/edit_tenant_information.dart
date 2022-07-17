@@ -4,7 +4,6 @@ import 'package:appartapp/enums/enum_temporalq.dart';
 import 'package:appartapp/model/user_handler.dart';
 import 'package:appartapp/utils_classes/runtime_store.dart';
 import 'package:appartapp/widgets/error_dialog_builder.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
@@ -240,12 +239,11 @@ class _EditTenantInformationState extends State<EditTenantInformation> {
                       _isLoading = true;
                     });
 
-                    UserHandler.editUser(
+                    UserHandler.editTenantInformation(
                         bio, reason, job, income, pets, _month, _smokerTQ,
-                        (Response response) {
+                        (User user) {
                       //onComplete
-                      Map responseMap = response.data;
-                      RuntimeStore().setUser(User.fromMap(responseMap));
+                      RuntimeStore().setUser(user);
                       Function() cbk = RuntimeStore().tenantInfoUpdated;
                       if (cbk != null) {
                         cbk();

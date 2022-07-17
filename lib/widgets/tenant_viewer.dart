@@ -1,5 +1,5 @@
-import 'package:appartapp/classes/like_from_user.dart';
-import 'package:appartapp/classes/runtime_store.dart';
+import 'package:appartapp/entities/like_from_user.dart';
+import 'package:appartapp/utils_classes/runtime_store.dart';
 import 'package:appartapp/widgets/tab_widget_lessor.dart';
 import 'package:appartapp/widgets/tab_widget_loading.dart';
 import 'package:appartapp/widgets/tab_widget_tenant.dart';

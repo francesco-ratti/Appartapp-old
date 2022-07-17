@@ -1,7 +1,5 @@
-import 'package:appartapp/classes/enum_gender.dart';
-import 'package:appartapp/classes/enum_month.dart';
-import 'package:appartapp/classes/enum_temporalq.dart';
-import 'package:appartapp/classes/user.dart';
+import 'package:appartapp/entities/user.dart';
+import 'package:appartapp/enums/enum_gender.dart';
 import 'package:appartapp/widgets/display_text.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';

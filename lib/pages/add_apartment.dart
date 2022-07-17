@@ -1,13 +1,12 @@
 import 'dart:io';
 
-import 'package:appartapp/classes/apartment.dart';
-import 'package:appartapp/classes/runtime_store.dart';
+import 'package:appartapp/entities/apartment.dart';
+import 'package:appartapp/utils_classes/runtime_store.dart';
+import 'package:appartapp/widgets/error_dialog_builder.dart';
 import 'package:appartapp/widgets/img_gallery.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
-
-import '../widgets/error_dialog_builder.dart';
 
 class AddApartment extends StatefulWidget {
   final Apartment? toEdit;

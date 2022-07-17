@@ -1,9 +1,8 @@
-import 'package:appartapp/classes/user.dart';
+import 'package:appartapp/entities/like_from_user.dart';
+import 'package:appartapp/entities/user.dart';
+import 'package:appartapp/exceptions/connection_exception.dart';
+import 'package:appartapp/utils_classes/runtime_store.dart';
 import 'package:dio/dio.dart';
-
-import 'connection_exception.dart';
-import 'like_from_user.dart';
-import 'runtime_store.dart';
 
 class UserHandler {
   //SINGLETON PATTERN

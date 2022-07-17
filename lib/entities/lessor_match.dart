@@ -1,4 +1,4 @@
-import 'package:appartapp/classes/apartment.dart';
+import 'package:appartapp/entities/apartment.dart';
 
 class LessorMatch {
   Apartment apartment;

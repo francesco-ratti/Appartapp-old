@@ -1,6 +1,4 @@
-import 'dart:ui';
-
-import 'package:appartapp/classes/user.dart';
+import 'package:appartapp/entities/user.dart';
 import 'package:blur/blur.dart';
 import 'package:flutter/material.dart';
 

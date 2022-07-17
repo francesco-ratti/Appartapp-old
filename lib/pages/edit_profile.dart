@@ -1,11 +1,11 @@
 import 'dart:io';
 
-import 'package:appartapp/classes/enum_gender.dart';
-import 'package:appartapp/classes/login_handler.dart';
-import 'package:appartapp/classes/runtime_store.dart';
-import 'package:appartapp/classes/user.dart';
+import 'package:appartapp/enums/enum_gender.dart';
+import 'package:appartapp/utils_classes/login_handler.dart';
+import 'package:appartapp/utils_classes/runtime_store.dart';
+import 'package:appartapp/entities/user.dart';
 import 'package:appartapp/pages/reinsert_password.dart';
-import 'package:appartapp/utils/authentication.dart';
+import 'package:appartapp/utils_classes/authentication.dart';
 import 'package:appartapp/widgets/error_dialog_builder.dart';
 import 'package:appartapp/widgets/img_gallery.dart';
 import 'package:dio/dio.dart';

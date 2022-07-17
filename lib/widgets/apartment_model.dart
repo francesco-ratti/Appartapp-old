@@ -1,8 +1,4 @@
-import 'dart:ui';
-
-import 'package:appartapp/classes/apartment.dart';
-import 'package:appartapp/classes/apartment_handler.dart';
-import 'package:appartapp/pages/houses.dart';
+import 'package:appartapp/entities/apartment.dart';
 import 'package:flutter/material.dart';
 
 class ApartmentModel extends StatefulWidget {

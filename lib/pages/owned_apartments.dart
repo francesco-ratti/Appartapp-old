@@ -1,8 +1,8 @@
-import 'package:appartapp/classes/apartment.dart';
-import 'package:appartapp/classes/apartment_handler.dart';
-import 'package:appartapp/classes/connection_exception.dart';
-import 'package:appartapp/classes/runtime_store.dart';
+import 'package:appartapp/entities/apartment.dart';
+import 'package:appartapp/exceptions/connection_exception.dart';
 import 'package:appartapp/pages/add_apartment.dart';
+import 'package:appartapp/utils_classes/apartment_handler.dart';
+import 'package:appartapp/utils_classes/runtime_store.dart';
 import 'package:appartapp/widgets/apartment_viewer.dart';
 import 'package:appartapp/widgets/retry_widget.dart';
 import 'package:flutter/material.dart';

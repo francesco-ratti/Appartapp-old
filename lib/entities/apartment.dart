@@ -1,5 +1,5 @@
-import 'package:appartapp/classes/runtime_store.dart';
-import 'package:appartapp/classes/user.dart';
+import 'package:appartapp/entities/user.dart';
+import 'package:appartapp/utils_classes/runtime_store.dart';
 import 'package:appartapp/widgets/error_dialog_builder.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';

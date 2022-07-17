@@ -1,13 +1,13 @@
-import 'package:appartapp/classes/apartment.dart';
-import 'package:appartapp/classes/apartment_handler.dart';
-import 'package:appartapp/classes/enum_loginresult.dart';
-import 'package:appartapp/classes/first_arguments.dart';
-import 'package:appartapp/classes/like_from_user.dart';
-import 'package:appartapp/classes/login_handler.dart';
-import 'package:appartapp/classes/match_handler.dart';
-import 'package:appartapp/classes/runtime_store.dart';
-import 'package:appartapp/classes/user.dart';
-import 'package:appartapp/classes/user_handler.dart';
+import 'package:appartapp/entities/apartment.dart';
+import 'package:appartapp/entities/like_from_user.dart';
+import 'package:appartapp/entities/user.dart';
+import 'package:appartapp/enums/enum_loginresult.dart';
+import 'package:appartapp/utils_classes/apartment_handler.dart';
+import 'package:appartapp/utils_classes/first_arguments.dart';
+import 'package:appartapp/utils_classes/login_handler.dart';
+import 'package:appartapp/utils_classes/match_handler.dart';
+import 'package:appartapp/utils_classes/runtime_store.dart';
+import 'package:appartapp/utils_classes/user_handler.dart';
 import 'package:appartapp/widgets/error_dialog_builder.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +16,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 void doInitialisation(BuildContext context, User user,
     SharedPreferences sharedPreferences) async {
-
   sharedPreferences.setBool("logged", true);
   RuntimeStore().credentialsLogin =
       sharedPreferences.getBool("credentialslogin")!;
@@ -127,7 +126,7 @@ class _LoadingState extends State<Loading> {
           });
         }
       } else {
-        Navigator.pushReplacementNamed(context, '/first', arguments: prefs);
+        Navigator.pushReplacementNamed(context, '/tour', arguments: prefs);
       }
     });
   }

@@ -1,10 +1,9 @@
-import 'package:appartapp/classes/email_validator.dart';
-import 'package:appartapp/classes/enum_gender.dart';
-import 'package:appartapp/classes/runtime_store.dart';
-import 'package:appartapp/classes/user.dart';
+import 'package:appartapp/entities/user.dart';
+import 'package:appartapp/enums/enum_gender.dart';
 import 'package:appartapp/pages/loading.dart';
+import 'package:appartapp/utils_classes/email_validator.dart';
+import 'package:appartapp/utils_classes/runtime_store.dart';
 import 'package:appartapp/widgets/error_dialog_builder.dart';
-//import './../SimpleTextField.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';

@@ -1,8 +1,8 @@
 import 'dart:io';
 import 'dart:ui';
 
-import 'package:appartapp/classes/apartment.dart';
-import 'package:appartapp/classes/user.dart';
+import 'package:appartapp/entities/apartment.dart';
+import 'package:appartapp/entities/user.dart';
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';

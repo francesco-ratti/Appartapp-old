@@ -1,6 +1,6 @@
-import 'package:appartapp/classes/apartment.dart';
-import 'package:appartapp/classes/like_from_user.dart';
-import 'package:appartapp/classes/user.dart';
+import 'package:appartapp/entities/apartment.dart';
+import 'package:appartapp/entities/like_from_user.dart';
+import 'package:appartapp/entities/user.dart';
 import 'package:appartapp/widgets/contact_apartment.dart';
 import 'package:appartapp/widgets/display_text.dart';
 import 'package:appartapp/widgets/tenant_viewer.dart';

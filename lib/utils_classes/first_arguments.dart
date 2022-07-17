@@ -1,5 +1,5 @@
-import 'package:appartapp/classes/apartment.dart';
-import 'package:appartapp/classes/like_from_user.dart';
+import 'package:appartapp/entities/apartment.dart';
+import 'package:appartapp/entities/like_from_user.dart';
 
 class FirstArguments {
   late Future<Apartment?> firstApartmentFuture;

@@ -1,5 +1,5 @@
-import 'package:appartapp/classes/apartment.dart';
-import 'package:appartapp/classes/connection_exception.dart';
+import 'package:appartapp/entities/apartment.dart';
+import 'package:appartapp/exceptions/connection_exception.dart';
 import 'package:dio/dio.dart';
 
 import 'runtime_store.dart';

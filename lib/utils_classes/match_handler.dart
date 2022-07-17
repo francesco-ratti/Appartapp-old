@@ -1,6 +1,6 @@
-import 'package:appartapp/classes/connection_exception.dart';
-import 'package:appartapp/classes/lessor_match.dart';
-import 'package:appartapp/classes/runtime_store.dart';
+import 'package:appartapp/entities/lessor_match.dart';
+import 'package:appartapp/exceptions/connection_exception.dart';
+import 'package:appartapp/utils_classes/runtime_store.dart';
 import 'package:collection/collection.dart';
 import 'package:dio/dio.dart';
 

@@ -1,9 +1,9 @@
-import 'package:appartapp/classes/connection_exception.dart';
-import 'package:appartapp/classes/enum_loginresult.dart';
-import 'package:appartapp/classes/runtime_store.dart';
-import 'package:appartapp/classes/user.dart' as AppUser;
+import 'package:appartapp/entities/user.dart' as AppUser;
+import 'package:appartapp/enums/enum_loginresult.dart';
+import 'package:appartapp/exceptions/connection_exception.dart';
 import 'package:appartapp/pages/loading.dart';
-import 'package:appartapp/utils/authentication.dart';
+import 'package:appartapp/utils_classes/authentication.dart';
+import 'package:appartapp/utils_classes/runtime_store.dart';
 import 'package:appartapp/widgets/error_dialog_builder.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart' as Fb;

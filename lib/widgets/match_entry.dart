@@ -1,4 +1,4 @@
-import 'package:appartapp/classes/lessor_match.dart';
+import 'package:appartapp/entities/lessor_match.dart';
 import 'package:flutter/material.dart';
 
 class MatchEntry extends StatelessWidget {

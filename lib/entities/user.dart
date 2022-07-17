@@ -1,8 +1,7 @@
-import 'package:appartapp/classes/enum_gender.dart';
-import 'package:appartapp/classes/enum_month.dart';
+import 'package:appartapp/enums/enum_gender.dart';
+import 'package:appartapp/enums/enum_month.dart';
+import 'package:appartapp/enums/enum_temporalq.dart';
 import 'package:flutter/material.dart';
-
-import 'enum_temporalq.dart';
 
 class User {
   int id;

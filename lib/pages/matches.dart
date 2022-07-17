@@ -1,10 +1,12 @@
-import 'package:appartapp/classes/lessor_match.dart';
-import 'package:appartapp/classes/runtime_store.dart';
+import 'package:appartapp/entities/lessor_match.dart';
+import 'package:appartapp/utils_classes/runtime_store.dart';
 import 'package:appartapp/widgets/apartment_viewer.dart';
 import 'package:appartapp/widgets/match_entry.dart';
 import 'package:flutter/material.dart';
 
 class Matches extends StatefulWidget {
+  const Matches({Key? key}) : super(key: key);
+
   @override
   _MatchesState createState() => _MatchesState();
 }

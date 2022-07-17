@@ -1,7 +1,7 @@
-import 'package:appartapp/classes/connection_exception.dart';
-import 'package:appartapp/classes/enum_loginresult.dart';
-import 'package:appartapp/classes/runtime_store.dart';
-import 'package:appartapp/classes/user.dart';
+import 'package:appartapp/entities/user.dart';
+import 'package:appartapp/enums/enum_loginresult.dart';
+import 'package:appartapp/exceptions/connection_exception.dart';
+import 'package:appartapp/utils_classes/runtime_store.dart';
 import 'package:dio/dio.dart';
 
 class LoginHandler {

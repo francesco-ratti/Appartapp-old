@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class First extends StatelessWidget {
+class Tour extends StatelessWidget {
   late SharedPreferences prefs;
   bool gotPrefs = false;
 

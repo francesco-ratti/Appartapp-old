@@ -1,6 +1,6 @@
-import 'package:appartapp/classes/lessor_match.dart';
-import 'package:appartapp/classes/runtime_store.dart';
+import 'package:appartapp/entities/lessor_match.dart';
 import 'package:appartapp/pages/home.dart';
+import 'package:appartapp/utils_classes/runtime_store.dart';
 import 'package:appartapp/widgets/apartment_viewer.dart';
 import 'package:appartapp/widgets/match_entry.dart';
 import 'package:flutter/cupertino.dart';

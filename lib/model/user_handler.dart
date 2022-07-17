@@ -19,6 +19,11 @@ class UserHandler {
   static const String editSensitiveUrlStr =
       "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/editsensitive";
 
+  static const likeUserUrlStr =
+      "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/likeuser";
+  static const ignoreUserUrlStr =
+      "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/ignoreuser";
+
   static Future<LikeFromUser?> getNewLikeFromUser(
       Function(LikeFromUser) callback) async {
     var dio = RuntimeStore().dio; //ok
@@ -107,5 +112,40 @@ class UserHandler {
     } on DioError {
       onError();
     }
+  }
+
+  static Future<void> _likeIgnoreNetworkFunction(
+      String urlString, int userId, int apartmentId, Function onError) async {
+    var dio = RuntimeStore().dio; //ok
+    try {
+      Response response = await dio.post(
+        urlString,
+        data: {
+          "userid": userId, //the tenant I like or ignore
+          "apartmentid": apartmentId
+        },
+        options: Options(
+          contentType: Headers.formUrlEncodedContentType,
+          headers: {"Content-Type": "application/x-www-form-urlencoded"},
+        ),
+      );
+
+      if (response.statusCode != 200) {
+        onError();
+      }
+    } on DioError {
+      onError();
+    }
+  }
+
+  static void likeUser(int tenantId, int apartmentId, Function onError) async {
+    await _likeIgnoreNetworkFunction(
+        likeUserUrlStr, tenantId, apartmentId, onError);
+  }
+
+  static void ignoreUser(
+      int tenantId, int apartmentId, Function onError) async {
+    await _likeIgnoreNetworkFunction(
+        ignoreUserUrlStr, tenantId, apartmentId, onError);
   }
 }

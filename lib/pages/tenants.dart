@@ -11,14 +11,14 @@ import 'package:appartapp/widgets/ignore_background.dart';
 import 'package:appartapp/widgets/like_background.dart';
 import 'package:appartapp/widgets/retry_widget.dart';
 import 'package:appartapp/widgets/tenant_viewer.dart';
-import 'package:dio/dio.dart';
 import 'package:dismissible_page/dismissible_page.dart';
 import 'package:flutter/material.dart';
 
 class Tenants extends StatefulWidget {
   final Future<LikeFromUser?> firstTenantFuture;
 
-  Tenants({Key? key, required this.child, required this.firstTenantFuture})
+  const Tenants(
+      {Key? key, required this.child, required this.firstTenantFuture})
       : super(key: key);
 
   final Widget child;
@@ -28,8 +28,6 @@ class Tenants extends StatefulWidget {
 }
 
 class _Tenants extends State<Tenants> {
-  int _currentRoute = 0;
-
   late BackgroundType backgroundType;
 
   bool match = false;
@@ -63,10 +61,10 @@ class _Tenants extends State<Tenants> {
                 child: */
                 Stack(children: [
               backgroundType == BackgroundType.like
-                  ? LikeBackground()
+                  ? const LikeBackground()
                   : (backgroundType == BackgroundType.ignore
-                      ? IgnoreBackground()
-                      : SizedBox()),
+                      ? const IgnoreBackground()
+                      : const SizedBox()),
               ContentPage(
                   currentTenantFuture: widget.firstTenantFuture,
                   updateUI: updateUI,
@@ -104,61 +102,19 @@ class _Tenants extends State<Tenants> {
 }
 
 class ContentPage extends StatefulWidget {
-  bool match;
-  String whoCreatedMe;
-
-  final likeUrlStr =
-      "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/likeuser";
-  final ignoreUrlStr =
-      "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/ignoreuser";
+  final bool match;
+  final String whoCreatedMe;
 
   final Function(BackgroundType) backgroundUpdateCbk;
 
-//------------------------
-  Future<void> _networkFunction(BuildContext context, String urlString,
-      int userId, int apartmentId) async {
-    var dio = RuntimeStore().dio; //ok
-    try {
-      Response response = await dio.post(
-        urlString,
-        data: {
-          "userid": userId, //the tenant I like or ignore
-          "apartmentid": apartmentId
-        },
-        options: Options(
-          contentType: Headers.formUrlEncodedContentType,
-          headers: {"Content-Type": "application/x-www-form-urlencoded"},
-        ),
-      );
-
-      if (response.statusCode != 200) {
-        Navigator.restorablePush(
-            context, ErrorDialogBuilder.buildGenericConnectionErrorRoute);
-      }
-    } on DioError {
-      Navigator.restorablePush(
-          context, ErrorDialogBuilder.buildConnectionErrorRoute);
-    }
-  }
-
-  void likeTenant(BuildContext context, int tenantId, int apartmentId) async {
-    await _networkFunction(context, likeUrlStr, tenantId, apartmentId);
-  }
-
-  void ignoreTenant(BuildContext context, int tenantId, int apartmentId) async {
-    await _networkFunction(context, ignoreUrlStr, tenantId, apartmentId);
-  }
-
-  Future<LikeFromUser?> currentTenantFuture;
-  Function(bool value) updateUI;
-
-//Function updateHouses;
+  final Future<LikeFromUser?> currentTenantFuture;
+  final Function(bool value) updateUI;
 
   @override
   _ContentPage createState() =>
       _ContentPage(currentTenantFuture: currentTenantFuture);
 
-  ContentPage(
+  const ContentPage(
       {Key? key,
       required this.currentTenantFuture,
       required this.updateUI,
@@ -255,11 +211,19 @@ class _ContentPage extends State<ContentPage> {
                     widget.updateUI(false);
                     if (currentTenant != null) {
                       if (finalCoord < initialCoord) {
-                        widget.likeTenant(context, currentTenant!.user.id,
-                            currentTenant!.apartment!.id);
+                        UserHandler.likeUser(currentTenant!.user.id,
+                            currentTenant!.apartment!.id, () {
+                          //onError
+                          Navigator.restorablePush(context,
+                              ErrorDialogBuilder.buildConnectionErrorRoute);
+                        });
                       } else {
-                        widget.ignoreTenant(context, currentTenant!.user.id,
-                            currentTenant!.apartment!.id);
+                        UserHandler.ignoreUser(currentTenant!.user.id,
+                            currentTenant!.apartment!.id, () {
+                          //onError
+                          Navigator.restorablePush(context,
+                              ErrorDialogBuilder.buildConnectionErrorRoute);
+                        });
                       }
                     }
                     Navigator.of(context).pop();

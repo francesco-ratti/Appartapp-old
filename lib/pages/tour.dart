@@ -1,5 +1,3 @@
-// ignore_for_file: prefer_const_constructors
-
 import 'package:flutter/material.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -8,9 +6,6 @@ class Tour extends StatelessWidget {
   late SharedPreferences prefs;
   bool gotPrefs = false;
 
-  @override
-  void initState() {}
-
   List<PageViewModel> listPagesViewModel = [
     PageViewModel(
         title: "Benvenuto!\n",
@@ -18,8 +13,8 @@ class Tour extends StatelessWidget {
         bodyWidget:
             Column(mainAxisAlignment: MainAxisAlignment.center, children: [
           Container(
-            padding: EdgeInsets.fromLTRB(0, 20, 0, 50),
-            child: Text(
+            padding: const EdgeInsets.fromLTRB(0, 20, 0, 50),
+            child: const Text(
               "Fai swipe agli appartamenti\nFai swipe agli inquilini",
               textAlign: TextAlign.center,
               style: TextStyle(
@@ -30,16 +25,16 @@ class Tour extends StatelessWidget {
             ),
           ),
           Container(
-            padding: EdgeInsets.only(bottom: 30, top: 30),
+            padding: const EdgeInsets.only(bottom: 30, top: 30),
             child: Column(children: [
               Container(
-                  padding: EdgeInsets.only(bottom: 15),
+                  padding: const EdgeInsets.only(bottom: 15),
                   child: Image.asset(
                     'assets/swipe-left.png',
                     height: 34,
                     width: 34,
                   )),
-              Text(
+              const Text(
                 "swipe",
                 style: TextStyle(letterSpacing: 2),
               ),
@@ -51,12 +46,12 @@ class Tour extends StatelessWidget {
         title: "Non lasciare nulla al caso ",
         //body:"Vedrai sempre tutte le informazioni necessarie per una scelta informata.  ",
         bodyWidget: Container(
-            padding: EdgeInsets.symmetric(horizontal: 20),
+            padding: const EdgeInsets.symmetric(horizontal: 20),
             child:
                 Column(mainAxisAlignment: MainAxisAlignment.center, children: [
               Container(
-                padding: EdgeInsets.fromLTRB(0, 20, 0, 50),
-                child: Text(
+                padding: const EdgeInsets.fromLTRB(0, 20, 0, 50),
+                child: const Text(
                   "Vedrai sempre tutte le informazioni necessarie per una scelta informata.",
                   textAlign: TextAlign.center,
                   style: TextStyle(
@@ -67,16 +62,16 @@ class Tour extends StatelessWidget {
                 ),
               ),
               Container(
-                padding: EdgeInsets.only(bottom: 30, top: 30),
+                padding: const EdgeInsets.only(bottom: 30, top: 30),
                 child: Column(children: [
                   Container(
-                      padding: EdgeInsets.only(bottom: 15),
+                      padding: const EdgeInsets.only(bottom: 15),
                       child: Image.asset(
                         'assets/swipe-left.png',
                         height: 34,
                         width: 34,
                       )),
-                  Text(
+                  const Text(
                     "swipe",
                     style: TextStyle(letterSpacing: 2),
                   ),
@@ -88,12 +83,12 @@ class Tour extends StatelessWidget {
         title: "Abbattiamo i costi",
         //body: "Nessuna agenzia. Nessuna sorpresa.",
         bodyWidget: Container(
-            padding: EdgeInsets.symmetric(horizontal: 20),
+            padding: const EdgeInsets.symmetric(horizontal: 20),
             child:
                 Column(mainAxisAlignment: MainAxisAlignment.center, children: [
               Container(
-                padding: EdgeInsets.fromLTRB(0, 20, 0, 50),
-                child: Text(
+                padding: const EdgeInsets.fromLTRB(0, 20, 0, 50),
+                child: const Text(
                   "Nessuna agenzia. Nessuna sorpresa.",
                   textAlign: TextAlign.center,
                   style: TextStyle(
@@ -104,16 +99,16 @@ class Tour extends StatelessWidget {
                 ),
               ),
               Container(
-                padding: EdgeInsets.only(bottom: 30, top: 30),
+                padding: const EdgeInsets.only(bottom: 30, top: 30),
                 child: Column(children: [
                   Container(
-                      padding: EdgeInsets.only(bottom: 15),
+                      padding: const EdgeInsets.only(bottom: 15),
                       child: Image.asset(
                         'assets/swipe-left.png',
                         height: 34,
                         width: 34,
                       )),
-                  Text(
+                  const Text(
                     "swipe",
                     style: TextStyle(letterSpacing: 2),
                   ),
@@ -125,12 +120,12 @@ class Tour extends StatelessWidget {
         title: "Senza discriminazioni",
         //body:"La foto di un inquilino sarà disponibile solo dopo aver espresso una preferenza alla sua biografia.",
         bodyWidget: Container(
-            padding: EdgeInsets.symmetric(horizontal: 20),
+            padding: const EdgeInsets.symmetric(horizontal: 20),
             child:
                 Column(mainAxisAlignment: MainAxisAlignment.center, children: [
               Container(
-                padding: EdgeInsets.fromLTRB(0, 20, 0, 50),
-                child: Text(
+                padding: const EdgeInsets.fromLTRB(0, 20, 0, 50),
+                child: const Text(
                   "Non importa chi sei, da dove vieni o che aspetto hai.",
                   textAlign: TextAlign.center,
                   style: TextStyle(

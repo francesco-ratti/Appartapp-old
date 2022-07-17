@@ -1,11 +1,11 @@
 import 'dart:io';
 
-import 'package:appartapp/enums/enum_gender.dart';
-import 'package:appartapp/utils_classes/login_handler.dart';
-import 'package:appartapp/utils_classes/runtime_store.dart';
 import 'package:appartapp/entities/user.dart';
+import 'package:appartapp/enums/enum_gender.dart';
+import 'package:appartapp/model/login_handler.dart';
 import 'package:appartapp/pages/reinsert_password.dart';
-import 'package:appartapp/utils_classes/authentication.dart';
+import 'package:appartapp/utils_classes/google_authentication.dart';
+import 'package:appartapp/utils_classes/runtime_store.dart';
 import 'package:appartapp/widgets/error_dialog_builder.dart';
 import 'package:appartapp/widgets/img_gallery.dart';
 import 'package:dio/dio.dart';
@@ -15,7 +15,8 @@ import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 class EditProfile extends StatefulWidget {
   String urlStr =
       "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/edituser";
-  String urlPwdStr="http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/editsensitive";
+  String urlPwdStr =
+      "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/editsensitive";
   String addImagesUrlStr =
       "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/adduserimage";
   String removeImagesUrlStr =
@@ -530,8 +531,8 @@ class _EditProfileState extends State<EditProfile> {
                 });
                 if (!RuntimeStore().credentialsLogin) {
                   try {
-                    await Authentication.initializeFirebase();
-                    await Authentication.signOut(context: context);
+                    await GoogleAuthentication.initializeFirebase();
+                    await GoogleAuthentication.signOut(context: context);
                   } on Exception {
                     setState(() {
                       _isLoading = false;

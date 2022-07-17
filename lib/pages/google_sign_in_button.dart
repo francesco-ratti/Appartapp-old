@@ -2,7 +2,7 @@ import 'package:appartapp/entities/user.dart' as AppUser;
 import 'package:appartapp/enums/enum_loginresult.dart';
 import 'package:appartapp/exceptions/connection_exception.dart';
 import 'package:appartapp/pages/loading.dart';
-import 'package:appartapp/utils_classes/authentication.dart';
+import 'package:appartapp/utils_classes/google_authentication.dart';
 import 'package:appartapp/utils_classes/runtime_store.dart';
 import 'package:appartapp/widgets/error_dialog_builder.dart';
 import 'package:dio/dio.dart';
@@ -78,7 +78,8 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
         onPressed: () async {
           widget.isLoadingCbk(true);
 
-          List? resG = await Authentication.signInWithGoogle(context: context);
+          List? resG =
+              await GoogleAuthentication.signInWithGoogle(context: context);
 
           if (resG != null) {
             Fb.User? gUser = resG[0];

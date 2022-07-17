@@ -1,13 +1,13 @@
 import 'package:appartapp/entities/apartment.dart';
 import 'package:appartapp/entities/user.dart';
+import 'package:appartapp/model/apartment_handler.dart';
+import 'package:appartapp/model/match_handler.dart';
 import 'package:appartapp/pages/add_apartment.dart';
 import 'package:appartapp/pages/houses.dart';
 import 'package:appartapp/pages/matches.dart';
 import 'package:appartapp/pages/profile_apartments.dart';
 import 'package:appartapp/pages/tenants.dart';
-import 'package:appartapp/utils_classes/apartment_handler.dart';
 import 'package:appartapp/utils_classes/first_arguments.dart';
-import 'package:appartapp/utils_classes/match_handler.dart';
 import 'package:appartapp/utils_classes/runtime_store.dart';
 import 'package:appartapp/widgets/retry_widget.dart';
 import 'package:flutter/material.dart';

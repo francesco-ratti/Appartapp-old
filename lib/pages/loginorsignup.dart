@@ -1,5 +1,5 @@
 import 'package:appartapp/pages/google_sign_in_button.dart';
-import 'package:appartapp/utils_classes/authentication.dart';
+import 'package:appartapp/utils_classes/google_authentication.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
@@ -18,7 +18,7 @@ class _LoginOrSignupState extends State<LoginOrSignup> {
     super.initState();
     _isLoading = false;
     _firebaseError = false;
-    Authentication.initializeFirebase()
+    GoogleAuthentication.initializeFirebase()
         .then((value) {})
         .onError((error, stackTrace) {
       setState(() {

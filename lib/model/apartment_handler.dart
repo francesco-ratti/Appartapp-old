@@ -2,7 +2,7 @@ import 'package:appartapp/entities/apartment.dart';
 import 'package:appartapp/exceptions/connection_exception.dart';
 import 'package:dio/dio.dart';
 
-import 'runtime_store.dart';
+import '../utils_classes/runtime_store.dart';
 
 class ApartmentHandler {
   //SINGLETON PATTERN

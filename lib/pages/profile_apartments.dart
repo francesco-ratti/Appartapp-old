@@ -1,8 +1,7 @@
 import 'package:appartapp/pages/edit_profile.dart';
 import 'package:appartapp/pages/owned_apartments.dart';
+import 'package:appartapp/utils_classes/runtime_store.dart';
 import 'package:flutter/material.dart';
-
-import '../utils_classes/runtime_store.dart';
 
 class ProfileApartments extends StatefulWidget {
   ProfileApartments();

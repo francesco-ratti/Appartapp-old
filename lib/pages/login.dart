@@ -11,8 +11,6 @@ import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Login extends StatefulWidget {
-  final String urlStr =
-      "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/login";
   final Color bgColor = Colors.white;
 
   const Login({Key? key}) : super(key: key);

@@ -1,17 +1,15 @@
 import 'package:appartapp/entities/user.dart';
 import 'package:appartapp/enums/enum_gender.dart';
+import 'package:appartapp/model/login_handler.dart';
 import 'package:appartapp/pages/loading.dart';
 import 'package:appartapp/utils_classes/email_validator.dart';
 import 'package:appartapp/utils_classes/runtime_store.dart';
 import 'package:appartapp/widgets/error_dialog_builder.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Signup extends StatefulWidget {
-  String urlStr = "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/signup";
-
   @override
   _SignupState createState() => _SignupState();
 }
@@ -19,50 +17,7 @@ class Signup extends StatefulWidget {
 class _SignupState extends State<Signup> {
   bool _isLoading = false;
 
-  void doSignup(Function(String) updateUi, String email, String password,
-      String name, String surname, DateTime birthday, Gender gender) async {
-    var dio = RuntimeStore().dio; //ok
-    try {
-      Response response = await dio.post(
-        widget.urlStr,
-        data: {
-          "email": email,
-          "password": password,
-          "name": name,
-          "surname": surname,
-          "birthday": birthday.millisecondsSinceEpoch.toString(),
-          "gender": gender.toShortString()
-        },
-        options: Options(
-          contentType: Headers.formUrlEncodedContentType,
-          headers: {"Content-Type": "application/x-www-form-urlencoded"},
-        ),
-      );
 
-      setState(() {
-        _isLoading = false;
-      });
-      if (response.statusCode == 200) {
-        Map responseMap = response.data;
-        User user = User.fromMap(responseMap);
-
-        SharedPreferences sharedPreferences =
-        RuntimeStore().getSharedPreferences() as SharedPreferences;
-
-        sharedPreferences.setBool("credentialslogin", true);
-        RuntimeStore().credentialsLogin = true;
-        doInitialisation(context, user, sharedPreferences);
-      } else {
-        updateUi("Impossibile iscriversi. Scegli altre credenziali.");
-      }
-    } on DioError {
-      setState(() {
-        _isLoading = false;
-      });
-      Navigator.restorablePush(
-          context, ErrorDialogBuilder.buildConnectionErrorRoute);
-    }
-  }
 
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
@@ -207,12 +162,36 @@ class _SignupState extends State<Signup> {
                         _isLoading = true;
                       });
 
-                      doSignup((String toWrite) {
-                        setState(() {
-                          status = toWrite;
-                        });
-                      }, email, password, name, surname, _birthday,
-                          _gender as Gender);
+                      LoginHandler.doSignup(
+                          (String toWrite) {
+                            setState(() {
+                              _isLoading = false;
+                              status = toWrite;
+                            });
+                          },
+                          email,
+                          password,
+                          name,
+                          surname,
+                          _birthday,
+                          _gender as Gender,
+                          (User user) {
+                            //onComplete
+                            SharedPreferences sharedPreferences = RuntimeStore()
+                                .getSharedPreferences() as SharedPreferences;
+
+                            sharedPreferences.setBool("credentialslogin", true);
+                            RuntimeStore().credentialsLogin = true;
+                            doInitialisation(context, user, sharedPreferences);
+                          },
+                          () {
+                            //onError
+                            setState(() {
+                              _isLoading = false;
+                            });
+                            Navigator.restorablePush(context,
+                                ErrorDialogBuilder.buildConnectionErrorRoute);
+                          });
                     } else {
                       setState(() {
                         status = "Incompleto. Compila tutti i campi";

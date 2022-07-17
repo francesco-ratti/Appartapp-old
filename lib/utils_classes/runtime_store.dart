@@ -68,7 +68,7 @@ class RuntimeStore {
 
   late CookieJar cookieJar;
 
-  Dio dio = Dio(new BaseOptions(
+  Dio dio = Dio(BaseOptions(
       receiveDataWhenStatusError: true,
       connectTimeout: 20 * 1000,
       receiveTimeout: 20 * 1000,

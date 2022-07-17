@@ -10,18 +10,18 @@ import 'package:image_picker_platform_interface/image_picker_platform_interface.
 class ImgGallery extends StatefulWidget {
   final Function(List<File>)
       filesToUploadCbk; //will be called ONLY when new images are added or new images (ones which have been added during current "session", the ones which have to be uploaded) are removed
-  Function?
+  final Function?
       onSubmitCbksCbk; //will be called when online images are removed. Updates OnSubmitCallbacks list, which has to be called on submit.
-  Function? totalImagesCbk;
+  final Function? totalImagesCbk;
 
-  List<GalleryImage>? existingImages = [];
+  final List<GalleryImage>? existingImages;
 
-  ImgGallery(
+  const ImgGallery(
       {Key? key,
       required this.filesToUploadCbk,
       this.onSubmitCbksCbk,
       this.totalImagesCbk,
-      this.existingImages})
+      this.existingImages = const []})
       : super(key: key);
 
   @override
@@ -50,13 +50,13 @@ class _ImgGalleryState extends State<ImgGallery> {
     final PickedFile image = await ImagePickerGC.pickImage(
         context: context,
         source: source,
-        cameraText: Text("Fotocamera"),
-        galleryText: Text("Galleria"),
-        cameraIcon: Icon(
+        cameraText: const Text("Fotocamera"),
+        galleryText: const Text("Galleria"),
+        cameraIcon: const Icon(
           Icons.camera,
           color: Colors.brown,
         ),
-        galleryIcon: Icon(
+        galleryIcon: const Icon(
           Icons.image,
           color: Colors.brown,
         ));
@@ -107,7 +107,7 @@ class _ImgGalleryState extends State<ImgGallery> {
 
     if (croppedFile != null) {
       croppedFile.readAsBytes().then((byteStream) {
-        File file=File(croppedFile.path);
+        File file = File(croppedFile.path);
         _toUpload.add(file);
         widget.filesToUploadCbk(_toUpload);
         setState(() {
@@ -115,29 +115,32 @@ class _ImgGalleryState extends State<ImgGallery> {
             _toUpload.remove(file);
             return null;
           }));
-          if (widget.totalImagesCbk!=null)
-            widget.totalImagesCbk!(imagesToShow.length);        });
+          if (widget.totalImagesCbk != null) {
+            widget.totalImagesCbk!(imagesToShow.length);
+          }
+        });
       });
     }
   }
   @override
   void initState() {
     super.initState();
-    if (widget.totalImagesCbk!=null)
+    if (widget.totalImagesCbk != null) {
       widget.totalImagesCbk!(imagesToShow.length);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     List<Widget> imageSliders = [];
-    imagesToShow.forEach((element) {
+    for (var element in imagesToShow) {
       imageSliders.add(Container(
         //child: Image.file(File(croppedFile.path)),
         child: element.image,
         //child: Image.memory(croppedFile.readAsBytesSync()),
         //constraints: const BoxConstraints(maxWidth: 200),
       ));
-    });
+    }
 
     return Padding(
       padding: const EdgeInsets.only(top: 15.0),
@@ -149,76 +152,83 @@ class _ImgGalleryState extends State<ImgGallery> {
               if (imageSliders.isNotEmpty)
                 Padding(
                   padding: const EdgeInsets.only(top: 15.0),
-                  child: Container(
-                    //color: Colors.amber,
-                      child: GestureDetector(
-                        onTap: () {
-                          currentOpenedPage=currentSmallImage;
+                  child: GestureDetector(
+                    onTap: () {
+                      currentOpenedPage = currentSmallImage;
 
-                          Navigator.of(context).push(PageRouteBuilder(
-                            opaque: false,
-                            pageBuilder: (_, __, ___) => DismissiblePage(
-                              child: GestureDetector(
-                                onTap: () => Navigator.of(context).pop(),
-                                child: Stack(
-                                  fit: StackFit.expand,
-                                  children: [
-                                    CarouselSlider(
-                                        options: CarouselOptions(
-                                          onPageChanged: (pageN, CarouselPageChangedReason reason) {
-                                            currentOpenedPage=pageN;
-                                          },
-                                          aspectRatio: 1,
-                                          enableInfiniteScroll: false,
-                                          initialPage: currentSmallImage,
-                                          viewportFraction: 1,
-                                        ),
-                                        items: imageSliders),
-                                    Positioned(
-                                        bottom: 30,
-                                        right: 30,
-                                        height: 70,
-                                        width: 70,
-                                        child:
-                                        FloatingActionButton(
-                                          child: const Icon(Icons.remove),
-                                          backgroundColor: Colors.brown,
-                                          onPressed: () {
-                                            Navigator.of(context).pop();
-                                            setState(() {
-                                              Function? res=imagesToShow[currentOpenedPage].onDelete();
-                                              if (res!=null && widget.onSubmitCbksCbk!=null) {
-                                                onSubmitCbks.add(res);
-                                                widget.onSubmitCbksCbk!(onSubmitCbks);
-                                              }
-                                              imagesToShow.removeAt(currentOpenedPage);
-                                              if (widget.totalImagesCbk!=null)
-                                                widget.totalImagesCbk!(imagesToShow.length);                                            });
-                                          },
-                                        )),
-                                  ],
-                                ),
-                              ),
-                              onDismissed: () => Navigator.of(context).pop(),
-                              startingOpacity: 0.8,
-                              dragSensitivity: 1,
+                      Navigator.of(context).push(PageRouteBuilder(
+                        opaque: false,
+                        pageBuilder: (_, __, ___) => DismissiblePage(
+                          child: GestureDetector(
+                            onTap: () => Navigator.of(context).pop(),
+                            child: Stack(
+                              fit: StackFit.expand,
+                              children: [
+                                CarouselSlider(
+                                    options: CarouselOptions(
+                                      onPageChanged: (pageN,
+                                          CarouselPageChangedReason reason) {
+                                        currentOpenedPage = pageN;
+                                      },
+                                      aspectRatio: 1,
+                                      enableInfiniteScroll: false,
+                                      initialPage: currentSmallImage,
+                                      viewportFraction: 1,
+                                    ),
+                                    items: imageSliders),
+                                Positioned(
+                                    bottom: 30,
+                                    right: 30,
+                                    height: 70,
+                                    width: 70,
+                                    child: FloatingActionButton(
+                                      child: const Icon(Icons.remove),
+                                      backgroundColor: Colors.brown,
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                        setState(() {
+                                          Function? res =
+                                              imagesToShow[currentOpenedPage]
+                                                  .onDelete();
+                                          if (res != null &&
+                                              widget.onSubmitCbksCbk != null) {
+                                            onSubmitCbks.add(res);
+                                            widget
+                                                .onSubmitCbksCbk!(onSubmitCbks);
+                                          }
+                                          imagesToShow
+                                              .removeAt(currentOpenedPage);
+                                          if (widget.totalImagesCbk != null) {
+                                            widget.totalImagesCbk!(
+                                                imagesToShow.length);
+                                          }
+                                        });
+                                      },
+                                    )),
+                              ],
                             ),
-                          ));
-                        },
-                        child: CarouselSlider(
-                          options: CarouselOptions(
-                            onPageChanged: (pageN, CarouselPageChangedReason reason) {
-                              currentSmallImage=pageN;
-                            },
-                            aspectRatio: 2,
-                            enableInfiniteScroll: false,
-                            autoPlay: true,
-                            autoPlayInterval: Duration(seconds: 2),
-                            viewportFraction: 0.8,
                           ),
-                          items: imageSliders,
+                          onDismissed: () => Navigator.of(context).pop(),
+                          startingOpacity: 0.8,
+                          dragSensitivity: 1,
                         ),
-                      )),
+                      ));
+                    },
+                    child: CarouselSlider(
+                      options: CarouselOptions(
+                        onPageChanged:
+                            (pageN, CarouselPageChangedReason reason) {
+                          currentSmallImage = pageN;
+                        },
+                        aspectRatio: 2,
+                        enableInfiniteScroll: false,
+                        autoPlay: true,
+                        autoPlayInterval: const Duration(seconds: 2),
+                        viewportFraction: 0.8,
+                      ),
+                      items: imageSliders,
+                    ),
+                  ),
                 )
               else
                 Container(),

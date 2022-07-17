@@ -19,12 +19,12 @@ class ContactApartment extends StatelessWidget {
             title: const Text("Errore"),
             actions: [
               CupertinoDialogAction(
-                  child: Text("OK"),
+                  child: const Text("OK"),
                   onPressed: () {
                     Navigator.pop(context);
                   })
             ],
-            content: Center(
+            content: const Center(
               child: Text("Nessun client di posta installato"),
             ));
       },
@@ -40,12 +40,12 @@ class ContactApartment extends StatelessWidget {
             title: const Text("Errore"),
             actions: [
               CupertinoDialogAction(
-                  child: Text("OK"),
+                  child: const Text("OK"),
                   onPressed: () {
                     Navigator.pop(context);
                   })
             ],
-            content: Center(
+            content: const Center(
               child: Text("Impossibile aprire il client di posta"),
             ));
       },

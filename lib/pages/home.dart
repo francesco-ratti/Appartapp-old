@@ -101,25 +101,25 @@ class _HomeState extends State<Home> {
                     .arguments) as FirstArguments)
                     .firstApartmentFuture)
                 : RetryWidget(
-              textColor: Colors.white,
-              backgroundColor: RuntimeStore.backgroundColor,
-              message:
-              "Aggiungi le tue informazioni da locatario per cercare appartamenti.\nSe non lo farai, potrai solamente inserire appartamenti da locatore.",
-              retryButtonText: "Completa profilo",
-              retryCallback: () {
-                Navigator.pushNamed(context, "/edittenants");
-              },
-            ),
-            Matches(),
+                    textColor: Colors.white,
+                    backgroundColor: RuntimeStore.backgroundColor,
+                    message:
+                        "Aggiungi le tue informazioni da locatario per cercare appartamenti.\nSe non lo farai, potrai solamente inserire appartamenti da locatore.",
+                    retryButtonText: "Completa profilo",
+                    retryCallback: () {
+                      Navigator.pushNamed(context, "/edittenants");
+                    },
+                  ),
+            const Matches(),
             _loadingOwnedApartments
                 ? const Center(
-                child: CircularProgressIndicator(
-                  value: null,
-                ))
+                    child: CircularProgressIndicator(
+                    value: null,
+                  ))
                 : (_networkError
-                ? RetryWidget(
-              retryCallback: () {
-                setState(() {
+                    ? RetryWidget(
+                        retryCallback: () {
+                          setState(() {
                             _networkError = false;
                             _loadingOwnedApartments = true;
                           });
@@ -162,7 +162,7 @@ class _HomeState extends State<Home> {
               retryButtonText: "Aggiungi un appartamento",
             ))),
             /*EmptyPage(child: const Text('Chat')),*/
-            ProfileApartments()
+            const ProfileApartments()
             //EditProfile(),
           ],
         ),

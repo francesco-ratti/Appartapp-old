@@ -8,7 +8,7 @@ class TabWidgetLessor extends StatelessWidget {
   final User currentLessor;
   final ScrollController scrollController;
 
-  TabWidgetLessor({
+  const TabWidgetLessor({
     Key? key,
     required this.scrollController,
     required this.currentLessor,
@@ -16,18 +16,18 @@ class TabWidgetLessor extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => ListView(
-        padding: EdgeInsets.all(6),
+    padding: const EdgeInsets.all(6),
         controller: scrollController,
         //physics: Scroll,
         children: [
-          Divider(
+          const Divider(
             color: Colors.white,
             indent: 180,
             thickness: 2,
             endIndent: 180,
           ),
           Container(
-            padding: EdgeInsets.fromLTRB(30, 10, 10, 30),
+            padding: const EdgeInsets.fromLTRB(30, 10, 10, 30),
             child: Text(
               currentLessor.name,
               //textAlign: TextAlign.center,
@@ -41,10 +41,10 @@ class TabWidgetLessor extends StatelessWidget {
           DisplayText(title: "Su di me", content: currentLessor.bio),
           //PRIVATE INFORMATION
           currentLessor.gender == null
-              ? SizedBox()
+              ? const SizedBox()
               : DisplayText(
                   title: "Sesso",
-                  content: "${currentLessor.gender.toItalianString()}"),
+                  content: currentLessor.gender.toItalianString()),
           DisplayText(
               title: "Compleanno",
               content:

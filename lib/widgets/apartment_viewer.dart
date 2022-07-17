@@ -50,7 +50,7 @@ SlidingUpPanel mobileLayout(bool apartmentLoaded, Apartment? currentApartment,
             owner: owner,
             showContact: showContact,
           )
-        : TabWidgetLoading(),
+        : const TabWidgetLoading(),
     body: apartmentLoaded
         ? ApartmentModel(currentApartment: currentApartment as Apartment)
         : const Center(
@@ -88,7 +88,7 @@ Row tabletLayout(bool apartmentLoaded, Apartment? currentApartment, User? owner,
                 owner: owner,
                 showContact: showContact,
               )
-            : TabWidgetLoading(),
+            : const TabWidgetLoading(),
       )
     ],
   );

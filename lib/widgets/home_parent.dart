@@ -7,6 +7,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class HomeParent extends StatefulWidget {
+  const HomeParent({Key? key}) : super(key: key);
+
   @override
   State<HomeParent> createState() => _HomeParent();
 }
@@ -40,7 +42,7 @@ class _HomeParent extends State<HomeParent> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(children: <Widget>[
-        Home(),
+        const Home(),
         currentMatches != null && currentMatches!.isNotEmpty && !pressed
             ? CupertinoAlertDialog(
                 title: currentMatches!.length > 1
@@ -48,7 +50,7 @@ class _HomeParent extends State<HomeParent> {
                     : const Text("Hai un nuovo match!"),
                 actions: [
                   CupertinoDialogAction(
-                    child: Text("Ho visto"),
+                    child: const Text("Ho visto"),
                     onPressed: () {
                       setState(() {
                         RuntimeStore().matchHandler.setChangesAsSeen();
@@ -88,16 +90,16 @@ class _HomeParent extends State<HomeParent> {
                                           backgroundColor: Colors.brown,
                                         ),
                                         body: ApartmentViewer(
-                                                apartmentLoaded: true,
-                                                currentApartment: match.apartment,
-                                                owner: match.apartment.owner))));
+                                            apartmentLoaded: true,
+                                            currentApartment: match.apartment,
+                                            owner: match.apartment.owner))));
                           },
                           match: currentMatch,
                         );
                       }),
                 ),
               )
-            : SizedBox(),
+            : const SizedBox(),
       ]),
     );
   }

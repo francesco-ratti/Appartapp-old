@@ -17,15 +17,15 @@ void main() {
       scaffoldBackgroundColor: RuntimeStore.backgroundColor
     ),*/
     routes: {
-      '/': (context) => Loading(),
+      '/': (context) => const Loading(),
       '/tour': (context) => Tour(),
-      '/home': (context) => HomeParent(),
-      '/loginorsignup': (context) => LoginOrSignup(),
-      '/login': (context) => Login(),
-      '/signup': (context) => Signup(),
-      '/editpassword': (context) => EditPassword(),
+      '/home': (context) => const HomeParent(),
+      '/loginorsignup': (context) => const LoginOrSignup(),
+      '/login': (context) => const Login(),
+      '/signup': (context) => const Signup(),
+      '/editpassword': (context) => const EditPassword(),
       '/edittenants': (context) => EditTenantInformation(),
-      '/matches': (context) => Matches(),
+      '/matches': (context) => const Matches(),
     },
   ));
 }

@@ -39,7 +39,7 @@ class TabWidget extends StatelessWidget {
             //Row(
             //children: [
             Padding(
-              padding: EdgeInsets.fromLTRB(20, 0, 0, 20),
+              padding: const EdgeInsets.fromLTRB(20, 0, 0, 20),
               child: Text(
                 currentApartment.listingTitle,
                 //textAlign: TextAlign.center,

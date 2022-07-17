@@ -6,17 +6,16 @@ import 'package:appartapp/widgets/tab_widget_tenant.dart';
 import 'package:appartapp/widgets/tenant_model.dart';
 import 'package:blur/blur.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class TenantViewer extends StatefulWidget {
-  bool tenantLoaded;
-  bool lessor; //if you want to visualize a lessor set true,
-  LikeFromUser? currentLikeFromUser;
-  Function(bool value) updateUI;
-  bool match;
+  final bool tenantLoaded;
+  final bool lessor; //if you want to visualize a lessor set true,
+  final LikeFromUser? currentLikeFromUser;
+  final Function(bool value) updateUI;
+  final bool match;
 
-  TenantViewer(
+  const TenantViewer(
       {Key? key,
       required this.tenantLoaded,
       required this.lessor,
@@ -51,8 +50,9 @@ SlidingUpPanel mobileLayout(bool tenantLoaded, lessor, match,
       topRight: Radius.circular(24.0),
     ),
     isDraggable: tenantLoaded && currentLikeFromUser != null,
-    panelBuilder: (scrollController) => !tenantLoaded
-        ? TabWidgetLoading()
+    panelBuilder: (scrollController) =>
+    !tenantLoaded
+        ? const TabWidgetLoading()
         : (lessor
             ? TabWidgetLessor(
                 scrollController: scrollController,
@@ -101,7 +101,7 @@ Row tabletLayout(tenantLoaded, lessor, match, currentLikeFromUser, updateUI) {
     Expanded(
       flex: 50,
       child: !tenantLoaded
-          ? TabWidgetLoading()
+          ? const TabWidgetLoading()
           : lessor
               ? TabWidgetLessor(
                   scrollController: ScrollController(),

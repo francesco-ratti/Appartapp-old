@@ -3,12 +3,16 @@ import 'package:blur/blur.dart';
 import 'package:flutter/material.dart';
 
 class TenantModel extends StatefulWidget {
-  User currentTenant;
-  bool lessor;
-  bool match;
+  final User currentTenant;
+  final bool lessor;
+  final bool match;
 
-  TenantModel(
-      {required this.currentTenant, required this.lessor, required this.match});
+  const TenantModel(
+      {Key? key,
+      required this.currentTenant,
+      required this.lessor,
+      required this.match})
+      : super(key: key);
 
   @override
   _TenantModel createState() => _TenantModel();
@@ -64,7 +68,7 @@ class _TenantModel extends State<TenantModel> {
                     child: Stack(fit: StackFit.expand, children: <Widget>[
                       widget.currentTenant.images.isNotEmpty
                           ? widget.currentTenant.images[currentIndex]
-                          : Center(
+                          : const Center(
                               child: Text(
                                 "No images",
                                 style: TextStyle(color: Colors.white),
@@ -74,9 +78,9 @@ class _TenantModel extends State<TenantModel> {
                   )
                 : //It's a lessor, no blur
                 Stack(fit: StackFit.expand, children: <Widget>[
-                    widget.currentTenant.images.isNotEmpty
+                  widget.currentTenant.images.isNotEmpty
                         ? widget.currentTenant.images[currentIndex]
-                        : Center(
+                        : const Center(
                             child: Text(
                               "No images",
                               style: TextStyle(color: Colors.white),

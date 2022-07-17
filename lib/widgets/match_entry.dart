@@ -17,41 +17,41 @@ class MatchEntry extends StatelessWidget {
       return "un minuto fa";
     }
     if (minutes < 60) {
-      return "${minutes} minuti fa";
+      return "$minutes minuti fa";
     }
     int hours = duration.inHours;
     if (hours == 1) {
       return "un'ora fa";
     }
     if (hours < 24) {
-      return "${hours} ore fa";
+      return "$hours ore fa";
     }
     int days = duration.inDays;
     if (days == 1) {
       return "un giorno fa";
     }
     if (days < 7 * 4) {
-      return "${days} giorni fa";
+      return "$days giorni fa";
     }
     int weeks = days ~/ 7;
     /*if (weeks==1) {
       return "una settimana fa";
     }*/
     if (weeks < 4 * 4) {
-      return "${weeks} settimane fa";
+      return "$weeks settimane fa";
     }
     int months = weeks ~/ 4;
     /*if (months==1) {
       return "un mese fa";
     }*/
     if (months < 12 * 2) {
-      return "${months} mesi fa";
+      return "$months mesi fa";
     }
     int years = months ~/ 12;
     /*if (years==1) {
       return "un anno fa";
     }*/
-    return "${years} anni fa";
+    return "$years anni fa";
   }
 
   @override

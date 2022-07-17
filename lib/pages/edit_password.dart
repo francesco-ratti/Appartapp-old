@@ -5,7 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
 class EditPassword extends StatefulWidget {
-  Color bgColor = Colors.white;
+  final Color bgColor = Colors.white;
+
+  const EditPassword({Key? key}) : super(key: key);
 
   @override
   _EditPasswordState createState() => _EditPasswordState();
@@ -30,15 +32,16 @@ class _EditPasswordState extends State<EditPassword> {
         ),
         backgroundColor: widget.bgColor,
         body: ModalProgressHUD(
-          child: ListView(padding: EdgeInsets.all(16.0), children: <Widget>[
-            Padding(
+          child:
+              ListView(padding: const EdgeInsets.all(16.0), children: <Widget>[
+            const Padding(
                 padding: EdgeInsets.all(8.0),
                 child: Text("Inserisci la tua password attuale")),
             Padding(
-                padding: EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(8.0),
                 child: TextField(
                   obscureText: true,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: 'Password attuale',
                   ),
@@ -51,34 +54,34 @@ class _EditPasswordState extends State<EditPassword> {
               endIndent: 20,
               color: Colors.grey,
             ),
-            Padding(
+            const Padding(
                 padding: EdgeInsets.all(8.0),
                 child: Text("La tua nuova password?")),
             Padding(
-                padding: EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(8.0),
                 child: TextField(
                   obscureText: true,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: 'Nuova password',
                   ),
                   controller: password1Controller,
                 )),
-            Padding(
+            const Padding(
                 padding: EdgeInsets.all(8.0),
                 child: Text("Conferma la tua nuova password")),
             Padding(
-                padding: EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(8.0),
                 child: TextField(
                   obscureText: true,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: 'Conferma password',
                   ),
                   controller: password2Controller,
                 )),
             ElevatedButton(
-                child: Text("Aggiorna"),
+                child: const Text("Aggiorna"),
                 style: ElevatedButton.styleFrom(primary: Colors.brown),
                 onPressed: () {
                   String oldPassword = oldPasswordController.text;
@@ -120,10 +123,10 @@ class _EditPasswordState extends State<EditPassword> {
                   }
                 }),
             Padding(
-                padding: EdgeInsets.all(16.0),
+                padding: const EdgeInsets.all(16.0),
                 child: Text(
                   status,
-                  style: TextStyle(fontSize: 20),
+                  style: const TextStyle(fontSize: 20),
                 )),
           ]),
           inAsyncCall: _isLoading,

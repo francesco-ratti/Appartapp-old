@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class DisplayText extends StatelessWidget {
@@ -7,7 +6,7 @@ class DisplayText extends StatelessWidget {
   final String? content;
   final Widget? contentWidget;
 
-  DisplayText(
+  const DisplayText(
       {Key? key,
       required this.title,
       this.content = null,
@@ -17,7 +16,7 @@ class DisplayText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        padding: EdgeInsets.all(20),
+        padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -26,14 +25,14 @@ class DisplayText extends StatelessWidget {
               style: GoogleFonts.nunito(color: Colors.white70, fontSize: 15),
             ),
             content == null
-                ? SizedBox()
+                ? const SizedBox()
                 : Text(
                     content!,
                     style:
                         GoogleFonts.nunito(color: Colors.white, fontSize: 20),
                   ),
             contentWidget == null
-                ? SizedBox()
+                ? const SizedBox()
                 : Padding(
                     padding: const EdgeInsets.fromLTRB(0, 10.0, 0, 0),
                     child: contentWidget as Widget,

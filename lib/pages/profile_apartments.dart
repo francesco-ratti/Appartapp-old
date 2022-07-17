@@ -4,7 +4,7 @@ import 'package:appartapp/utils_classes/runtime_store.dart';
 import 'package:flutter/material.dart';
 
 class ProfileApartments extends StatefulWidget {
-  ProfileApartments();
+  const ProfileApartments({Key? key}) : super(key: key);
 
   @override
   _ProfileApartments createState() => _ProfileApartments();
@@ -29,7 +29,7 @@ DefaultTabController mobileLayout() {
       appBar: AppBar(
         backgroundColor: Colors.brown,
         elevation: 0,
-        title: TabBar(
+        title: const TabBar(
           tabs: [
             Tab(
               icon: Icon(Icons.person_sharp),
@@ -42,7 +42,7 @@ DefaultTabController mobileLayout() {
           ],
         ),
       ),
-      body: TabBarView(
+      body: const TabBarView(
         children: [
           EditProfile(),
           OwnedApartments(),
@@ -59,12 +59,12 @@ Scaffold tabletLayout() {
         elevation: 0,
         title: Row(children: [
           Expanded(
-              child: Row(children: [
+              child: Row(children: const [
             Icon(Icons.person_sharp),
             Text("Il tuo profilo")
           ])),
           Expanded(
-            child: Row(children: [
+            child: Row(children: const [
               Icon(Icons.apartment_rounded),
               Text("I tuoi appartamenti")
             ]),
@@ -72,9 +72,9 @@ Scaffold tabletLayout() {
         ])),
     body: Row(
       children: [
-        Expanded(flex: 50, child: EditProfile()),
+        const Expanded(flex: 50, child: EditProfile()),
         Expanded(flex: 1, child: Container(color: Colors.brown)),
-        Expanded(flex: 50, child: OwnedApartments())
+        const Expanded(flex: 50, child: OwnedApartments())
       ],
     ),
   );

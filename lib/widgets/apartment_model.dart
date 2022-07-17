@@ -3,11 +3,12 @@ import 'package:flutter/material.dart';
 
 class ApartmentModel extends StatefulWidget {
   //Apartment currentApartment;
-  Apartment currentApartment;
+  final Apartment currentApartment;
 
-  ApartmentModel({
+  const ApartmentModel({
+    Key? key,
     required this.currentApartment,
-  });
+  }) : super(key: key);
 
   @override
   _ApartmentModel createState() => _ApartmentModel();
@@ -38,10 +39,12 @@ class _ApartmentModel extends State<ApartmentModel> {
       fit: StackFit.expand,
       children: <Widget>[
         widget.currentApartment.images.isNotEmpty ? widget.currentApartment.images[currentIndex] :
-        Center(
-          child: Text("No images",
-            style: TextStyle(color: Colors.white),),
-        ),        GestureDetector(
+        const Center(
+                child: Text(
+                  "No images",
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),        GestureDetector(
           onTapUp: (TapUpDetails details) {
             final RenderBox? box = context.findRenderObject() as RenderBox;
             final localOffset = box!.globalToLocal(details.globalPosition);

@@ -9,12 +9,13 @@ import 'package:appartapp/utils_classes/google_authentication.dart';
 import 'package:appartapp/utils_classes/runtime_store.dart';
 import 'package:appartapp/widgets/error_dialog_builder.dart';
 import 'package:appartapp/widgets/img_gallery.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
 class EditProfile extends StatefulWidget {
-  Color bgColor = Colors.white;
+  final Color bgColor = Colors.white;
+
+  const EditProfile({Key? key}) : super(key: key);
 
   @override
   _EditProfileState createState() => _EditProfileState();
@@ -62,7 +63,7 @@ class _EditProfileState extends State<EditProfile> {
 
   String status = "";
 
-  late DateTime _birthday = new DateTime.now();
+  late DateTime _birthday = DateTime.now();
 
   Gender? _gender;
 
@@ -148,10 +149,10 @@ class _EditProfileState extends State<EditProfile> {
 
     return ModalProgressHUD(
       child: ListView(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         children: <Widget>[
           Padding(
-            padding: EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(8.0),
             child: ImgGallery(
               filesToUploadCbk: (imgList) {
                 _images = imgList;
@@ -163,7 +164,7 @@ class _EditProfileState extends State<EditProfile> {
             ),
           ),
           Padding(
-              padding: EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(8.0),
               child: TextField(
                 style: TextStyle(
                     color: RuntimeStore().credentialsLogin
@@ -171,42 +172,42 @@ class _EditProfileState extends State<EditProfile> {
                         : Colors.grey),
                 enabled: RuntimeStore().credentialsLogin,
                 obscureText: false,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: 'E-Mail',
                 ),
                 controller: emailController,
               )),
           Padding(
-              padding: EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(8.0),
               child: TextField(
                 style: TextStyle(
                     color: RuntimeStore().credentialsLogin
                         ? Colors.black
                         : Colors.grey),
                 enabled: RuntimeStore().credentialsLogin,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: 'Nome',
                 ),
                 controller: nameController,
               )),
           Padding(
-              padding: EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(8.0),
               child: TextField(
                 style: TextStyle(
                     color: RuntimeStore().credentialsLogin
                         ? Colors.black
                         : Colors.grey),
                 enabled: RuntimeStore().credentialsLogin,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: 'Cognome',
                 ),
                 controller: surnameController,
               )),
           Padding(
-              padding: EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(8.0),
               child: TextField(
                 style: TextStyle(
                     color: RuntimeStore().credentialsLogin
@@ -231,13 +232,13 @@ class _EditProfileState extends State<EditProfile> {
                         });
                       }
                     : null,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: 'Data di nascita',
                 ),
               )),
           Padding(
-              padding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 0.0),
+              padding: const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 0.0),
               child: Text(
                 "Genere",
                 style: TextStyle(
@@ -246,11 +247,11 @@ class _EditProfileState extends State<EditProfile> {
                         : Colors.grey),
               )),
           Padding(
-              padding: EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 8.0),
+              padding: const EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 8.0),
               child: //Row(children: [
                   Expanded(
                       child: DropdownButton<Gender>(
-                hint: Text("Scegli il tuo genere"),
+                hint: const Text("Scegli il tuo genere"),
                 value: _gender,
                 onChanged: RuntimeStore().credentialsLogin
                     ? (newValue) {
@@ -269,8 +270,8 @@ class _EditProfileState extends State<EditProfile> {
               //  ])
               ),
           RuntimeStore().credentialsLogin
-              ? SizedBox()
-              : Padding(
+              ? const SizedBox()
+              : const Padding(
                   padding: EdgeInsets.all(8.0),
                   child: Text(
                     "I dati anagrafici sono ottenuti da Google, se li hai modificati esci e accedi nuovamente per aggiornarli",
@@ -278,16 +279,16 @@ class _EditProfileState extends State<EditProfile> {
                   )),
           RuntimeStore().credentialsLogin
               ? ElevatedButton(
-                  child: Text("Modifica"),
+              child: const Text("Modifica"),
                   style: ElevatedButton.styleFrom(primary: Colors.brown),
                   onPressed: () {
                     String email = emailController.text;
                     String name = nameController.text;
                     String surname = surnameController.text;
 
-                    if ((email.length > 0 &&
-                        name.length > 0 &&
-                        surname.length > 0 &&
+                    if ((email.isNotEmpty &&
+                        name.isNotEmpty &&
+                        surname.isNotEmpty &&
                         _gender != null)) {
                       numUploads = 0;
 
@@ -380,20 +381,20 @@ class _EditProfileState extends State<EditProfile> {
           ),
           RuntimeStore().credentialsLogin
               ? ElevatedButton(
-              child: Text("Aggiorna la password"),
-              style: ElevatedButton.styleFrom(primary: Colors.brown),
-              onPressed: () {
-                Navigator.pushNamed(context, "/editpassword");
-              })
+              child: const Text("Aggiorna la password"),
+                  style: ElevatedButton.styleFrom(primary: Colors.brown),
+                  onPressed: () {
+                    Navigator.pushNamed(context, "/editpassword");
+                  })
               : const SizedBox(),
           ElevatedButton(
-              child: Text("Modifica informazioni locatario"),
+              child: const Text("Modifica informazioni locatario"),
               style: ElevatedButton.styleFrom(primary: Colors.brown),
               onPressed: () {
                 Navigator.pushNamed(context, "/edittenants");
               }),
           ElevatedButton(
-              child: Text("Esci"),
+              child: const Text("Esci"),
               style: ElevatedButton.styleFrom(primary: Colors.red),
               onPressed: () async {
                 setState(() {
@@ -408,7 +409,6 @@ class _EditProfileState extends State<EditProfile> {
                       _isLoading = false;
                       Navigator.restorablePush(
                           context, ErrorDialogBuilder.buildGenericErrorRoute);
-                      ;
                     });
                   }
                 }
@@ -422,10 +422,10 @@ class _EditProfileState extends State<EditProfile> {
                 Navigator.pushReplacementNamed(context, "/loginorsignup");
               }),
           Padding(
-              padding: EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(16.0),
               child: Text(
                 status,
-                style: TextStyle(fontSize: 20),
+                style: const TextStyle(fontSize: 20),
               )),
         ],
       ),

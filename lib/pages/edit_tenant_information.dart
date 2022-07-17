@@ -10,7 +10,7 @@ import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 class EditTenantInformation extends StatefulWidget {
   final Color bgColor = Colors.white;
 
-  User user = RuntimeStore().getUser() as User;
+  final User user = RuntimeStore().getUser() as User;
 
   EditTenantInformation({Key? key}) : super(key: key);
 

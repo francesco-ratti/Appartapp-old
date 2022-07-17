@@ -138,6 +138,9 @@ class Tour extends StatelessWidget {
             ])),
         image: Image.asset('assets/noDiscriminazione.jpg')),
   ];
+
+  Tour({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     if (!gotPrefs) {

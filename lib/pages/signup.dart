@@ -10,14 +10,14 @@ import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Signup extends StatefulWidget {
+  const Signup({Key? key}) : super(key: key);
+
   @override
   _SignupState createState() => _SignupState();
 }
 
 class _SignupState extends State<Signup> {
   bool _isLoading = false;
-
-
 
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
@@ -27,7 +27,7 @@ class _SignupState extends State<Signup> {
 
   String status = "";
 
-  DateTime _birthday = new DateTime.now();
+  DateTime _birthday = DateTime.now();
 
   Gender? _gender = null;
 
@@ -36,7 +36,7 @@ class _SignupState extends State<Signup> {
     Color bgColor = Colors.white;
 
     birthdayController.text =
-    "${_birthday.day}/${_birthday.month}/${_birthday.year}";
+        "${_birthday.day}/${_birthday.month}/${_birthday.year}";
 
     return Scaffold(
         appBar: AppBar(
@@ -106,7 +106,7 @@ class _SignupState extends State<Signup> {
                       });
                     },
                     decoration: const InputDecoration(
-                      border: const OutlineInputBorder(),
+                      border: OutlineInputBorder(),
                       labelText: 'Data di nascita',
                     ),
                   )),

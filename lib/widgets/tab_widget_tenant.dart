@@ -11,24 +11,24 @@ import 'package:google_fonts/google_fonts.dart';
 class TabWidgetTenant extends StatefulWidget {
   final User currentTenant;
   final ScrollController scrollController;
-  Apartment? apartment;
-  bool match; //If there is no match, info should be locked
-  Function(bool value) updateUi;
+  final Apartment? apartment;
+  final bool match; //If there is no match, info should be locked
+  final Function(bool value) updateUi;
 
-  TabWidgetTenant(
+  const TabWidgetTenant(
       {Key? key,
       required this.scrollController,
       required this.currentTenant,
       this.apartment,
       required this.match,
-      required this.updateUi});
+      required this.updateUi})
+      : super(key: key);
 
   @override
   _TabWidgetTenant createState() => _TabWidgetTenant();
 }
 
 class _TabWidgetTenant extends State<TabWidgetTenant> {
-  int _pageIndex = 0;
 
   @override
   Widget build(BuildContext context) => ListView(
@@ -138,13 +138,14 @@ class _TabWidgetTenant extends State<TabWidgetTenant> {
           widget.currentTenant.gender == null
               ? const SizedBox()
               : !widget.match
-                  ? DisplayText(title: "Sesso", content: "Non è importante!")
+                  ? const DisplayText(
+                      title: "Sesso", content: "Non è importante!")
                   : DisplayText(
                       title: "Sesso",
-                      content:
-                          "${widget.currentTenant.gender.toItalianString()}"),
+                      content: widget.currentTenant.gender.toItalianString()),
           !widget.match
-              ? DisplayText(title: "Compleanno", content: "Non è importante!")
+              ? const DisplayText(
+                  title: "Compleanno", content: "Non è importante!")
               : DisplayText(
                   title: "Compleanno",
                   content:

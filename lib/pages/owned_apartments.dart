@@ -63,6 +63,7 @@ class _OwnedApartments extends State<OwnedApartments> {
 
   @override
   void initState() {
+    super.initState();
     _isLoading = false;
 
     Future<List<Apartment>>? oldOwnedApartments =

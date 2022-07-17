@@ -11,14 +11,15 @@ import 'package:dismissible_page/dismissible_page.dart';
 import 'package:flutter/material.dart';
 
 class Houses extends StatefulWidget {
-  Future<Apartment?> firstApartmentFuture;
+  final Future<Apartment?> firstApartmentFuture;
 
   /*
   final String bothBackgroundImgStr="assets/background.gif";
   final String likeBackgroundImgStr="assets/GreenBackground.jpg";
   final String ignoreBackgroundImgStr="assets/RedBackground.jpg";
    */
-  Houses({Key? key, required this.child, required this.firstApartmentFuture})
+  const Houses(
+      {Key? key, required this.child, required this.firstApartmentFuture})
       : super(key: key);
 
   final Widget child;
@@ -83,10 +84,10 @@ class _HousesState extends State<Houses> {
                 child:*/
                 Stack(children: [
               backgroundType == BackgroundType.like
-                  ? LikeBackground()
+                  ? const LikeBackground()
                   : (backgroundType == BackgroundType.ignore
-                      ? IgnoreBackground()
-                      : SizedBox()),
+                      ? const IgnoreBackground()
+                      : const SizedBox()),
               ContentPage(
                   currentApartmentFuture: widget.firstApartmentFuture,
                   backgroundUpdateCbk: (BackgroundType newBackground) {
@@ -127,20 +128,19 @@ class _HousesState extends State<Houses> {
 class ContentPage extends StatefulWidget {
   final Function(BackgroundType) backgroundUpdateCbk;
 
-
-
 //Function updateHouses;
-  Future<Apartment?> currentApartmentFuture;
+  final Future<Apartment?> currentApartmentFuture;
 
   @override
   _ContentPage createState() =>
       _ContentPage(currentApartmentFuture: currentApartmentFuture);
 
-  ContentPage({
+  const ContentPage({
+    Key? key,
     required this.currentApartmentFuture,
     required this.backgroundUpdateCbk,
     //required this.updateHouses,
-  });
+  }) : super(key: key);
 }
 
 class _ContentPage extends State<ContentPage> {

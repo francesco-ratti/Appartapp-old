@@ -1,5 +1,5 @@
 import 'package:appartapp/pages/edit_password.dart';
-import 'package:appartapp/pages/edit_tenant.dart';
+import 'package:appartapp/pages/edit_tenant_information.dart';
 import 'package:appartapp/pages/loading.dart';
 import 'package:appartapp/pages/login.dart';
 import 'package:appartapp/pages/loginorsignup.dart';
@@ -24,7 +24,7 @@ void main() {
       '/login': (context) => Login(),
       '/signup': (context) => Signup(),
       '/editpassword': (context) => EditPassword(),
-      '/edittenants': (context) => EditTenant(),
+      '/edittenants': (context) => EditTenantInformation(),
       '/matches': (context) => Matches(),
     },
   ));

@@ -1,23 +1,22 @@
 import 'package:appartapp/entities/user.dart';
 import 'package:appartapp/enums/enum_month.dart';
 import 'package:appartapp/enums/enum_temporalq.dart';
+import 'package:appartapp/model/user_handler.dart';
 import 'package:appartapp/utils_classes/runtime_store.dart';
 import 'package:appartapp/widgets/error_dialog_builder.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
-class EditTenant extends StatefulWidget {
-  final String urlStr =
-      "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/edituser";
+class EditTenantInformation extends StatefulWidget {
   final Color bgColor = Colors.white;
 
   User user = RuntimeStore().getUser() as User;
 
-  EditTenant({Key? key}) : super(key: key);
+  EditTenantInformation({Key? key}) : super(key: key);
 
   @override
-  _EditTenantState createState() => _EditTenantState();
+  _EditTenantInformationState createState() => _EditTenantInformationState();
 }
 
 class YesNoForList {
@@ -27,55 +26,10 @@ class YesNoForList {
   YesNoForList(this.name, this.value);
 }
 
-class _EditTenantState extends State<EditTenant> {
+class _EditTenantInformationState extends State<EditTenantInformation> {
   bool _isLoading = false;
+
   //Function()? updatedCallback=null;
-
-  void doUpdate(String bio, String reason, String job, String income,
-      String pets, Month? month, TemporalQ? smoker) async {
-    var dio = RuntimeStore().dio; //ok
-    try {
-      Response response = await dio.post(
-        widget.urlStr,
-        data: {
-          "bio": bio,
-          "reason": reason,
-          "job": job,
-          "income": income,
-          "pets": pets,
-          "month": month == null ? "" : month.toShortString(),
-          "smoker": smoker == null ? "" : smoker.toShortString()
-        },
-        options: Options(
-          contentType: Headers.formUrlEncodedContentType,
-          headers: {"Content-Type": "application/x-www-form-urlencoded"},
-        ),
-      );
-
-      if (response.statusCode == 200) {
-        Map responseMap = response.data;
-        RuntimeStore().setUser(User.fromMap(responseMap));
-        Function() cbk = RuntimeStore().tenantInfoUpdated;
-        if (cbk != null) {
-          cbk();
-        }
-        Navigator.pop(context);
-      } else {
-        setState(() {
-          _isLoading = false;
-        });
-        Navigator.restorablePush(
-            context, ErrorDialogBuilder.buildGenericConnectionErrorRoute);
-      }
-    } on DioError {
-      setState(() {
-        _isLoading = false;
-      });
-
-      Navigator.restorablePush(
-          context, ErrorDialogBuilder.buildConnectionErrorRoute);
-    }
-  }
 
   final bioController = TextEditingController();
   final reasonController = TextEditingController();
@@ -286,7 +240,26 @@ class _EditTenantState extends State<EditTenant> {
                       _isLoading = true;
                     });
 
-                    doUpdate(bio, reason, job, income, pets, _month, _smokerTQ);
+                    UserHandler.editUser(
+                        bio, reason, job, income, pets, _month, _smokerTQ,
+                        (Response response) {
+                      //onComplete
+                      Map responseMap = response.data;
+                      RuntimeStore().setUser(User.fromMap(responseMap));
+                      Function() cbk = RuntimeStore().tenantInfoUpdated;
+                      if (cbk != null) {
+                        cbk();
+                      }
+                      Navigator.pop(context);
+                    }, () {
+                      //onError
+                      setState(() {
+                        _isLoading = false;
+                      });
+
+                      Navigator.restorablePush(context,
+                          ErrorDialogBuilder.buildConnectionErrorRoute);
+                    });
                   }),
             ],
           ),

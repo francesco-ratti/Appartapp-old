@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:appartapp/entities/apartment.dart';
 import 'package:appartapp/exceptions/connection_exception.dart';
 import 'package:dio/dio.dart';
@@ -5,17 +7,27 @@ import 'package:dio/dio.dart';
 import '../utils_classes/runtime_store.dart';
 
 class ApartmentHandler {
-
-  static final String urlStrGetNextNewApartment =
+  static const String urlStrGetNextNewApartment =
       "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/getnextnewapartment";
-  static final String urlStrGetAllNewApartments =
+  static const String urlStrGetAllNewApartments =
       "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/getallnewapartments";
-  static final String urlStrGetOwnedApartments =
+  static const String urlStrGetOwnedApartments =
       "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/getownedapartments";
-  static final likeApartmentUrlStr =
+  static const likeApartmentUrlStr =
       "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/likeapartment";
-  static final ignoreApartmentUrlStr =
+  static const ignoreApartmentUrlStr =
       "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/ignoreapartment";
+  static const String createApartmentUrlStr =
+      "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/createapartment";
+
+  static const String editApartmentUrlStr =
+      "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/editapartment";
+
+  static const String removeImagesUrlStr =
+      "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/deleteapartmentimage";
+
+  static const String addImagesUrlStr =
+      "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/addapartmentimage";
 
   static Future<List<Apartment>> getOwnedApartments() async {
     var dio = RuntimeStore().dio; //ok
@@ -33,9 +45,9 @@ class ApartmentHandler {
         List apList = response.data as List;
 
         List<Apartment> ownedApartments = [];
-        apList.forEach((element) {
+        for (var element in apList) {
           ownedApartments.add(Apartment.fromMap(element));
-        });
+        }
         return ownedApartments;
       }
       throw ConnectionException();
@@ -44,8 +56,7 @@ class ApartmentHandler {
     }
   }
 
-  static Future<Apartment?> getNewApartment(
-      Function(Apartment) callback) async {
+  static Future<Apartment?> getNewApartment(Function(Apartment) callback) async {
     var dio = RuntimeStore().dio; //ok
 
     try {
@@ -88,8 +99,7 @@ class ApartmentHandler {
      */
   }
 
-  static Future<void> _likeDislikeApartment(
-      String urlString, int apartmentId, Function onError) async {
+  static Future<void> _likeDislikeApartment(String urlString, int apartmentId, Function onError) async {
     var dio = RuntimeStore().dio; //ok
     try {
       Response response = await dio.post(
@@ -117,5 +127,139 @@ class ApartmentHandler {
 
   static void ignoreApartment(int apartmentId, Function onError) async {
     await _likeDislikeApartment(ignoreApartmentUrlStr, apartmentId, onError);
+  }
+
+  static void createApartment(
+      Function cbk,
+      String listingTitle,
+      String description,
+      String additionalExpenseDetail,
+      int price,
+      String address,
+      List<File> files,
+      Function onError) async {
+    var dio = RuntimeStore().dio; //ok
+    try {
+      var formData = FormData();
+
+      formData.fields.add(MapEntry("listingtitle", listingTitle));
+      formData.fields.add(MapEntry("description", description));
+      formData.fields
+          .add(MapEntry("additionalexpensedetail", additionalExpenseDetail));
+      formData.fields.add(MapEntry("price", price.toString()));
+      formData.fields.add(MapEntry("address", address));
+
+      for (final File file in files) {
+        MultipartFile mpfile =
+            await MultipartFile.fromFile(file.path, filename: "filename.jpg");
+        formData.files.add(MapEntry("images", mpfile));
+      }
+
+      Response response = await dio.post(
+        createApartmentUrlStr,
+        data: formData,
+        options: Options(
+          contentType: Headers.formUrlEncodedContentType,
+          headers: {"Content-Type": "multipart/form-data"},
+        ),
+      );
+
+      if (response.statusCode != 200) onError();
+
+      cbk();
+    } on DioError {
+      onError();
+      cbk();
+    }
+  }
+
+  static void removeImage(Function cbk, String imageId, String apartmentId,
+      Function onError) async {
+    var dio = RuntimeStore().dio; //ok
+    try {
+      Response response = await dio.post(
+        removeImagesUrlStr,
+        data: {"imageid": imageId, "apartmentid": apartmentId},
+        options: Options(
+          contentType: Headers.formUrlEncodedContentType,
+          headers: {"Content-Type": "application/x-www-form-urlencoded"},
+        ),
+      );
+
+      if (response.statusCode != 200) onError();
+
+      cbk();
+    } on DioError {
+      onError();
+      cbk();
+    }
+  }
+
+  static void editApartment(
+      Function cbk,
+      int id,
+      String listingTitle,
+      String description,
+      String additionalExpenseDetail,
+      int price,
+      String address,
+      Function onError) async {
+    var dio = RuntimeStore().dio; //ok
+    try {
+      Response response = await dio.post(
+        editApartmentUrlStr,
+        data: {
+          "id": id,
+          "listingtitle": listingTitle,
+          "description": description,
+          "additionalexpensedetail": additionalExpenseDetail,
+          "price": price.toString(),
+          "address": address
+        },
+        options: Options(
+          contentType: Headers.formUrlEncodedContentType,
+          headers: {"Content-Type": "application/x-www-form-urlencoded"},
+        ),
+      );
+
+      if (response.statusCode != 200) onError();
+
+      cbk();
+    } on DioError {
+      onError();
+      cbk();
+    }
+  }
+
+  static void addImages(
+      Function cbk, int id, List<File> files, Function onError) async {
+    var dio = RuntimeStore().dio; //ok
+    try {
+      var formData = FormData();
+
+      formData.fields.add(MapEntry("id", id.toString()));
+
+      for (final File file in files) {
+        MultipartFile mpfile =
+            await MultipartFile.fromFile(file.path, filename: "filename.jpg");
+        formData.files.add(MapEntry("images", mpfile));
+      }
+
+      Response response = await dio.post(
+        addImagesUrlStr,
+        data: formData,
+        options: Options(
+          contentType: Headers.formUrlEncodedContentType,
+          headers: {"Content-Type": "multipart/form-data"},
+        ),
+      );
+
+      if (response.statusCode != 200) onError();
+
+      cbk();
+    } on DioError {
+      onError();
+      cbk();
+    }
   }
 }

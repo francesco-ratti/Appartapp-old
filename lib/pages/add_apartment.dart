@@ -1,10 +1,10 @@
 import 'dart:io';
 
 import 'package:appartapp/entities/apartment.dart';
+import 'package:appartapp/model/apartment_handler.dart';
 import 'package:appartapp/utils_classes/runtime_store.dart';
 import 'package:appartapp/widgets/error_dialog_builder.dart';
 import 'package:appartapp/widgets/img_gallery.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
@@ -16,18 +16,6 @@ class AddApartment extends StatefulWidget {
 
   @override
   State<AddApartment> createState() => _AddApartment(toEdit);
-
-  final String urlStr =
-      "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/createapartment";
-
-  final String editApartmentUrlStr =
-      "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/editapartment";
-
-  final String removeImagesUrlStr =
-      "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/deleteapartmentimage";
-
-  final String addImagesUrlStr =
-      "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/addapartmentimage";
 }
 
 class _AddApartment extends State<AddApartment> {
@@ -37,136 +25,6 @@ class _AddApartment extends State<AddApartment> {
   bool _uploadError = false;
 
   _AddApartment(this.toEdit);
-
-  void doCreateApartmentPost(
-      Function cbk,
-      String listingTitle,
-      String description,
-      String additionalExpenseDetail,
-      int price,
-      String address,
-      List<File> files) async {
-    var dio = RuntimeStore().dio; //ok
-    try {
-      var formData = FormData();
-
-      formData.fields.add(MapEntry("listingtitle", listingTitle));
-      formData.fields.add(MapEntry("description", description));
-      formData.fields
-          .add(MapEntry("additionalexpensedetail", additionalExpenseDetail));
-      formData.fields.add(MapEntry("price", price.toString()));
-      formData.fields.add(MapEntry("address", address));
-
-      for (final File file in files) {
-        MultipartFile mpfile =
-            await MultipartFile.fromFile(file.path, filename: "filename.jpg");
-        formData.files.add(MapEntry("images", mpfile));
-      }
-
-      Response response = await dio.post(
-        widget.urlStr,
-        data: formData,
-        options: Options(
-          contentType: Headers.formUrlEncodedContentType,
-          headers: {"Content-Type": "multipart/form-data"},
-        ),
-      );
-
-      if (response.statusCode != 200) _uploadError = true;
-
-      cbk();
-    } on DioError {
-      _uploadError = true;
-      cbk();
-    }
-  }
-
-  void removeImage(Function cbk, String imageId, String apartmentId) async {
-    var dio = RuntimeStore().dio; //ok
-    try {
-      Response response = await dio.post(
-        widget.removeImagesUrlStr,
-        data: {"imageid": imageId, "apartmentid": apartmentId},
-        options: Options(
-          contentType: Headers.formUrlEncodedContentType,
-          headers: {"Content-Type": "application/x-www-form-urlencoded"},
-        ),
-      );
-
-      if (response.statusCode != 200) _uploadError = true;
-
-      cbk();
-    } on DioError {
-      _uploadError = true;
-      cbk();
-    }
-  }
-
-  void doEditApartmentPost(
-      Function cbk,
-      int id,
-      String listingTitle,
-      String description,
-      String additionalExpenseDetail,
-      int price,
-      String address) async {
-    var dio = RuntimeStore().dio; //ok
-    try {
-      Response response = await dio.post(
-        widget.editApartmentUrlStr,
-        data: {
-          "id": id,
-          "listingtitle": listingTitle,
-          "description": description,
-          "additionalexpensedetail": additionalExpenseDetail,
-          "price": price.toString(),
-          "address": address
-        },
-        options: Options(
-          contentType: Headers.formUrlEncodedContentType,
-          headers: {"Content-Type": "application/x-www-form-urlencoded"},
-        ),
-      );
-
-      if (response.statusCode != 200) _uploadError = true;
-
-      cbk();
-    } on DioError {
-      _uploadError = true;
-      cbk();
-    }
-  }
-
-  void addImages(Function cbk, int id, List<File> files) async {
-    var dio = RuntimeStore().dio; //ok
-    try {
-      var formData = FormData();
-
-      formData.fields.add(MapEntry("id", id.toString()));
-
-      for (final File file in files) {
-        MultipartFile mpfile =
-            await MultipartFile.fromFile(file.path, filename: "filename.jpg");
-        formData.files.add(MapEntry("images", mpfile));
-      }
-
-      Response response = await dio.post(
-        widget.addImagesUrlStr,
-        data: formData,
-        options: Options(
-          contentType: Headers.formUrlEncodedContentType,
-          headers: {"Content-Type": "multipart/form-data"},
-        ),
-      );
-
-      if (response.statusCode != 200) _uploadError = true;
-
-      cbk();
-    } on DioError {
-      _uploadError = true;
-      cbk();
-    }
-  }
 
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descController = TextEditingController();
@@ -229,15 +87,18 @@ class _AddApartment extends State<AddApartment> {
             toEdit!.images[i],
             () => () {
                   numUploads++;
-                  removeImage(() {
-                    uploadCtr++;
-                    if (uploadCtr == numUploads) {
-                      onUploadsEnd();
-                    }
-                  },
+                  ApartmentHandler.removeImage(
+                      () {
+                        uploadCtr++;
+                        if (uploadCtr == numUploads) {
+                          onUploadsEnd();
+                        }
+                      },
                       im['id'].toString(),
-                      toEdit!.id
-                          .toString()); //returns a cbk function which will be invoked at submit
+                      toEdit!.id.toString(),
+                      () {
+                        _uploadError = true;
+                      }); //returns a cbk function which will be invoked at submit
                 }));
       }
     }
@@ -253,7 +114,7 @@ class _AddApartment extends State<AddApartment> {
         child: SafeArea(
           child: Scaffold(
             appBar: AppBar(
-              title: Text("Il tuo appartamento"),
+              title: const Text("Il tuo appartamento"),
               backgroundColor: Colors.brown,
             ),
             body: Container(
@@ -304,50 +165,44 @@ class _AddApartment extends State<AddApartment> {
   }
 
   Widget title() {
-    return Container(
-      child: TextField(
-        controller: _titleController,
-        cursorColor: colorTheme,
-        decoration: InputDecoration(
-          hintText: 'Monolocale Milano',
-          hintStyle: TextStyle(color: Colors.black),
-          labelText: 'Titolo',
-          labelStyle: const TextStyle(color: colorTheme),
-        ),
-        style: TextStyle(color: Colors.black),
+    return TextField(
+      controller: _titleController,
+      cursorColor: colorTheme,
+      decoration: const InputDecoration(
+        hintText: 'Monolocale Milano',
+        hintStyle: TextStyle(color: Colors.black),
+        labelText: 'Titolo',
+        labelStyle: TextStyle(color: colorTheme),
       ),
+      style: const TextStyle(color: Colors.black),
     );
   }
 
   Widget desc() {
-    return Container(
-      child: TextField(
-        controller: _descController,
-        cursorColor: colorTheme,
-        decoration: InputDecoration(
-          hintText: 'Monolocale luminoso con terrazza al quinto piano di...',
-          hintStyle: TextStyle(color: Colors.black),
-          labelText: 'Descrizione',
-          labelStyle: const TextStyle(color: colorTheme),
-        ),
-        style: TextStyle(color: Colors.black),
+    return TextField(
+      controller: _descController,
+      cursorColor: colorTheme,
+      decoration: const InputDecoration(
+        hintText: 'Monolocale luminoso con terrazza al quinto piano di...',
+        hintStyle: TextStyle(color: Colors.black),
+        labelText: 'Descrizione',
+        labelStyle: TextStyle(color: colorTheme),
       ),
+      style: const TextStyle(color: Colors.black),
     );
   }
 
   Widget address() {
-    return Container(
-      child: TextField(
-        controller: _addressController,
-        cursorColor: colorTheme,
-        decoration: InputDecoration(
-          hintText: 'Via Roma, 22',
-          hintStyle: TextStyle(color: Colors.black),
-          labelText: 'Indirizzo',
-          labelStyle: const TextStyle(color: colorTheme),
-        ),
-        style: TextStyle(color: Colors.black),
+    return TextField(
+      controller: _addressController,
+      cursorColor: colorTheme,
+      decoration: const InputDecoration(
+        hintText: 'Via Roma, 22',
+        hintStyle: TextStyle(color: Colors.black),
+        labelText: 'Indirizzo',
+        labelStyle: TextStyle(color: colorTheme),
       ),
+      style: const TextStyle(color: Colors.black),
     );
   }
 
@@ -355,32 +210,28 @@ class _AddApartment extends State<AddApartment> {
     return ListView(
       shrinkWrap: true,
       children: <Widget>[
-        Container(
-          child: TextField(
-            controller: _priceController,
-            cursorColor: colorTheme,
-            decoration: InputDecoration(
-              hintText: '350',
-              hintStyle: TextStyle(color: Colors.black),
-              labelText: 'Prezzo',
-              labelStyle: const TextStyle(color: colorTheme),
-            ),
-            keyboardType: TextInputType.number,
-            style: TextStyle(color: Colors.black),
+        TextField(
+          controller: _priceController,
+          cursorColor: colorTheme,
+          decoration: const InputDecoration(
+            hintText: '350',
+            hintStyle: TextStyle(color: Colors.black),
+            labelText: 'Prezzo',
+            labelStyle: TextStyle(color: colorTheme),
           ),
+          keyboardType: TextInputType.number,
+          style: const TextStyle(color: Colors.black),
         ),
-        Container(
-          child: TextField(
-            controller: _aedController,
-            cursorColor: colorTheme,
-            decoration: InputDecoration(
-              hintText: 'dettagli',
-              hintStyle: TextStyle(color: Colors.black),
-              labelText: 'Spese aggiuntive',
-              labelStyle: const TextStyle(color: colorTheme),
-            ),
-            style: TextStyle(color: Colors.black),
+        TextField(
+          controller: _aedController,
+          cursorColor: colorTheme,
+          decoration: const InputDecoration(
+            hintText: 'dettagli',
+            hintStyle: TextStyle(color: Colors.black),
+            labelText: 'Spese aggiuntive',
+            labelStyle: TextStyle(color: colorTheme),
           ),
+          style: const TextStyle(color: Colors.black),
         ),
       ],
     );
@@ -389,43 +240,50 @@ class _AddApartment extends State<AddApartment> {
   Widget sendButton() {
     return Padding(
       padding: const EdgeInsets.only(top: 20.0),
-      child: Container(
-        child: ElevatedButton(
-          onPressed: !_isLoading
-              ? () {
-                  if (isReady()) {
-                    setState(() {
-                      status = "";
-                    });
-                    numUploads = 0;
+      child: ElevatedButton(
+        onPressed: !_isLoading
+            ? () {
+                if (isReady()) {
+                  setState(() {
+                    status = "";
+                  });
+                  numUploads = 0;
 
-                    setState(() {
-                      _isLoading = true;
+                  setState(() {
+                    _isLoading = true;
+                  });
+                  if (toEdit == null) {
+                    ApartmentHandler.createApartment(
+                        onUploadsEnd,
+                        _titleController.text,
+                        _descController.text,
+                        _aedController.text,
+                        int.parse(_priceController.text),
+                        _addressController.text,
+                        _toUpload, () {
+                      _uploadError = true;
                     });
-                    if (toEdit == null) {
-                      doCreateApartmentPost(
-                          onUploadsEnd,
-                          _titleController.text,
-                          _descController.text,
-                          _aedController.text,
-                          int.parse(_priceController.text),
-                          _addressController.text,
-                          _toUpload);
-                    } else {
-                      numUploads++; //for editapartmentPost
-                      if (_toUpload.isNotEmpty) numUploads++;
-                      for (Function fun in _onSubmitCbks) {
-                        fun();
-                      }
-                      if (_toUpload.isNotEmpty) {
-                        addImages(() {
-                          uploadCtr++;
-                          if (uploadCtr == numUploads) {
-                            onUploadsEnd();
-                          }
-                        }, toEdit!.id, _toUpload);
-                      }
-                      doEditApartmentPost(
+                  } else {
+                    numUploads++; //for editapartmentPost
+                    if (_toUpload.isNotEmpty) numUploads++;
+                    for (Function fun in _onSubmitCbks) {
+                      fun();
+                    }
+                    if (_toUpload.isNotEmpty) {
+                      ApartmentHandler.addImages(
+                          () {
+                            uploadCtr++;
+                            if (uploadCtr == numUploads) {
+                              onUploadsEnd();
+                            }
+                          },
+                          toEdit!.id,
+                          _toUpload,
+                          () {
+                            _uploadError = true;
+                          });
+                    }
+                    ApartmentHandler.editApartment(
                         () {
                           uploadCtr++;
                           if (uploadCtr == numUploads) {
@@ -438,21 +296,22 @@ class _AddApartment extends State<AddApartment> {
                         _aedController.text,
                         int.parse(_priceController.text),
                         _addressController.text,
-                      );
-                    }
-                  } else {
-                    setState(() {
-                      status =
-                          "Incompleto. Compila tutti i campi e aggiungi almeno una foto";
-                    });
+                        () {
+                          _uploadError = true;
+                        });
                   }
+                } else {
+                  setState(() {
+                    status =
+                        "Incompleto. Compila tutti i campi e aggiungi almeno una foto";
+                  });
                 }
-              : null,
-          style: ElevatedButton.styleFrom(primary: Colors.black87),
-          child: Text(
-            toEdit == null ? 'AGGIUNGI' : 'MODIFICA',
-            style: const TextStyle(color: Colors.white),
-          ),
+              }
+            : null,
+        style: ElevatedButton.styleFrom(primary: Colors.black87),
+        child: Text(
+          toEdit == null ? 'AGGIUNGI' : 'MODIFICA',
+          style: const TextStyle(color: Colors.white),
         ),
       ),
     );

@@ -3,13 +3,12 @@ import 'dart:ui';
 
 import 'package:appartapp/entities/apartment.dart';
 import 'package:appartapp/entities/user.dart';
+import 'package:appartapp/model/match_handler.dart';
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import 'match_handler.dart';
 
 class RuntimeStore {
   //SINGLETON PATTERN

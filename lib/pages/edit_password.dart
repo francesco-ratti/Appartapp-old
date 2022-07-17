@@ -1,13 +1,11 @@
+import 'package:appartapp/model/user_handler.dart';
 import 'package:appartapp/utils_classes/runtime_store.dart';
 import 'package:appartapp/widgets/error_dialog_builder.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
 class EditPassword extends StatefulWidget {
   Color bgColor = Colors.white;
-  String urlStr =
-      "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/editsensitive";
 
   @override
   _EditPasswordState createState() => _EditPasswordState();
@@ -22,32 +20,6 @@ class _EditPasswordState extends State<EditPassword> {
 
   bool _isLoading = false;
 
-  void doUpdate(String email, String oldpassword, String newpassword) async {
-    var dio = RuntimeStore().dio; //ok
-    try {
-      Response response = await dio.post(
-        widget.urlStr,
-        data: {"password": oldpassword, "newpassword": newpassword},
-        options: Options(
-          contentType: Headers.formUrlEncodedContentType,
-          headers: {"Content-Type": "application/x-www-form-urlencoded"},
-        ),
-      );
-
-      setState(() {
-        _isLoading = false;
-      });
-      if (response.statusCode == 200) {
-        Navigator.pop(context);
-      } else {
-        Navigator.restorablePush(
-            context, ErrorDialogBuilder.buildGenericConnectionErrorRoute);
-      }
-    } on DioError {
-      Navigator.restorablePush(
-          context, ErrorDialogBuilder.buildConnectionErrorRoute);
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -128,8 +100,23 @@ class _EditPasswordState extends State<EditPassword> {
                     setState(() {
                       _isLoading = true;
                     });
-                    doUpdate(RuntimeStore().getUser()?.email ?? "", oldPassword,
-                        newPassword);
+                    UserHandler.updatePassword(
+                        RuntimeStore().getUser()?.email ?? "",
+                        oldPassword,
+                        newPassword, () {
+                      //onComplete
+                      setState(() {
+                        _isLoading = false;
+                      });
+                      Navigator.pop(context);
+                    }, () {
+                      //onError
+                      setState(() {
+                        _isLoading = false;
+                      });
+                      Navigator.restorablePush(context,
+                          ErrorDialogBuilder.buildConnectionErrorRoute);
+                    });
                   }
                 }),
             Padding(

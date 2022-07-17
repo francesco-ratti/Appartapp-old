@@ -5,25 +5,15 @@ import 'package:dio/dio.dart';
 import '../utils_classes/runtime_store.dart';
 
 class ApartmentHandler {
-  //SINGLETON PATTERN
-  //useful as singleton since network functions will store session cookie here, in cookie jar
 
-  final String urlStrGetNextNewApartment =
+  static final String urlStrGetNextNewApartment =
       "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/getnextnewapartment";
-  final String urlStrGetAllNewApartments =
+  static final String urlStrGetAllNewApartments =
       "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/getallnewapartments";
-  final String urlStrGetOwnedApartments =
+  static final String urlStrGetOwnedApartments =
       "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/getownedapartments";
 
-  static final ApartmentHandler _apartment = ApartmentHandler._internal();
-
-  factory ApartmentHandler() {
-    return _apartment;
-  }
-
-  ApartmentHandler._internal();
-
-  Future<List<Apartment>> getOwnedApartments() async {
+  static Future<List<Apartment>> getOwnedApartments() async {
     var dio = RuntimeStore().dio; //ok
 
     try {
@@ -50,7 +40,8 @@ class ApartmentHandler {
     }
   }
 
-  Future<Apartment?> getNewApartment(Function(Apartment) callback) async {
+  static Future<Apartment?> getNewApartment(
+      Function(Apartment) callback) async {
     var dio = RuntimeStore().dio; //ok
 
     try {
@@ -92,10 +83,4 @@ class ApartmentHandler {
 
      */
   }
-/*
-  Future<List<Apartment>> getAllApartments() async {
-    //TODO
-    return <Apartment>[];
-  }
- */
 }

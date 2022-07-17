@@ -43,7 +43,7 @@ class _OwnedApartments extends State<OwnedApartments> {
       });
     }
     Future<List<Apartment>> newOwnedApartments =
-        ApartmentHandler().getOwnedApartments();
+        ApartmentHandler.getOwnedApartments();
     newOwnedApartments
         .then(updateUi)
         .onError<ConnectionException>((error, stackTrace) => setState(() {
@@ -54,7 +54,7 @@ class _OwnedApartments extends State<OwnedApartments> {
 
   void callbck(bool ownsApartments) async {
     Future<List<Apartment>> newOwnedApartmentsFuture =
-        ApartmentHandler().getOwnedApartments();
+        ApartmentHandler.getOwnedApartments();
     List<Apartment> newOwnedApartments = await newOwnedApartmentsFuture;
     updateUi(newOwnedApartments);
 

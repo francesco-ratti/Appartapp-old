@@ -203,7 +203,7 @@ class _ContentPage extends State<ContentPage> {
   double finalCoord = 0.0;
 
   Future<LikeFromUser?> getNewTenant() {
-    return UserHandler().getNewLikeFromUser((LikeFromUser likeFromUser) {
+    return UserHandler.getNewLikeFromUser((LikeFromUser likeFromUser) {
       for (final Image im in likeFromUser.user.images) {
         precacheImage(im.image, context);
       }

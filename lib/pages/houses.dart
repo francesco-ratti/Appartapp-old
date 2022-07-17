@@ -202,7 +202,7 @@ class _ContentPage extends State<ContentPage> {
   double finalCoord = 0.0;
 
   Future<Apartment?> getNewApartment() {
-    return ApartmentHandler().getNewApartment((Apartment apartment) {
+    return ApartmentHandler.getNewApartment((Apartment apartment) {
       for (final Image im in apartment.images) {
         precacheImage(im.image, context);
       }

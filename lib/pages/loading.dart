@@ -23,7 +23,7 @@ void doInitialisation(BuildContext context, User user,
   RuntimeStore().setUser(user);
 
   Apartment? firstApartment =
-      await ApartmentHandler().getNewApartment((Apartment apartment) {
+      await ApartmentHandler.getNewApartment((Apartment apartment) {
     for (final Image im in apartment.images) {
       precacheImage(im.image, context);
     }
@@ -38,13 +38,13 @@ void doInitialisation(BuildContext context, User user,
   });
 
   RuntimeStore()
-      .setOwnedApartmentsFuture(ApartmentHandler().getOwnedApartments());
+      .setOwnedApartmentsFuture(ApartmentHandler.getOwnedApartments());
 
 // Navigator.pushReplacementNamed(context, '/home',
 //     arguments: firstApartmentFuture);
 
   LikeFromUser? firstTenant =
-  await UserHandler().getNewLikeFromUser((LikeFromUser likeFromUser) {
+      await UserHandler.getNewLikeFromUser((LikeFromUser likeFromUser) {
     for (final Image im in likeFromUser.user.images) {
       precacheImage(im.image, context);
     }

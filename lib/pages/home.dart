@@ -33,7 +33,7 @@ class _HomeState extends State<Home> {
       _loadingOwnedApartments = false;
 
       Future<List<Apartment>> newOwnedApartments =
-          ApartmentHandler().getOwnedApartments();
+          ApartmentHandler.getOwnedApartments();
       RuntimeStore().setOwnedApartmentsFuture(newOwnedApartments);
     });
   }
@@ -56,7 +56,7 @@ class _HomeState extends State<Home> {
       });
     }).onError((error, stackTrace) {
       RuntimeStore()
-          .setOwnedApartmentsFuture(ApartmentHandler().getOwnedApartments());
+          .setOwnedApartmentsFuture(ApartmentHandler.getOwnedApartments());
       RuntimeStore().getOwnedApartments()!.then((value) {
         setState(() {
           _loadingOwnedApartments = false;
@@ -120,22 +120,22 @@ class _HomeState extends State<Home> {
                 ? RetryWidget(
               retryCallback: () {
                 setState(() {
-                  _networkError = false;
-                  _loadingOwnedApartments = true;
-                });
-                RuntimeStore().setOwnedApartmentsFuture(
-                    ApartmentHandler().getOwnedApartments());
-                RuntimeStore().getOwnedApartments()!.then((value) {
-                  setState(() {
-                    _loadingOwnedApartments = false;
-                    _ownsApartments = value.isNotEmpty;
-                  });
-                }).onError((error, stackTrace) {
-                  setState(() {
-                    _loadingOwnedApartments = false;
-                    _networkError = true;
-                  });
-                });
+                            _networkError = false;
+                            _loadingOwnedApartments = true;
+                          });
+                          RuntimeStore().setOwnedApartmentsFuture(
+                              ApartmentHandler.getOwnedApartments());
+                          RuntimeStore().getOwnedApartments()!.then((value) {
+                            setState(() {
+                              _loadingOwnedApartments = false;
+                              _ownsApartments = value.isNotEmpty;
+                            });
+                          }).onError((error, stackTrace) {
+                            setState(() {
+                              _loadingOwnedApartments = false;
+                              _networkError = true;
+                            });
+                          });
               },
               textColor: Colors.white,
               backgroundColor: RuntimeStore.backgroundColor,

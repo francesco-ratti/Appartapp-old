@@ -21,13 +21,16 @@ class ImgGallery extends StatefulWidget {
       required this.filesToUploadCbk,
       this.onSubmitCbksCbk,
       this.totalImagesCbk,
-      this.existingImages = const []})
+      //this.existingImages = const []}
+      this.existingImages})
       : super(key: key);
 
   @override
   _ImgGalleryState createState() => _ImgGalleryState(
-    imagesToShow: (existingImages == null ? <GalleryImage>[] : existingImages as List<GalleryImage>),
-  );
+        imagesToShow: (existingImages == null
+            ? <GalleryImage>[]
+            : existingImages as List<GalleryImage>),
+      );
 }
 
 class GalleryImage {
@@ -38,11 +41,11 @@ class GalleryImage {
 }
 
 class _ImgGalleryState extends State<ImgGallery> {
-  List<GalleryImage> imagesToShow=[];
-  List<File> _toUpload=[];
-  List<Function> onSubmitCbks=[];
-  int currentOpenedPage=0;
-  int currentSmallImage=0;
+  List<GalleryImage> imagesToShow = [];
+  List<File> _toUpload = [];
+  List<Function> onSubmitCbks = [];
+  int currentOpenedPage = 0;
+  int currentSmallImage = 0;
 
   _ImgGalleryState({Key? key, required this.imagesToShow});
 
@@ -122,6 +125,7 @@ class _ImgGalleryState extends State<ImgGallery> {
       });
     }
   }
+
   @override
   void initState() {
     super.initState();

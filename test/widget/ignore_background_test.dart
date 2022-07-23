@@ -6,10 +6,10 @@ void main() {
   //TODO: run this test because at the moment the image is not in the assets
   testWidgets('Ignore background has an image from the assets', (tester) async {
     // Create the widget by telling the tester to build it.
-    await tester.pumpWidget(MediaQuery(
+    await tester.pumpWidget(const MediaQuery(
       //MediaQuery required to avoid compilation error
       //MaterialApp required to set a text direction in the widget to test
-      data: const MediaQueryData(),
+      data: MediaQueryData(),
       child: MaterialApp(
         home: IgnoreBackground(),
       ),

@@ -57,7 +57,7 @@ class MatchEntry extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: match.apartment.images[0] != null
+      leading: match.apartment.images.isNotEmpty
           ? CircleAvatar(backgroundImage: match.apartment.images[0].image)
           : const Icon(
               Icons.apartment_rounded,

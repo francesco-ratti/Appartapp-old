@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  //TODO: run this test because at the moment the image is not in the assets
   testWidgets('LikeBackground has an image from the assets', (tester) async {
     // Create the widget by telling the tester to build it.
     await tester.pumpWidget(const MediaQuery(

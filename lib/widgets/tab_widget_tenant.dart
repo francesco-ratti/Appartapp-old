@@ -29,7 +29,6 @@ class TabWidgetTenant extends StatefulWidget {
 }
 
 class _TabWidgetTenant extends State<TabWidgetTenant> {
-
   @override
   Widget build(BuildContext context) => ListView(
         padding: const EdgeInsets.all(6),
@@ -85,7 +84,7 @@ class _TabWidgetTenant extends State<TabWidgetTenant> {
                             child: Container(
                                 width: 70,
                                 height: 70,
-                                child: widget.apartment!.images[0] != null
+                                child: widget.apartment!.images.isNotEmpty
                                     ? CircleAvatar(
                                         backgroundImage:
                                             widget.apartment!.images[0].image)

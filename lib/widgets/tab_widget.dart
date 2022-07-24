@@ -91,7 +91,7 @@ class TabWidget extends StatelessWidget {
                                   child: Container(
                                       width: 70,
                                       height: 70,
-                                      child: owner!.images[0] != null
+                                      child: owner!.images.isNotEmpty
                                           ? CircleAvatar(
                                               backgroundImage:
                                                   owner!.images[0].image)

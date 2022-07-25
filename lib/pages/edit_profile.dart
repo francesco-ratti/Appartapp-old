@@ -92,19 +92,19 @@ class _EditProfileState extends State<EditProfile> {
       Map im = RuntimeStore().getUser()!.imagesDetails[i];
       existingImages.add(GalleryImage(
           RuntimeStore().getUser()!.images[i],
-              () =>
-              () {
-            UserHandler.removeImage(() {
-              uploadCtr++;
-              if (uploadCtr == numUploads) {
-                onUploadsEnd();
-              }
-            },
-                im['id']
-                    .toString(), () {
-                  _uploadError = true;
-                }); //returns a cbk function which will be invoked at submit
-          }));
+          () => () {
+                UserHandler.removeImage(
+                    () {
+                      uploadCtr++;
+                      if (uploadCtr == numUploads) {
+                        onUploadsEnd();
+                      }
+                    },
+                    im['id'].toString(),
+                    () {
+                      _uploadError = true;
+                    }); //returns a cbk function which will be invoked at submit
+              }));
     }
     /*
     for (Map im in RuntimeStore()
@@ -249,8 +249,9 @@ class _EditProfileState extends State<EditProfile> {
           Padding(
               padding: const EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 8.0),
               child: //Row(children: [
-                  Expanded(
-                      child: DropdownButton<Gender>(
+                  //Expanded(
+                  //child:
+                  DropdownButton<Gender>(
                 hint: const Text("Scegli il tuo genere"),
                 value: _gender,
                 onChanged: RuntimeStore().credentialsLogin
@@ -266,7 +267,7 @@ class _EditProfileState extends State<EditProfile> {
                     value: gender,
                   );
                 }).toList(),
-              ))
+              ) //)
               //  ])
               ),
           RuntimeStore().credentialsLogin
@@ -279,7 +280,7 @@ class _EditProfileState extends State<EditProfile> {
                   )),
           RuntimeStore().credentialsLogin
               ? ElevatedButton(
-              child: const Text("Modifica"),
+                  child: const Text("Modifica"),
                   style: ElevatedButton.styleFrom(primary: Colors.brown),
                   onPressed: () {
                     String email = emailController.text;
@@ -381,7 +382,7 @@ class _EditProfileState extends State<EditProfile> {
           ),
           RuntimeStore().credentialsLogin
               ? ElevatedButton(
-              child: const Text("Aggiorna la password"),
+                  child: const Text("Aggiorna la password"),
                   style: ElevatedButton.styleFrom(primary: Colors.brown),
                   onPressed: () {
                     Navigator.pushNamed(context, "/editpassword");

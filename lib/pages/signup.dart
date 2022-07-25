@@ -93,10 +93,10 @@ class _SignupState extends State<Signup> {
                     readOnly: true,
                     onTap: () {
                       showDatePicker(
-                          context: context,
-                          initialDate: _birthday,
-                          lastDate: DateTime.now(),
-                          firstDate: DateTime(1900))
+                              context: context,
+                              initialDate: _birthday,
+                              lastDate: DateTime.now(),
+                              firstDate: DateTime(1900))
                           .then((value) {
                         if (value != null) {
                           setState(() {
@@ -116,23 +116,24 @@ class _SignupState extends State<Signup> {
               Padding(
                   padding: const EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 8.0),
                   child: Row(children: [
-                    Expanded(
-                        child: DropdownButton<Gender>(
-                          hint: const Text("Scegli il tuo genere"),
-                          // Not necessary for Option 1
-                          value: _gender,
-                          onChanged: (newValue) {
-                            setState(() {
-                              _gender = newValue;
-                            });
-                          },
-                          items: Gender.values.map((gender) {
-                            return DropdownMenuItem(
-                              child: Text(gender.toItalianString()),
-                              value: gender,
-                            );
-                          }).toList(),
-                        ))
+                    // Expanded(
+                    //     child:
+                    DropdownButton<Gender>(
+                      hint: const Text("Scegli il tuo genere"),
+                      // Not necessary for Option 1
+                      value: _gender,
+                      onChanged: (newValue) {
+                        setState(() {
+                          _gender = newValue;
+                        });
+                      },
+                      items: Gender.values.map((gender) {
+                        return DropdownMenuItem(
+                          child: Text(gender.toItalianString()),
+                          value: gender,
+                        );
+                      }).toList(),
+                    ) //)
                   ])),
               ElevatedButton(
                   child: const Text("Registrati"),

@@ -31,14 +31,12 @@ void main() {
     await tester.enterText(password, 'test');
     await tester.pumpAndSettle();
 
-    await tester.pump(const Duration(seconds: 2));
-
     final Finder button = find.byType(ElevatedButton);
+
+    await tester.pump(const Duration(seconds: 1)); // Wait some time
 
     await tester.tap(button);
     await tester.pumpAndSettle();
-
-    await tester.pump(const Duration(seconds: 5)); // Wait some time
 
     // Verify we are no more in the access page
     expect(find.text('Accedi'), findsNothing);
@@ -86,14 +84,14 @@ void main() {
     await tester.enterText(password2, 'test');
     await tester.pumpAndSettle();
 
-    await tester.pump(const Duration(seconds: 2));
+    await tester.pump(const Duration(seconds: 1));
 
     final Finder button2 = find.byType(ElevatedButton);
 
     await tester.tap(button2);
     await tester.pumpAndSettle();
 
-    await tester.pump(const Duration(seconds: 5)); // Wait some time
+    await tester.pump(const Duration(seconds: 1)); // Wait some time
 
     // Verify we are no more in the access page
     expect(find.text('Accedi'), findsNothing);

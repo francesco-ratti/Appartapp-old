@@ -199,7 +199,7 @@ class _EditTenantInformationState extends State<EditTenantInformation> {
                     onChanged: (newValue) {
                       setState(() {
                         if (newValue != null) {
-                          if (!newValue.value) petsController.text = "";
+                          if (!newValue.value) petsController.text = "nessuno";
                           setState(() {
                             _petsItem = newValue;
                           });
@@ -215,15 +215,15 @@ class _EditTenantInformationState extends State<EditTenantInformation> {
                   )),
               (_petsItem != null && _petsItem!.value == true)
                   ? Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: TextField(
-                    obscureText: false,
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'Quali?',
-                    ),
-                    controller: petsController,
-                  ))
+                      padding: const EdgeInsets.all(8.0),
+                      child: TextField(
+                        obscureText: false,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'Quali?',
+                        ),
+                        controller: petsController,
+                      ))
                   : const SizedBox(),
               ElevatedButton(
                   child: const Text("Modifica"),

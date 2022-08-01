@@ -206,7 +206,7 @@ class _ContentPage extends State<ContentPage> {
             settings: settings,
             builder: (BuildContext context) {
               return DismissiblePage(
-                //backgroundColor: Colors.white,
+                  //backgroundColor: Colors.white,
                   onDismissed: () {
                     widget.updateUI(false);
                     if (currentTenant != null) {
@@ -232,7 +232,7 @@ class _ContentPage extends State<ContentPage> {
                         context,
                         MaterialPageRoute(
                             builder: (context) => ContentPage(
-                              currentTenantFuture: nextTenantFuture,
+                                  currentTenantFuture: nextTenantFuture,
                                   updateUI: widget.updateUI,
                                   match: widget.match,
                                   whoCreatedMe: "Content creation",
@@ -279,6 +279,10 @@ class _ContentPage extends State<ContentPage> {
                               retryButtonText: "Cerca ancora",
                               retryCallback: () {
                                 setState(() {
+                                  // print('_tenantLoaded   :');
+                                  // print(_tenantLoaded);
+                                  // print('currentTenant   :');
+                                  // print(currentTenant);
                                   _tenantLoaded = false;
                                 });
                                 currentTenantFuture = getNewTenant();

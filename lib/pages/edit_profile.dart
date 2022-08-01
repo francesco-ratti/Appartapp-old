@@ -149,6 +149,7 @@ class _EditProfileState extends State<EditProfile> {
 
     return ModalProgressHUD(
       child: ListView(
+        key: Key('scroll'),
         padding: const EdgeInsets.all(16.0),
         children: <Widget>[
           Padding(
@@ -395,6 +396,7 @@ class _EditProfileState extends State<EditProfile> {
                 Navigator.pushNamed(context, "/edittenants");
               }),
           ElevatedButton(
+              key: const Key('esci'),
               child: const Text("Esci"),
               style: ElevatedButton.styleFrom(primary: Colors.red),
               onPressed: () async {

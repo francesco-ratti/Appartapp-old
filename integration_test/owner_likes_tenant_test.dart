@@ -7,7 +7,8 @@ import 'package:appartapp/main.dart' as app;
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
-  testWidgets('', (tester) async {
+  testWidgets('The match is created when the owner likes back a tenant',
+      (tester) async {
     app.main();
     await tester.pumpAndSettle();
     await tester.pump(const Duration(seconds: 2)); // Wait some time

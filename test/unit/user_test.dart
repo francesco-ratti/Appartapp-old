@@ -27,6 +27,7 @@ void main() {
       User usr = User.fromMap(mapUsr);
 
       expect(usr.isProfileComplete(), true);
+      expect(usr.hasSelectedPets(), true);
       expect(usr.hasPets(), true);
     });
 
@@ -50,6 +51,8 @@ void main() {
       User usr = User.fromMap(mapUsr);
 
       expect(usr.isProfileComplete(), false);
+      expect(usr.hasSelectedPets(), true);
+      expect(usr.hasPets(), true);
     });
 
     test('Checking an incomplete profile', () {
@@ -72,6 +75,8 @@ void main() {
       User usr = User.fromMap(mapUsr);
 
       expect(usr.isProfileComplete(), false);
+      expect(usr.hasSelectedPets(), true);
+      expect(usr.hasPets(), true);
     });
 
     test('Checking an incomplete profile', () {
@@ -94,6 +99,8 @@ void main() {
       User usr = User.fromMap(mapUsr);
 
       expect(usr.isProfileComplete(), false);
+      expect(usr.hasSelectedPets(), true);
+      expect(usr.hasPets(), true);
     });
 
     test('Checking an incomplete profile', () {
@@ -116,9 +123,11 @@ void main() {
       User usr = User.fromMap(mapUsr);
 
       expect(usr.isProfileComplete(), false);
+      expect(usr.hasSelectedPets(), true);
+      expect(usr.hasPets(), true);
     });
 
-    test('Checking a complete profile without pets', () {
+    test('Checking an incomplete profile', () {
       var mapUsr = {
         'id': 000,
         "email": 'email@email.it',
@@ -137,7 +146,31 @@ void main() {
       };
       User usr = User.fromMap(mapUsr);
 
+      expect(usr.isProfileComplete(), false);
+      expect(usr.hasSelectedPets(), false);
+    });
+
+    test('Checking a complete profile without pets', () {
+      var mapUsr = {
+        'id': 000,
+        "email": 'email@email.it',
+        'name': 'Mario',
+        'surname': 'Roca',
+        'birthday': 919551600000,
+        'gender': 'M',
+        'images': [],
+        'bio': "text",
+        'reason': 'study',
+        'month': 'Settembre',
+        'job': 'student',
+        'income': '1600',
+        'smoker': 'No',
+        'pets': 'No'
+      };
+      User usr = User.fromMap(mapUsr);
+
       expect(usr.isProfileComplete(), true);
+      expect(usr.hasSelectedPets(), true);
       expect(usr.hasPets(), false);
     });
   });

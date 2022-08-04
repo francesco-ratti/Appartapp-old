@@ -21,12 +21,14 @@ void main() {
 
     await tester.dragUntilVisible(
         exitBtn, // what I want to find
-        find.byKey(Key('scroll')),
+        find.byKey(const Key('scroll')),
         // widget you want to scroll
         const Offset(0, -100), // delta to move
-        duration: Duration(seconds: 2));
+        duration: const Duration(seconds: 2));
 
     await tester.tap(exitBtn);
     await tester.pumpAndSettle();
+
+    expect(find.text("Iniziamo!"), findsOneWidget);
   });
 }

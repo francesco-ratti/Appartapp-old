@@ -55,10 +55,10 @@ void main() {
 
     await tester.dragUntilVisible(
         exitBtn, // what I want to find
-        find.byKey(Key('scroll')),
+        find.byKey(const Key('scroll')),
         // widget you want to scroll
         const Offset(0, -100), // delta to move
-        duration: Duration(seconds: 2));
+        duration: const Duration(seconds: 2));
 
     await tester.tap(exitBtn);
     await tester.pumpAndSettle();
@@ -88,6 +88,9 @@ void main() {
 
     await tester.tap(button2);
     await tester.pumpAndSettle();
+
+    // Verify we are no more in the access page
+    expect(find.text('Accedi'), findsNothing);
 
     await tester.pump(const Duration(seconds: 5)); // Wait some time
   });

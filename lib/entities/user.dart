@@ -20,19 +20,16 @@ class User {
   String job; //What kind of work do you do?
   String income; //What is a rough estimate of your income?
   TemporalQ? smoker; //Do you smoke?
-  String pets; //Do you have pets?
+  String pets; //Do you have any pet?
 
   bool isProfileComplete() {
-    return (bio != null &&
-        bio.trim().isNotEmpty &&
-        reason != null &&
+    return (bio.trim().isNotEmpty &&
         reason.trim().isNotEmpty &&
         month != null &&
-        job != null &&
         job.isNotEmpty &&
-        income != null &&
         income.isNotEmpty &&
-        smoker != null);
+        smoker != null &&
+        hasSelectedPets());
   }
 
   static List<Image> fromImagesDetailsToImages(List imagesDetails) {
@@ -60,8 +57,12 @@ class User {
     return images;
   }
 
-  bool hasPets() {
+  bool hasSelectedPets() {
     return pets.isNotEmpty;
+  }
+
+  bool hasPets() {
+    return pets.isNotEmpty && pets != "No";
   }
 
   User.fromMap(Map map)

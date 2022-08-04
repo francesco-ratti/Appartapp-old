@@ -60,11 +60,15 @@ class _EditTenantInformationState extends State<EditTenantInformation> {
     _month = widget.user.month;
     _smokerTQ = widget.user.smoker;
 
-    if (widget.user.hasPets()) {
-      petsController.text = widget.user.pets;
-      _petsItem = yesYN;
+    if (widget.user.hasSelectedPets()) {
+      if (widget.user.hasPets()) {
+        petsController.text = widget.user.pets;
+        _petsItem = yesYN;
+      } else {
+        _petsItem = noYN;
+      }
     } else {
-      _petsItem = noYN;
+      _petsItem = null;
     }
 
     if (widget.user.income.isNotEmpty) {
@@ -199,7 +203,8 @@ class _EditTenantInformationState extends State<EditTenantInformation> {
                     onChanged: (newValue) {
                       setState(() {
                         if (newValue != null) {
-                          if (!newValue.value) petsController.text = "nessuno";
+                          if (!newValue.value) /* user has selected no pets */
+                            petsController.text = "";
                           setState(() {
                             _petsItem = newValue;
                           });
@@ -240,8 +245,13 @@ class _EditTenantInformationState extends State<EditTenantInformation> {
                     });
 
                     UserHandler.editTenantInformation(
-                        bio, reason, job, income, pets, _month, _smokerTQ,
-                        (User user) {
+                        bio,
+                        reason,
+                        job,
+                        income,
+                        _petsItem == noYN ? "No" : pets,
+                        _month,
+                        _smokerTQ, (User user) {
                       //onComplete
                       RuntimeStore().setUser(user);
                       Function() cbk = RuntimeStore().tenantInfoUpdated;

@@ -128,9 +128,9 @@ class _TabWidgetTenant extends State<TabWidgetTenant> {
                   content: widget.currentTenant.smoker!.toItalianString()),
           DisplayText(
               title: "Animali",
-              content: widget.currentTenant.pets.isEmpty
-                  ? "No"
-                  : widget.currentTenant.pets),
+              content: widget.currentTenant.hasPets()
+                  ? widget.currentTenant.pets
+                  : "No"),
 
           //PRIVATE INFORMATION
 

@@ -1,6 +1,5 @@
 import 'package:appartapp/entities/apartment.dart';
 import 'package:appartapp/entities/user.dart';
-import 'package:appartapp/enums/enum_temporalq.dart';
 import 'package:appartapp/widgets/tab_widget_tenant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';

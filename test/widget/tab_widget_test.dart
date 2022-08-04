@@ -91,7 +91,8 @@ void main() {
     expect(find.byType(ElevatedButton), findsOneWidget);
   });
 
-  testWidgets('TabWidget has owner button when owner: null', (tester) async {
+  testWidgets('TabWidget doesn\'t have the owner button when owner: null',
+      (tester) async {
     // Create the widget by telling the tester to build it.
     await tester.pumpWidget(MediaQuery(
         data: const MediaQueryData(),

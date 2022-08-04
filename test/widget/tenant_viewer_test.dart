@@ -116,7 +116,7 @@ void main() {
     });
 
     testWidgets(
-        'TenantModel and TabWidgetTenant present if the tenant is loaded and is a lessor',
+        'TenantModel and TabWidgetTenant present if the tenant is loaded and is a tenant',
         (tester) async {
       RuntimeStore().useMobileLayout = true;
       // Create the widget by telling the tester to build it.

@@ -164,7 +164,7 @@ void main() {
     // Verify we are no more in the access page
     expect(find.text('Accedi'), findsNothing);
 
-    //   #########   OPEN MATCH EXPLORATION
+    //   #########   OPEN MATCHES PAGE
 
     final Finder matches = find.byIcon(Icons.chat_bubble_rounded);
     await tester.tap(matches);

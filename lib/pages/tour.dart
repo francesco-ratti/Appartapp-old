@@ -150,7 +150,7 @@ class Tour extends StatelessWidget {
 
     return IntroductionScreen(
       pages: listPagesViewModel,
-      done: const Text("Done",
+      done: const Text("Iniziamo",
           style: TextStyle(fontWeight: FontWeight.w600, color: Colors.black)),
       next: const Icon(
         Icons.arrow_forward,

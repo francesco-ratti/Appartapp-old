@@ -137,6 +137,7 @@ class _SignupState extends State<Signup> {
                   ])),
               ElevatedButton(
                   child: const Text("Registrati"),
+                  style: ElevatedButton.styleFrom(primary: Colors.brown),
                   onPressed: () {
                     setState(() {
                       status = "";

@@ -76,7 +76,7 @@ void main() {
       ));
 
       // Create the Finders.
-      final noImagesFinder = find.text("No images");
+      final noImagesFinder = find.text("Nessuna immagine da mostrare");
 
       // Use the `findsOneWidget` matcher provided by flutter_test to verify
       // that the Text widgets appear exactly once in the widget tree.

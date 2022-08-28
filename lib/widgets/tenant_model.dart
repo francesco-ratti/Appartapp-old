@@ -70,7 +70,7 @@ class _TenantModel extends State<TenantModel> {
                           ? widget.currentTenant.images[currentIndex]
                           : const Center(
                               child: Text(
-                                "No images",
+                                "Nessuna immagine da mostrare",
                                 style: TextStyle(color: Colors.white),
                               ),
                             ),
@@ -82,7 +82,7 @@ class _TenantModel extends State<TenantModel> {
                         ? widget.currentTenant.images[currentIndex]
                         : const Center(
                             child: Text(
-                              "No images",
+                              "Nessuna immagine da mostrare",
                               style: TextStyle(color: Colors.white),
                             ),
                           ),

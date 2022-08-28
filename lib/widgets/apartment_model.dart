@@ -41,7 +41,7 @@ class _ApartmentModel extends State<ApartmentModel> {
         widget.currentApartment.images.isNotEmpty ? widget.currentApartment.images[currentIndex] :
         const Center(
                 child: Text(
-                  "No images",
+                  "Nessuna immagine da mostrare",
                   style: TextStyle(color: Colors.white),
                 ),
               ),        GestureDetector(

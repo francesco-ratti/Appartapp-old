@@ -1,5 +1,4 @@
 import 'package:appartapp/entities/user.dart';
-import 'package:blur/blur.dart';
 import 'package:flutter/material.dart';
 
 class TenantModel extends StatefulWidget {
@@ -37,8 +36,24 @@ class _TenantModel extends State<TenantModel> {
   }
 
   @override
-  Widget build(BuildContext context) => GestureDetector(
-        onTapUp: (TapUpDetails details) {
+  Widget build(BuildContext context) => //solo se ancora senza like
+      Stack(fit: StackFit.expand, children: <Widget>[
+        widget.currentTenant.images.isNotEmpty
+            ? (/*!(widget.lessor) && !widget.match // not a lessor = tenant -> blur
+                          ? Blur(
+                      blur: 12,
+                      child: widget.currentTenant.images[currentIndex])
+                      :*/
+                    widget.currentTenant
+                        .images[currentIndex] //It's a lessor, no blur
+                )
+            : (const Center(
+                child: Text(
+                  "Nessuna immagine da mostrare",
+                  style: TextStyle(color: Colors.white),
+                ),
+              )),
+        GestureDetector(onTapUp: (TapUpDetails details) {
           final RenderBox? box = context.findRenderObject() as RenderBox;
           final localOffset = box!.globalToLocal(details.globalPosition);
           final x = localOffset.dx;
@@ -60,32 +75,6 @@ class _TenantModel extends State<TenantModel> {
               });
             }
           }
-        },
-        child: //solo se ancora senza like
-            !(widget.lessor) && !widget.match // not a lessor = tenant -> blur
-                ? Blur(
-                    blur: 12,
-                    child: Stack(fit: StackFit.expand, children: <Widget>[
-                      widget.currentTenant.images.isNotEmpty
-                          ? widget.currentTenant.images[currentIndex]
-                          : const Center(
-                              child: Text(
-                                "Nessuna immagine da mostrare",
-                                style: TextStyle(color: Colors.white),
-                              ),
-                            ),
-                    ]),
-                  )
-                : //It's a lessor, no blur
-                Stack(fit: StackFit.expand, children: <Widget>[
-                  widget.currentTenant.images.isNotEmpty
-                        ? widget.currentTenant.images[currentIndex]
-                        : const Center(
-                            child: Text(
-                              "Nessuna immagine da mostrare",
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ),
-                  ]),
-      );
+        })
+      ]);
 }

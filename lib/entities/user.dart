@@ -51,7 +51,7 @@ class User {
             ),
           );
         },
-        //fit: BoxFit.cover,
+        fit: BoxFit.cover,
       ));
     }
     return images;

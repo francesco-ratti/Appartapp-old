@@ -59,7 +59,10 @@ class Apartment {
   static List<Image> fromImagesUriToImages(List<String> imagesUri) {
     List<Image> images = [];
     for (final String uri in imagesUri) {
-      images.add(Image.asset(uri));
+      images.add(Image.asset(
+        uri,
+        fit: BoxFit.cover,
+      ));
     }
     return images;
   }

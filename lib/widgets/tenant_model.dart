@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:appartapp/entities/user.dart';
 import 'package:flutter/material.dart';
 
@@ -6,11 +8,10 @@ class TenantModel extends StatefulWidget {
   final bool lessor;
   final bool match;
 
-  const TenantModel(
-      {Key? key,
-      required this.currentTenant,
-      required this.lessor,
-      required this.match})
+  const TenantModel({Key? key,
+    required this.currentTenant,
+    required this.lessor,
+    required this.match})
       : super(key: key);
 
   @override
@@ -37,14 +38,15 @@ class _TenantModel extends State<TenantModel> {
 
   @override
   Widget build(BuildContext context) => //solo se ancora senza like
-      Stack(fit: StackFit.expand, children: <Widget>[
-        widget.currentTenant.images.isNotEmpty
-            ? (/*!(widget.lessor) && !widget.match // not a lessor = tenant -> blur
-                          ? Blur(
-                      blur: 12,
-                      child: widget.currentTenant.images[currentIndex])
-                      :*/
-                    widget.currentTenant
+  Stack(fit: StackFit.expand, children: <Widget>[
+    widget.currentTenant.images.isNotEmpty
+            ? (!(widget.lessor) &&
+                        !widget.match // not a lessor = tenant -> blur
+                    ? ImageFiltered(
+                        imageFilter:
+                            ImageFilter.blur(sigmaX: 30.0, sigmaY: 30.0),
+                        child: widget.currentTenant.images[currentIndex])
+                    : widget.currentTenant
                         .images[currentIndex] //It's a lessor, no blur
                 )
             : (const Center(
@@ -53,28 +55,28 @@ class _TenantModel extends State<TenantModel> {
                   style: TextStyle(color: Colors.white),
                 ),
               )),
-        GestureDetector(onTapUp: (TapUpDetails details) {
-          final RenderBox? box = context.findRenderObject() as RenderBox;
-          final localOffset = box!.globalToLocal(details.globalPosition);
-          final x = localOffset.dx;
+    GestureDetector(onTapUp: (TapUpDetails details) {
+      final RenderBox? box = context.findRenderObject() as RenderBox;
+      final localOffset = box!.globalToLocal(details.globalPosition);
+      final x = localOffset.dx;
 
-          // if x is less than halfway across the screen and user is not on first image
-          if (x < box.size.width / 2) {
+      // if x is less than halfway across the screen and user is not on first image
+      if (x < box.size.width / 2) {
+        setState(() {
+          if (currentIndex > 0) {
             setState(() {
-              if (currentIndex > 0) {
-                setState(() {
-                  currentIndex--;
-                });
-              }
+              currentIndex--;
             });
-          } else {
-            // Assume the user tapped on the other half of the screen and check they are not on the last image
-            if (currentIndex < numImages - 1) {
-              setState(() {
-                currentIndex++;
-              });
-            }
           }
-        })
-      ]);
+        });
+      } else {
+        // Assume the user tapped on the other half of the screen and check they are not on the last image
+        if (currentIndex < numImages - 1) {
+          setState(() {
+            currentIndex++;
+          });
+        }
+      }
+    })
+  ]);
 }

@@ -39,7 +39,7 @@ class _ApartmentModel extends State<ApartmentModel> {
       fit: StackFit.expand,
       children: <Widget>[
         widget.currentApartment.images.isNotEmpty
-            ? widget.currentApartment.images[currentIndex]
+            ? (widget.currentApartment.images[currentIndex])
             : (const Center(
                 child: Text(
                   "Nessuna immagine da mostrare",

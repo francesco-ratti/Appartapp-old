@@ -2,18 +2,17 @@
 
 App for finding apartments to rent
 
-## References
-- [Indroduction Screen Widget](https://github.com/pyozer/introduction_screen)
+Flutter project.
+___________________________________________________
 
-## Getting Started
+If you desire a different address for server, find in the source code (Source folder) all occourrencies of "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT" with the address of your server and then recompile.
 
-This project is a starting point for a Flutter application.
+-APK for Android located in ./appartapp_serveronlan.apk tries to connect to appartApp_server located at address http://192.168.1.170/appartapp-1.0-SNAPSHOT
+____________________________________________________
+EXISTING ACCOUNTS IN SERVER DB (see appartApp_server):
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+EMAIL: georgeclooney@gmail.com, PWD: george
+EMAIL: angelinajolie@gmail.com, PWD: angelina
+EMAIL: zacefron@gmail.com, PWD: zac
+EMAIL: vanessaincontrada@gmail.com, PWD: vanessa
+EMAIL: bradpitt@gmail.com, PWD: brad

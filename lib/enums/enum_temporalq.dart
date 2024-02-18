@@ -6,7 +6,7 @@ enum TemporalQ {
 
 extension ParseToString on TemporalQ {
   String toShortString() {
-    return this.toString().split('.').last;
+    return toString().split('.').last;
   }
 }
 
@@ -20,7 +20,7 @@ extension ParseToItalianString on TemporalQ {
       case TemporalQ.Sometimes:
         return "Saltuariamente";
       default:
-        return this.toShortString();
+        return toShortString();
     }
   }
 }

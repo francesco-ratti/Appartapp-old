@@ -151,8 +151,8 @@ class _AddApartment extends State<AddApartment> {
   }
 
   Widget header() {
-    return Row(
-      children: const <Widget>[
+    return const Row(
+      children: <Widget>[
         BackButton(),
         Center(
           child: Text(
@@ -308,7 +308,7 @@ class _AddApartment extends State<AddApartment> {
                 }
               }
             : null,
-        style: ElevatedButton.styleFrom(primary: Colors.black87),
+        style: ElevatedButton.styleFrom(backgroundColor: Colors.black87),
         child: Text(
           toEdit == null ? 'AGGIUNGI' : 'MODIFICA',
           style: const TextStyle(color: Colors.white),

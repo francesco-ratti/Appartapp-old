@@ -13,7 +13,7 @@ class RetryWidget extends StatelessWidget {
       required this.textColor,
       this.message =
           "Impossibile connettersi.\nControlla la connessione e riprova",
-      this.backgroundColor = null,
+      this.backgroundColor,
       this.retryButtonText = "Riprova"})
       : super(key: key);
 
@@ -34,7 +34,7 @@ class RetryWidget extends StatelessWidget {
                   )),
               ElevatedButton(
                   child: Text(retryButtonText),
-                  style: ElevatedButton.styleFrom(primary: Colors.brown),
+                  style: ElevatedButton.styleFrom(backgroundColor: Colors.brown),
                   onPressed: retryCallback)
             ])));
   }

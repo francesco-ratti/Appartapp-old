@@ -66,25 +66,25 @@ class User {
   }
 
   User.fromMap(Map map)
-      : this.id = map['id'],
-        this.email = map["email"],
-        this.name = map['name'],
-        this.surname = map['surname'],
-        this.birthday = DateTime.fromMillisecondsSinceEpoch(map['birthday']),
-        this.gender = Gender.values
+      : id = map['id'],
+        email = map["email"],
+        name = map['name'],
+        surname = map['surname'],
+        birthday = DateTime.fromMillisecondsSinceEpoch(map['birthday']),
+        gender = Gender.values
             .firstWhere((e) => e.toString() == 'Gender.' + map['gender']),
-        this.imagesDetails = map['images'],
-        this.images = fromImagesDetailsToImages(map['images']),
+        imagesDetails = map['images'],
+        images = fromImagesDetailsToImages(map['images']),
 
         //TO UNCOMMENT WHEN THIS DATA WILL BE ORESENT ALSO ON THE SERVER
 
-        this.bio = map['bio'],
-        this.reason = map['reason'],
-        this.month = mapMonth(map['month']),
-        this.job = map['job'],
-        this.income = map['income'],
-        this.smoker = mapTemporalQ(map['smoker']),
-        this.pets = map['pets'];
+        bio = map['bio'],
+        reason = map['reason'],
+        month = mapMonth(map['month']),
+        job = map['job'],
+        income = map['income'],
+        smoker = mapTemporalQ(map['smoker']),
+        pets = map['pets'];
 
   //TO DELETE WHEN THE PREVIOUS BLOCK WILL BE UNCOMMENTED
   //FAKE INITIALISATION

@@ -143,7 +143,7 @@ class _LoginState extends State<Login> {
                             ElevatedButton(
                                 child: const Text("Accedi"),
                                 style: ElevatedButton.styleFrom(
-                                    primary: Colors.brown),
+                                    backgroundColor: Colors.brown),
                                 onPressed: () {
                                   setState(() {
                                     status = "";

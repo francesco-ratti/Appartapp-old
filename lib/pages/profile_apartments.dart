@@ -57,14 +57,14 @@ Scaffold tabletLayout() {
     appBar: AppBar(
         backgroundColor: Colors.brown,
         elevation: 0,
-        title: Row(children: [
+        title: const Row(children: [
           Expanded(
-              child: Row(children: const [
+              child: Row(children: [
             Icon(Icons.person_sharp),
             Text("Il tuo profilo")
           ])),
           Expanded(
-            child: Row(children: const [
+            child: Row(children: [
               Icon(Icons.apartment_rounded),
               Text("I tuoi appartamenti")
             ]),

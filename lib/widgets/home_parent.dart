@@ -59,7 +59,7 @@ class _HomeParent extends State<HomeParent> {
                     },
                   )
                 ],
-                content: Container(
+                content: SizedBox(
                   height: 300,
                   width: 300,
                   child: ListView.builder(

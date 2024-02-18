@@ -64,7 +64,7 @@ class _TabWidgetTenant extends State<TabWidgetTenant> {
                         children: [
                           ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                                primary: Colors.brown,
+                                backgroundColor: Colors.brown,
                                 shape: const CircleBorder()),
                             onPressed: () {
                               Navigator.push(
@@ -81,7 +81,7 @@ class _TabWidgetTenant extends State<TabWidgetTenant> {
                                               currentApartment:
                                                   widget.apartment))));
                             },
-                            child: Container(
+                            child: SizedBox(
                                 width: 70,
                                 height: 70,
                                 child: widget.apartment!.images.isNotEmpty

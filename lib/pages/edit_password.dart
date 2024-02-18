@@ -82,7 +82,7 @@ class _EditPasswordState extends State<EditPassword> {
                 )),
             ElevatedButton(
                 child: const Text("Aggiorna"),
-                style: ElevatedButton.styleFrom(primary: Colors.brown),
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.brown),
                 onPressed: () {
                   String oldPassword = oldPasswordController.text;
                   if (oldPasswordController.text.trim().isEmpty ||

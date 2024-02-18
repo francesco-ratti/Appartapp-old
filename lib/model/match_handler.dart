@@ -19,12 +19,12 @@ class MatchHandler {
       "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/getmatchedapartments";
   static const urlStrFromDate =
       "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/getmatchedapartmentsfromdate";
-  List<LessorMatch>? _currentMatches = null;
-  List<LessorMatch>? _unseenMatches = null;
+  List<LessorMatch>? _currentMatches;
+  List<LessorMatch>? _unseenMatches;
 
   //List? oldResData = null;
 
-  DateTime? _lastShowedMatchDateTime = null;
+  DateTime? _lastShowedMatchDateTime;
   DateTime _lastReceivedMatchDateTime =
       DateTime.now().subtract(const Duration(days: 30));
 
@@ -82,11 +82,9 @@ class MatchHandler {
     if (_stop) {
       int? lastViewedMatchNew =
           RuntimeStore().getSharedPreferences()?.getInt("lastviewedmatch");
-      if (lastViewedMatchNew != null) {
-        _lastShowedMatchDateTime =
-            DateTime.fromMillisecondsSinceEpoch(lastViewedMatchNew);
-      }
-    } else {
+      _lastShowedMatchDateTime =
+          DateTime.fromMillisecondsSinceEpoch(lastViewedMatchNew);
+        } else {
       throw Exception(
           "Last match Datetime can be set only when matchhandler isn't running");
     }

@@ -39,54 +39,48 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
           List? resG =
           await GoogleAuthentication.signInWithGoogle(context: context);
 
-          if (resG != null) {
-            Fb.User? gUser = resG[0];
-            String accessToken = resG[1];
+          Fb.User? gUser = resG[0];
+          String accessToken = resG[1];
 
-            try {
-              List res = await LoginHandler.doLoginWithGoogleToken(
-                  gUser!, accessToken);
-              LoginResult loginResult = res[1];
-              switch (loginResult) {
-                case LoginResult.ok:
-                  AppUser.User appUser = res[0];
-                  RuntimeStore()
-                      .getSharedPreferences()
-                      ?.setBool("credentialslogin", false);
-                  RuntimeStore().setCredentialsLogin(false);
-                  doInitialisation(
-                      widget.parentContext,
-                      appUser,
-                      RuntimeStore().getSharedPreferences()
-                      as SharedPreferences);
-                  break;
-                case LoginResult.network_fail:
-                  widget.isLoadingCbk(false);
-                  Navigator.restorablePush(
-                      context, ErrorDialogBuilder.buildConnectionErrorRoute);
-                  break;
-                case LoginResult.wrong_credentials:
-                  widget.isLoadingCbk(false);
-                  Navigator.restorablePush(
-                      context, ErrorDialogBuilder.buildCredentialsErrorRoute);
-                  break;
-                case LoginResult.server_error:
-                  widget.isLoadingCbk(false);
-                  Navigator.restorablePush(context,
-                      ErrorDialogBuilder.buildGenericConnectionErrorRoute);
-                  break;
-              }
-            } on ConnectionException {
-              widget.isLoadingCbk(false);
-              Navigator.restorablePush(
-                  context, ErrorDialogBuilder.buildConnectionErrorRoute);
+          try {
+            List res = await LoginHandler.doLoginWithGoogleToken(
+                gUser!, accessToken);
+            LoginResult loginResult = res[1];
+            switch (loginResult) {
+              case LoginResult.ok:
+                AppUser.User appUser = res[0];
+                RuntimeStore()
+                    .getSharedPreferences()
+                    ?.setBool("credentialslogin", false);
+                RuntimeStore().setCredentialsLogin(false);
+                doInitialisation(
+                    widget.parentContext,
+                    appUser,
+                    RuntimeStore().getSharedPreferences()
+                    as SharedPreferences);
+                break;
+              case LoginResult.network_fail:
+                widget.isLoadingCbk(false);
+                Navigator.restorablePush(
+                    context, ErrorDialogBuilder.buildConnectionErrorRoute);
+                break;
+              case LoginResult.wrong_credentials:
+                widget.isLoadingCbk(false);
+                Navigator.restorablePush(
+                    context, ErrorDialogBuilder.buildCredentialsErrorRoute);
+                break;
+              case LoginResult.server_error:
+                widget.isLoadingCbk(false);
+                Navigator.restorablePush(context,
+                    ErrorDialogBuilder.buildGenericConnectionErrorRoute);
+                break;
             }
-          } else {
+          } on ConnectionException {
             widget.isLoadingCbk(false);
             Navigator.restorablePush(
-                context, ErrorDialogBuilder.buildGenericConnectionErrorRoute);
+                context, ErrorDialogBuilder.buildConnectionErrorRoute);
           }
-        },
+                },
       ),
     );
   }

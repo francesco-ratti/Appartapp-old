@@ -64,7 +64,7 @@ class RuntimeStore {
 
   //useful as singleton since this will be our temporary application state store
 
-  User? _user = null;
+  User? _user;
 
   late CookieJar cookieJar;
 
@@ -74,7 +74,7 @@ class RuntimeStore {
       receiveTimeout: 20 * 1000,
       sendTimeout: 20 * 1000));
 
-  SharedPreferences? _sharedPreferences = null;
+  SharedPreferences? _sharedPreferences;
 
   User? getUser() {
     return _user;
@@ -94,7 +94,7 @@ class RuntimeStore {
 
   Future<void> initDio() async {
     Directory appDocDir = await getApplicationDocumentsDirectory();
-    this.cookieJar = PersistCookieJar(
+    cookieJar = PersistCookieJar(
         persistSession: true,
         storage: FileStorage(appDocDir.path + '/.cookies/'));
     dio.interceptors.add(CookieManager(RuntimeStore().cookieJar));

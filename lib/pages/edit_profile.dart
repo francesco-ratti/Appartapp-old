@@ -46,14 +46,12 @@ class _EditProfileState extends State<EditProfile> {
     }
     LoginHandler.doLoginWithCookies().then((value) {
       User newUser = value[0];
-      if (newUser != null) {
-        RuntimeStore().setUser(newUser);
-        setState(() {
-          user = newUser;
-          init();
+      RuntimeStore().setUser(newUser);
+      setState(() {
+        user = newUser;
+        init();
+      });
         });
-      }
-    });
   }
 
   final emailController = TextEditingController();
@@ -149,7 +147,7 @@ class _EditProfileState extends State<EditProfile> {
 
     return ModalProgressHUD(
       child: ListView(
-        key: Key('scroll'),
+        key: const Key('scroll'),
         padding: const EdgeInsets.all(16.0),
         children: <Widget>[
           Padding(
@@ -282,7 +280,7 @@ class _EditProfileState extends State<EditProfile> {
           RuntimeStore().credentialsLogin
               ? ElevatedButton(
                   child: const Text("Modifica"),
-                  style: ElevatedButton.styleFrom(primary: Colors.brown),
+                  style: ElevatedButton.styleFrom(backgroundColor: Colors.brown),
                   onPressed: () {
                     String email = emailController.text;
                     String name = nameController.text;
@@ -384,21 +382,21 @@ class _EditProfileState extends State<EditProfile> {
           RuntimeStore().credentialsLogin
               ? ElevatedButton(
                   child: const Text("Aggiorna la password"),
-                  style: ElevatedButton.styleFrom(primary: Colors.brown),
+                  style: ElevatedButton.styleFrom(backgroundColor: Colors.brown),
                   onPressed: () {
                     Navigator.pushNamed(context, "/editpassword");
                   })
               : const SizedBox(),
           ElevatedButton(
               child: const Text("Modifica informazioni locatario"),
-              style: ElevatedButton.styleFrom(primary: Colors.brown),
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.brown),
               onPressed: () {
                 Navigator.pushNamed(context, "/edittenants");
               }),
           ElevatedButton(
               key: const Key('esci'),
               child: const Text("Esci"),
-              style: ElevatedButton.styleFrom(primary: Colors.red),
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
               onPressed: () async {
                 setState(() {
                   _isLoading = true;

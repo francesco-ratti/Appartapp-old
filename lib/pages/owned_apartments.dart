@@ -27,7 +27,7 @@ class _OwnedApartments extends State<OwnedApartments> {
     });
   }
 
-  List<Apartment>? ownedApartments = null;
+  List<Apartment>? ownedApartments;
   bool _networkError = false;
   bool _isLoading = false;
 
@@ -69,7 +69,7 @@ class _OwnedApartments extends State<OwnedApartments> {
     Future<List<Apartment>>? oldOwnedApartments =
         RuntimeStore().getOwnedApartments();
 
-    if (oldOwnedApartments != null) oldOwnedApartments.then(updateUi);
+    oldOwnedApartments.then(updateUi);
     updateApartments();
 
     RuntimeStore().addApartmentAddedCbk(callbck);

@@ -68,19 +68,19 @@ class Apartment {
   }
 
   Apartment.fromMap(Map map)
-      : this.id = map['id'],
-        this.listingTitle = map["listingTitle"],
-        this.description = map['description'],
-        this.price = map['price'],
-        this.address = map['address'],
-        this.additionalExpenseDetail = map['additionalExpenseDetail'],
-        this.imagesDetails = map['images'],
-        this.images = fromImagesDetailsToImages(map['images']),
-        this.owner = map['owner'] == null ? null : User.fromMap(map['owner']);
+      : id = map['id'],
+        listingTitle = map["listingTitle"],
+        description = map['description'],
+        price = map['price'],
+        address = map['address'],
+        additionalExpenseDetail = map['additionalExpenseDetail'],
+        imagesDetails = map['images'],
+        images = fromImagesDetailsToImages(map['images']),
+        owner = map['owner'] == null ? null : User.fromMap(map['owner']);
 
   Apartment.withLocalImages(this.id, this.listingTitle, this.description,
       this.price, this.address, this.additionalExpenseDetail, imagesUri)
-      : this.images = fromImagesUriToImages(imagesUri);
+      : images = fromImagesUriToImages(imagesUri);
 
   void _performRequest(BuildContext context, String urlStr) async {
     var dio = RuntimeStore().dio; //ok
@@ -88,7 +88,7 @@ class Apartment {
     try {
       Response response = await dio.post(
         urlStr,
-        data: {"apartmentid": this.id},
+        data: {"apartmentid": id},
         options: Options(
           contentType: Headers.formUrlEncodedContentType,
           headers: {"Content-Type": "application/x-www-form-urlencoded"},

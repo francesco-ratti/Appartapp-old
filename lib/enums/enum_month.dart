@@ -15,6 +15,6 @@ enum Month {
 
 extension ParseToString on Month {
   String toShortString() {
-    return this.toString().split('.').last;
+    return toString().split('.').last;
   }
 }

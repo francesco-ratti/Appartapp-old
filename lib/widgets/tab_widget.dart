@@ -65,7 +65,7 @@ class TabWidget extends StatelessWidget {
                             children: [
                               ElevatedButton(
                                   style: ElevatedButton.styleFrom(
-                                    primary: Colors.brown,
+                                    backgroundColor: Colors.brown,
                                     shape: const CircleBorder(),
                                   ),
                                   onPressed: () {
@@ -88,7 +88,7 @@ class TabWidget extends StatelessWidget {
                                                   match: false,
                                                 ))));
                                   },
-                                  child: Container(
+                                  child: SizedBox(
                                       width: 70,
                                       height: 70,
                                       child: owner!.images.isNotEmpty
@@ -111,7 +111,7 @@ class TabWidget extends StatelessWidget {
                             ? Expanded(
                                 child: ElevatedButton(
                                     style: ElevatedButton.styleFrom(
-                                      primary: Colors.brown,
+                                      backgroundColor: Colors.brown,
                                       shape: const CircleBorder(),
                                     ),
                                     onPressed: () {
@@ -126,10 +126,10 @@ class TabWidget extends StatelessWidget {
                                                       apartment:
                                                           currentApartment)));
                                     },
-                                    child: Container(
+                                    child: const SizedBox(
                                         width: 70,
                                         height: 70,
-                                        child: const Icon(
+                                        child: Icon(
                                           Icons.messenger,
                                         ))),
                               )

@@ -29,7 +29,7 @@ class _SignupState extends State<Signup> {
 
   DateTime _birthday = DateTime.now();
 
-  Gender? _gender = null;
+  Gender? _gender;
 
   @override
   Widget build(BuildContext context) {
@@ -137,7 +137,7 @@ class _SignupState extends State<Signup> {
                   ])),
               ElevatedButton(
                   child: const Text("Registrati"),
-                  style: ElevatedButton.styleFrom(primary: Colors.brown),
+                  style: ElevatedButton.styleFrom(backgroundColor: Colors.brown),
                   onPressed: () {
                     setState(() {
                       status = "";

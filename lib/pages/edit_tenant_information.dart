@@ -39,10 +39,10 @@ class _EditTenantInformationState extends State<EditTenantInformation> {
   static YesNoForList yesYN = YesNoForList("Sì", true);
   static YesNoForList noYN = YesNoForList("No", false);
 
-  Month? _month = null;
-  TemporalQ? _smokerTQ = null;
+  Month? _month;
+  TemporalQ? _smokerTQ;
 
-  YesNoForList? _petsItem = null;
+  YesNoForList? _petsItem;
   final List<YesNoForList> _petsEntries = <YesNoForList>[yesYN, noYN];
 
   @override
@@ -203,8 +203,10 @@ class _EditTenantInformationState extends State<EditTenantInformation> {
                     onChanged: (newValue) {
                       setState(() {
                         if (newValue != null) {
-                          if (!newValue.value) /* user has selected no pets */
+                          if (!newValue.value) {
+                            /* user has selected no pets */
                             petsController.text = "";
+                          }
                           setState(() {
                             _petsItem = newValue;
                           });
@@ -232,7 +234,7 @@ class _EditTenantInformationState extends State<EditTenantInformation> {
                   : const SizedBox(),
               ElevatedButton(
                   child: const Text("Modifica"),
-                  style: ElevatedButton.styleFrom(primary: Colors.brown),
+                  style: ElevatedButton.styleFrom(backgroundColor: Colors.brown),
                   onPressed: () {
                     String bio = bioController.text.trim();
                     String reason = reasonController.text.trim();
@@ -255,10 +257,8 @@ class _EditTenantInformationState extends State<EditTenantInformation> {
                       //onComplete
                       RuntimeStore().setUser(user);
                       Function() cbk = RuntimeStore().tenantInfoUpdated;
-                      if (cbk != null) {
-                        cbk();
-                      }
-                      Navigator.pop(context);
+                      cbk();
+                                          Navigator.pop(context);
                     }, () {
                       //onError
                       setState(() {

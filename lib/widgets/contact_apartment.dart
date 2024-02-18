@@ -55,7 +55,7 @@ class ContactApartment extends StatelessWidget {
   const ContactApartment(
       {Key? key,
       required this.textColor,
-      this.backgroundColor = null,
+      this.backgroundColor,
       required this.apartment})
       : super(key: key);
 
@@ -83,7 +83,7 @@ class ContactApartment extends StatelessWidget {
               padding: const EdgeInsets.all(8.0),
               child: ElevatedButton(
                   child: const Text("Scrivi un'email"),
-                  style: ElevatedButton.styleFrom(primary: Colors.brown),
+                  style: ElevatedButton.styleFrom(backgroundColor: Colors.brown),
                   onPressed: () async {
                     try {
                       final Email email = Email(

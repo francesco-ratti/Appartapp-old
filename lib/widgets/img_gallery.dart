@@ -42,12 +42,12 @@ class GalleryImage {
 
 class _ImgGalleryState extends State<ImgGallery> {
   List<GalleryImage> imagesToShow = [];
-  List<File> _toUpload = [];
+  final List<File> _toUpload = [];
   List<Function> onSubmitCbks = [];
   int currentOpenedPage = 0;
   int currentSmallImage = 0;
 
-  _ImgGalleryState({Key? key, required this.imagesToShow});
+  _ImgGalleryState({required this.imagesToShow});
 
   Future<void> getImage(ImgSource source) async {
     final PickedFile image = await ImagePickerGC.pickImage(

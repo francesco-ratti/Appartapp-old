@@ -9,8 +9,8 @@ class DisplayText extends StatelessWidget {
   const DisplayText(
       {Key? key,
       required this.title,
-      this.content = null,
-      this.contentWidget = null})
+      this.content,
+      this.contentWidget})
       : super(key: key);
 
   @override

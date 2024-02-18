@@ -6,7 +6,7 @@ enum Gender {
 
 extension ParseToString on Gender {
   String toShortString() {
-    return this.toString().split('.').last;
+    return toString().split('.').last;
   }
 }
 
@@ -20,7 +20,7 @@ extension ParseToItalianString on Gender {
       case Gender.NB:
         return "Non binario";
       default:
-        return this.toShortString();
+        return toShortString();
     }
   }
 }

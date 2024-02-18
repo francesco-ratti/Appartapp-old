@@ -60,7 +60,7 @@ class _InsertPasswordState extends State<InsertPassword> {
                         ElevatedButton(
                             child: const Text("Modifica"),
                                 style: ElevatedButton.styleFrom(
-                                    primary: Colors.brown),
+                                    backgroundColor: Colors.brown),
                                 onPressed: () {
                                   String password =
                                       passwordController.text.trim();

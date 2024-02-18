@@ -8,6 +8,6 @@ class LikeFromUser {
   LikeFromUser(this.apartment, this.user);
 
   LikeFromUser.fromMap(Map responseMap)
-      : this.apartment = Apartment.fromMap(responseMap["apartment"]),
-        this.user = User.fromMap(responseMap["user"]);
+      : apartment = Apartment.fromMap(responseMap["apartment"]),
+        user = User.fromMap(responseMap["user"]);
 }

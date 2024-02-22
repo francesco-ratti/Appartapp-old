@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "987576153663",
+    "project_id": "appartapp-5f260",
+    "storage_bucket": "appartapp-5f260.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:987576153663:android:11f2a8e957f6f7fc102a8a",
+        "android_client_info": {
+          "package_name": "com.polimi.mrf.appartapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "987576153663-dhser8l1gdtfc191on5ug94vg42u69sf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.polimi.mrf.appartapp",
+            "certificate_hash": "2724b91e2bbfb5be7ad2035d7eb9ddc59d03db13"
+          }
+        },
+        {
+          "client_id": "987576153663-enjpo5q4avduno4af9qg3elnksaeiiu1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAy7T4wU1YJPuq3lSUcS6cNqiXf0TSLcX8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "987576153663-enjpo5q4avduno4af9qg3elnksaeiiu1.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "987576153663-qh3tp2ph0fu1bkonut5vr1ic7s5mfkt6.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.polimi.mrf.appartapp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

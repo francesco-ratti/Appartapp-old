@@ -99,7 +99,7 @@ class Apartment {
         Navigator.restorablePush(
             context, ErrorDialogBuilder.buildGenericConnectionErrorRoute);
       }
-    } on DioError {
+    } on DioException {
       Navigator.restorablePush(
           context, ErrorDialogBuilder.buildConnectionErrorRoute);
     }

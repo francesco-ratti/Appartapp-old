@@ -167,7 +167,7 @@ class MatchHandler {
           _firstUpdateRun = false;
         }
       }
-    } on DioError {}
+    } on DioException {}
   }
 
   void addUpdateCallback(Function(List<LessorMatch>?) callback) {
@@ -208,7 +208,7 @@ class MatchHandler {
         await Future.delayed(const Duration(seconds: 30));
       }
     } catch (e) {
-      if (e is DioError || e is ConnectionException) {
+      if (e is DioException || e is ConnectionException) {
         stopPeriodicUpdate();
         startPeriodicUpdate();
       } else {

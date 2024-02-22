@@ -51,7 +51,7 @@ class ApartmentHandler {
         return ownedApartments;
       }
       throw ConnectionException();
-    } on DioError {
+    } on DioException {
       throw ConnectionException();
     }
   }
@@ -77,7 +77,7 @@ class ApartmentHandler {
         return apartment;
       }
       throw ConnectionException();
-    } on DioError {
+    } on DioException {
       throw ConnectionException();
     }
 
@@ -116,7 +116,7 @@ class ApartmentHandler {
       if (response.statusCode != 200) {
         onError();
       }
-    } on DioError {
+    } on DioException {
       onError();
     }
   }
@@ -167,7 +167,7 @@ class ApartmentHandler {
       if (response.statusCode != 200) onError();
 
       cbk();
-    } on DioError {
+    } on DioException {
       onError();
       cbk();
     }
@@ -189,7 +189,7 @@ class ApartmentHandler {
       if (response.statusCode != 200) onError();
 
       cbk();
-    } on DioError {
+    } on DioException {
       onError();
       cbk();
     }
@@ -225,7 +225,7 @@ class ApartmentHandler {
       if (response.statusCode != 200) onError();
 
       cbk();
-    } on DioError {
+    } on DioException {
       onError();
       cbk();
     }
@@ -257,7 +257,7 @@ class ApartmentHandler {
       if (response.statusCode != 200) onError();
 
       cbk();
-    } on DioError {
+    } on DioException {
       onError();
       cbk();
     }

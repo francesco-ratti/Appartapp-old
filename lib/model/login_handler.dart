@@ -47,12 +47,12 @@ class LoginHandler {
 
         return [user, LoginResult.ok];
       }
-    } on DioError catch (e) {
-      if (e.type == DioErrorType.connectTimeout ||
-          e.type == DioErrorType.receiveTimeout ||
-          e.type == DioErrorType.other ||
-          e.type == DioErrorType.sendTimeout ||
-          e.type == DioErrorType.cancel) {
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.connectionTimeout ||
+          e.type == DioExceptionType.receiveTimeout ||
+          e.type == DioExceptionType.unknown ||
+          e.type == DioExceptionType.sendTimeout ||
+          e.type == DioExceptionType.cancel) {
         throw ConnectionException();
       }
       if (e.response?.statusCode == 401) {
@@ -72,7 +72,7 @@ class LoginHandler {
       if (response.statusCode != 200) {
         throw ConnectionException();
       }
-    } on DioError {
+    } on DioException {
       throw ConnectionException();
     }
   }
@@ -101,12 +101,12 @@ class LoginHandler {
 
         return [user, LoginResult.ok];
       }
-    } on DioError catch (e) {
-      if (e.type == DioErrorType.connectTimeout ||
-          e.type == DioErrorType.receiveTimeout ||
-          e.type == DioErrorType.other ||
-          e.type == DioErrorType.sendTimeout ||
-          e.type == DioErrorType.cancel) {
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.connectionTimeout ||
+          e.type == DioExceptionType.receiveTimeout ||
+          e.type == DioExceptionType.unknown ||
+          e.type == DioExceptionType.sendTimeout ||
+          e.type == DioExceptionType.cancel) {
         throw ConnectionException();
       }
       if (e.response?.statusCode == 401) {
@@ -140,12 +140,12 @@ class LoginHandler {
 
         return [user, LoginResult.ok];
       }
-    } on DioError catch (e) {
-      if (e.type == DioErrorType.connectTimeout ||
-          e.type == DioErrorType.receiveTimeout ||
-          e.type == DioErrorType.other ||
-          e.type == DioErrorType.sendTimeout ||
-          e.type == DioErrorType.cancel) {
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.connectionTimeout ||
+          e.type == DioExceptionType.receiveTimeout ||
+          e.type == DioExceptionType.unknown ||
+          e.type == DioExceptionType.sendTimeout ||
+          e.type == DioExceptionType.cancel) {
         throw ConnectionException();
       }
       if (e.response?.statusCode == 401) {
@@ -193,7 +193,7 @@ class LoginHandler {
       } else {
         onError();
       }
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       if (e.response != null && e.response?.statusCode == 500) {
         updateUi("Impossibile iscriversi. Scegli altre credenziali.");
       } else {

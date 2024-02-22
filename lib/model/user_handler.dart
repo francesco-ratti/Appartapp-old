@@ -52,7 +52,7 @@ class UserHandler {
         return likeFromUser;
       }
       throw ConnectionException();
-    } on DioError {
+    } on DioException {
       throw ConnectionException();
     }
   }
@@ -75,7 +75,7 @@ class UserHandler {
       } else {
         onError();
       }
-    } on DioError {
+    } on DioException {
       onError();
     }
   }
@@ -116,7 +116,7 @@ class UserHandler {
       } else {
         onError();
       }
-    } on DioError {
+    } on DioException {
       onError();
     }
   }
@@ -139,7 +139,7 @@ class UserHandler {
       if (response.statusCode != 200) {
         onError();
       }
-    } on DioError {
+    } on DioException {
       onError();
     }
   }
@@ -181,7 +181,7 @@ class UserHandler {
       }
 
       cbk();
-    } on DioError {
+    } on DioException {
       onError();
       cbk();
     }
@@ -204,7 +204,7 @@ class UserHandler {
       }
 
       cbk();
-    } on DioError {
+    } on DioException {
       onError();
       cbk();
     }
@@ -232,7 +232,7 @@ class UserHandler {
         onError();
       }
       cbk();
-    } on DioError {
+    } on DioException {
       onError();
       cbk();
     }
@@ -271,14 +271,14 @@ class UserHandler {
         updateUi(false, "");
         onConnectionError();
       }
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       updateUi(false, "");
 
-      if (e.type == DioErrorType.connectTimeout ||
-          e.type == DioErrorType.receiveTimeout ||
-          e.type == DioErrorType.other ||
-          e.type == DioErrorType.sendTimeout ||
-          e.type == DioErrorType.cancel) {
+      if (e.type == DioExceptionType.connectionTimeout ||
+          e.type == DioExceptionType.receiveTimeout ||
+          e.type == DioExceptionType.unknown ||
+          e.type == DioExceptionType.sendTimeout ||
+          e.type == DioExceptionType.cancel) {
         onConnectionError();
       } else if (e.response?.statusCode == 401) {
         //unauthorized

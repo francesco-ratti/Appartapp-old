@@ -14,7 +14,7 @@ class GoogleAuthentication {
     return firebaseApp;
   }
 
-  static Future<List?> signInWithGoogle({required BuildContext context}) async {
+  static Future<List> signInWithGoogle({required BuildContext context}) async {
     FirebaseAuth auth = FirebaseAuth.instance;
     User? user;
     String? accessToken;

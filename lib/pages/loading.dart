@@ -84,7 +84,7 @@ class _LoadingState extends State<Loading> {
     bool? tourCompleted = prefs.getBool('tourcompleted');
     bool? logged = prefs.getBool('logged');
     RuntimeStore().initDio().then((value) {
-      if (tourCompleted) {
+      if (tourCompleted != null && tourCompleted) {
         if (logged == false) {
           RuntimeStore().cookieJar.deleteAll();
           Navigator.pushReplacementNamed(context, '/loginorsignup');

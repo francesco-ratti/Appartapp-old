@@ -18,7 +18,12 @@ class LoginHandler {
 
   static Future<List> doLoginWithGoogleToken(
       fb.User user, String accessToken) async {
-    String idToken = await user.getIdToken();
+    String? idToken = await user.getIdToken();
+
+    if (idToken==null) {
+      throw ConnectionException();
+    }
+
     var dio = RuntimeStore().dio; //ok
     try {
       Response response = await dio.post(

@@ -82,8 +82,7 @@ class MatchHandler {
     if (_stop) {
       int? lastViewedMatchNew =
           RuntimeStore().getSharedPreferences()?.getInt("lastviewedmatch");
-      _lastShowedMatchDateTime =
-          DateTime.fromMillisecondsSinceEpoch(lastViewedMatchNew);
+      _lastShowedMatchDateTime = lastViewedMatchNew == null ? DateTime.fromMillisecondsSinceEpoch(0) : DateTime.fromMillisecondsSinceEpoch(lastViewedMatchNew);
         } else {
       throw Exception(
           "Last match Datetime can be set only when matchhandler isn't running");

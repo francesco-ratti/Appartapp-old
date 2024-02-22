@@ -69,7 +69,7 @@ class _OwnedApartments extends State<OwnedApartments> {
     Future<List<Apartment>>? oldOwnedApartments =
         RuntimeStore().getOwnedApartments();
 
-    oldOwnedApartments.then(updateUi);
+    oldOwnedApartments?.then(updateUi);
     updateApartments();
 
     RuntimeStore().addApartmentAddedCbk(callbck);

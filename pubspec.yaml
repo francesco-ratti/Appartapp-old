@@ -52,7 +52,7 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
   http: any
-  dio: ^4.0.4
+  dio: ^5.4.1
   cookie_jar: any
   dio_cookie_manager: ^2.0.0
   google_fonts: any

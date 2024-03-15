@@ -8,26 +8,26 @@ import '../utils_classes/runtime_store.dart';
 
 class ApartmentHandler {
   static const String urlStrGetNextNewApartment =
-      "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/getnextnewapartment";
+      "http://10.0.2.2/appart-1.0-SNAPSHOT/api/reserved/getnextnewapartment";
   static const String urlStrGetAllNewApartments =
-      "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/getallnewapartments";
+      "http://10.0.2.2/appart-1.0-SNAPSHOT/api/reserved/getallnewapartments";
   static const String urlStrGetOwnedApartments =
-      "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/getownedapartments";
+      "http://10.0.2.2/appart-1.0-SNAPSHOT/api/reserved/getownedapartments";
   static const likeApartmentUrlStr =
-      "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/likeapartment";
+      "http://10.0.2.2/appart-1.0-SNAPSHOT/api/reserved/likeapartment";
   static const ignoreApartmentUrlStr =
-      "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/ignoreapartment";
+      "http://10.0.2.2/appart-1.0-SNAPSHOT/api/reserved/ignoreapartment";
   static const String createApartmentUrlStr =
-      "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/createapartment";
+      "http://10.0.2.2/appart-1.0-SNAPSHOT/api/reserved/createapartment";
 
   static const String editApartmentUrlStr =
-      "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/editapartment";
+      "http://10.0.2.2/appart-1.0-SNAPSHOT/api/reserved/editapartment";
 
   static const String removeImagesUrlStr =
-      "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/deleteapartmentimage";
+      "http://10.0.2.2/appart-1.0-SNAPSHOT/api/reserved/deleteapartmentimage";
 
   static const String addImagesUrlStr =
-      "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/addapartmentimage";
+      "http://10.0.2.2/appart-1.0-SNAPSHOT/api/reserved/addapartmentimage";
 
   static Future<List<Apartment>> getOwnedApartments() async {
     var dio = RuntimeStore().dio; //ok

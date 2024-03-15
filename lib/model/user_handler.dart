@@ -11,26 +11,26 @@ import 'package:dio/dio.dart';
 
 class UserHandler {
   static const String urlStrGetNextNewUser =
-      "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/getnextnewuser";
+      "http://10.0.2.2/appart-1.0-SNAPSHOT/api/reserved/getnextnewuser";
 
   static const String editUserUrlStr =
-      "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/edituser";
+      "http://10.0.2.2/appart-1.0-SNAPSHOT/api/reserved/edituser";
 
   /*final String urlStrGetAllNewUsers =
-      "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/getallnewusers";*/
+      "http://10.0.2.2/appart-1.0-SNAPSHOT/api/reserved/getallnewusers";*/
 
   static const String editSensitiveUrlStr =
-      "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/editsensitive";
+      "http://10.0.2.2/appart-1.0-SNAPSHOT/api/reserved/editsensitive";
 
   static const likeUserUrlStr =
-      "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/likeuser";
+      "http://10.0.2.2/appart-1.0-SNAPSHOT/api/reserved/likeuser";
   static const ignoreUserUrlStr =
-      "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/ignoreuser";
+      "http://10.0.2.2/appart-1.0-SNAPSHOT/api/reserved/ignoreuser";
 
   static const String addImagesUrlStr =
-      "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/adduserimage";
+      "http://10.0.2.2/appart-1.0-SNAPSHOT/api/reserved/adduserimage";
   static const String removeImagesUrlStr =
-      "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/deleteuserimage";
+      "http://10.0.2.2/appart-1.0-SNAPSHOT/api/reserved/deleteuserimage";
 
   static Future<LikeFromUser?> getNewLikeFromUser(
       Function(LikeFromUser) callback) async {

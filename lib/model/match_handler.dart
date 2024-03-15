@@ -16,9 +16,9 @@ class MatchHandler {
   MatchHandler._internal();
 
   static const urlStr =
-      "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/getmatchedapartments";
+      "http://10.0.2.2/appart-1.0-SNAPSHOT/api/reserved/getmatchedapartments";
   static const urlStrFromDate =
-      "http://ratti.dynv6.net/appartapp-1.0-SNAPSHOT/api/reserved/getmatchedapartmentsfromdate";
+      "http://10.0.2.2/appart-1.0-SNAPSHOT/api/reserved/getmatchedapartmentsfromdate";
   List<LessorMatch>? _currentMatches;
   List<LessorMatch>? _unseenMatches;
 

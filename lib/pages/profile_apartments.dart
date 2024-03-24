@@ -30,6 +30,7 @@ DefaultTabController mobileLayout() {
         backgroundColor: Colors.brown,
         elevation: 0,
         title: const TabBar(
+          labelColor: Colors.white,
           tabs: [
             Tab(
               icon: Icon(Icons.person_sharp),

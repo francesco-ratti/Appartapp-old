@@ -76,7 +76,7 @@ class _LoginState extends State<Login> {
   Widget build(BuildContext context) {
     return (Scaffold(
       appBar: AppBar(
-        title: const Text('Accedi'),
+        title: const Text('Accedi', style: TextStyle(color: Colors.white)),
         backgroundColor: Colors.brown,
       ),
       backgroundColor: widget.bgColor,
@@ -141,7 +141,7 @@ class _LoginState extends State<Login> {
                                   ),
                                 )),
                             ElevatedButton(
-                                child: const Text("Accedi"),
+                                child: const Text("Accedi", style: TextStyle(color: Colors.white)),
                                 style: ElevatedButton.styleFrom(
                                     backgroundColor: Colors.brown),
                                 onPressed: () {

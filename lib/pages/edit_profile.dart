@@ -110,7 +110,7 @@ class _EditProfileState extends State<EditProfile> {
         .imagesDetails) {
       existingImages.add(
           GalleryImage(Image.network(
-            'http://10.0.2.2/appart-1.0-SNAPSHOT/api/images/users/${im['id']}',
+            'http://localhost:8080/appart-1.0-SNAPSHOT/api/images/users/${im['id']}',
             loadingBuilder: (BuildContext context, Widget child,
                 ImageChunkEvent? loadingProgress) {
               if (loadingProgress == null) {

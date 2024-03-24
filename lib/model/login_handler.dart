@@ -8,13 +8,13 @@ import 'package:firebase_auth/firebase_auth.dart' as fb;
 
 class LoginHandler {
   static const String urlStr =
-      "http://10.0.2.2/appart-1.0-SNAPSHOT/api/login";
+      "http://localhost:8080/appart-1.0-SNAPSHOT/api/login";
 
   static const String urlInvalidateStr =
-      "http://10.0.2.2/appart-1.0-SNAPSHOT/api/invalidatesession";
+      "http://localhost:8080/appart-1.0-SNAPSHOT/api/invalidatesession";
 
   static const String signupUrlStr =
-      "http://10.0.2.2/appart-1.0-SNAPSHOT/api/signup";
+      "http://localhost:8080/appart-1.0-SNAPSHOT/api/signup";
 
   static Future<List> doLoginWithGoogleToken(
       fb.User user, String accessToken) async {

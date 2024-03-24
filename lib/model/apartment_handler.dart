@@ -8,26 +8,26 @@ import '../utils_classes/runtime_store.dart';
 
 class ApartmentHandler {
   static const String urlStrGetNextNewApartment =
-      "http://10.0.2.2/appart-1.0-SNAPSHOT/api/reserved/getnextnewapartment";
+      "http://localhost:8080/appart-1.0-SNAPSHOT/api/reserved/getnextnewapartment";
   static const String urlStrGetAllNewApartments =
-      "http://10.0.2.2/appart-1.0-SNAPSHOT/api/reserved/getallnewapartments";
+      "http://localhost:8080/appart-1.0-SNAPSHOT/api/reserved/getallnewapartments";
   static const String urlStrGetOwnedApartments =
-      "http://10.0.2.2/appart-1.0-SNAPSHOT/api/reserved/getownedapartments";
+      "http://localhost:8080/appart-1.0-SNAPSHOT/api/reserved/getownedapartments";
   static const likeApartmentUrlStr =
-      "http://10.0.2.2/appart-1.0-SNAPSHOT/api/reserved/likeapartment";
+      "http://localhost:8080/appart-1.0-SNAPSHOT/api/reserved/likeapartment";
   static const ignoreApartmentUrlStr =
-      "http://10.0.2.2/appart-1.0-SNAPSHOT/api/reserved/ignoreapartment";
+      "http://localhost:8080/appart-1.0-SNAPSHOT/api/reserved/ignoreapartment";
   static const String createApartmentUrlStr =
-      "http://10.0.2.2/appart-1.0-SNAPSHOT/api/reserved/createapartment";
+      "http://localhost:8080/appart-1.0-SNAPSHOT/api/reserved/createapartment";
 
   static const String editApartmentUrlStr =
-      "http://10.0.2.2/appart-1.0-SNAPSHOT/api/reserved/editapartment";
+      "http://localhost:8080/appart-1.0-SNAPSHOT/api/reserved/editapartment";
 
   static const String removeImagesUrlStr =
-      "http://10.0.2.2/appart-1.0-SNAPSHOT/api/reserved/deleteapartmentimage";
+      "http://localhost:8080/appart-1.0-SNAPSHOT/api/reserved/deleteapartmentimage";
 
   static const String addImagesUrlStr =
-      "http://10.0.2.2/appart-1.0-SNAPSHOT/api/reserved/addapartmentimage";
+      "http://localhost:8080/appart-1.0-SNAPSHOT/api/reserved/addapartmentimage";
 
   static Future<List<Apartment>> getOwnedApartments() async {
     var dio = RuntimeStore().dio; //ok

@@ -35,7 +35,7 @@ class Apartment {
     List<Image> images = [];
     for (final Map im in imagesDetails) {
       images.add(Image.network(
-        'http://10.0.2.2/appart-1.0-SNAPSHOT/api/images/apartments/${im['id']}',
+        'http://localhost:8080/appart-1.0-SNAPSHOT/api/images/apartments/${im['id']}',
         loadingBuilder: (BuildContext context, Widget child,
             ImageChunkEvent? loadingProgress) {
           if (loadingProgress == null) {

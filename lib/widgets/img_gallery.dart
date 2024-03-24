@@ -265,7 +265,7 @@ class _ImgGalleryState extends State<ImgGallery> {
                                     height: 70,
                                     width: 70,
                                     child: FloatingActionButton(
-                                      child: const Icon(Icons.remove),
+                                      child: const Icon(Icons.remove, color: Colors.white),
                                       backgroundColor: Colors.brown,
                                       onPressed: () {
                                         Navigator.of(context).pop();
@@ -321,7 +321,7 @@ class _ImgGalleryState extends State<ImgGallery> {
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: FloatingActionButton(
-                        child: const Icon(Icons.camera),
+                        child: const Icon(Icons.camera, color: Colors.white),
                         backgroundColor: Colors.brown,
                         onPressed: () => getImage(ImageSource.camera),
                       ),
@@ -329,7 +329,7 @@ class _ImgGalleryState extends State<ImgGallery> {
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: FloatingActionButton(
-                        child: const Icon(Icons.browse_gallery),
+                        child: const Icon(Icons.browse_gallery, color: Colors.white),
                         backgroundColor: Colors.brown,
                         onPressed: () => getImage(ImageSource.gallery),
                       ),

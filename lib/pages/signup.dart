@@ -40,7 +40,7 @@ class _SignupState extends State<Signup> {
 
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Registrati'),
+          title: const Text('Registrati', style: TextStyle(color: Colors.white)),
           backgroundColor: Colors.brown,
         ),
         backgroundColor: bgColor,
@@ -136,7 +136,7 @@ class _SignupState extends State<Signup> {
                     ) //)
                   ])),
               ElevatedButton(
-                  child: const Text("Registrati"),
+                  child: const Text("Registrati", style: TextStyle(color: Colors.white)),
                   style: ElevatedButton.styleFrom(backgroundColor: Colors.brown),
                   onPressed: () {
                     setState(() {

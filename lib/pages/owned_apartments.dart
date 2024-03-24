@@ -98,7 +98,7 @@ class _OwnedApartments extends State<OwnedApartments> {
                           builder: (context) => const AddApartment()),
                     );
                   },
-                  child: const Icon(Icons.add),
+                  child: const Icon(Icons.add, color: Colors.white),
                 ),
                 body: ModalProgressHUD(
                   child: ownedApartments == null

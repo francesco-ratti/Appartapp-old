@@ -33,7 +33,7 @@ class RetryWidget extends StatelessWidget {
                     textAlign: TextAlign.center,
                   )),
               ElevatedButton(
-                  child: Text(retryButtonText),
+                  child: Text(retryButtonText, style: const TextStyle(color: Colors.white)),
                   style: ElevatedButton.styleFrom(backgroundColor: Colors.brown),
                   onPressed: retryCallback)
             ])));

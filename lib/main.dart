@@ -1,3 +1,4 @@
+import 'package:appartapp/pages/credit_scoring.dart';
 import 'package:appartapp/pages/edit_password.dart';
 import 'package:appartapp/pages/edit_tenant_information.dart';
 import 'package:appartapp/pages/loading.dart';
@@ -24,6 +25,7 @@ void main() {
       '/login': (context) => const Login(),
       '/signup': (context) => const Signup(),
       '/editpassword': (context) => const EditPassword(),
+      '/creditscoring': (context) => const CreditScoring(),
       '/edittenants': (context) => EditTenantInformation(),
       '/matches': (context) => const Matches(),
     },

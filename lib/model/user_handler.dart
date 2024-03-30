@@ -288,4 +288,17 @@ class UserHandler {
       }
     }
   }
+
+  static Future<String?> getCreditInfo() async {
+    // TODO(Mario): fetch credit info from the server
+    await Future.delayed(Duration(seconds: 1)); // Simulating network delay
+    return null;
+    return "Credit info: €100";
+  }
+
+  static Future<void> addCreditInfo(File file) async {
+    // TODO(Mario): save the file and update the credit info accordingly
+    await Future.delayed(Duration(seconds: 1)); // Simulating file upload delay
+    print('File uploaded: ${file.path}');
+  }
 }

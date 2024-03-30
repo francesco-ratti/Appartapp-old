@@ -387,6 +387,12 @@ class _EditProfileState extends State<EditProfile> {
                     Navigator.pushNamed(context, "/editpassword");
                   })
               : const SizedBox(),
+          ElevatedButton( 
+                  child: const Text("Gestisci il tuo credit scoring", style: TextStyle(color: Colors.white)),
+                  style: ElevatedButton.styleFrom(backgroundColor: Colors.brown),
+                  onPressed: () {
+                    Navigator.pushNamed(context, "/creditscoring");
+                  }),
           ElevatedButton(
               child: const Text("Modifica informazioni locatario", style: TextStyle(color: Colors.white)),
               style: ElevatedButton.styleFrom(backgroundColor: Colors.brown),

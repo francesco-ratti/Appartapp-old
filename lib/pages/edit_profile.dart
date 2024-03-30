@@ -110,7 +110,7 @@ class _EditProfileState extends State<EditProfile> {
         .imagesDetails) {
       existingImages.add(
           GalleryImage(Image.network(
-            'http://10.0.2.2/appart-1.0-SNAPSHOT/api/images/users/${im['id']}',
+            'http://localhost:8080/appart-1.0-SNAPSHOT/api/images/users/${im['id']}',
             loadingBuilder: (BuildContext context, Widget child,
                 ImageChunkEvent? loadingProgress) {
               if (loadingProgress == null) {
@@ -279,7 +279,7 @@ class _EditProfileState extends State<EditProfile> {
                   )),
           RuntimeStore().credentialsLogin
               ? ElevatedButton(
-                  child: const Text("Modifica"),
+                  child: const Text("Modifica", style: TextStyle(color: Colors.white)),
                   style: ElevatedButton.styleFrom(backgroundColor: Colors.brown),
                   onPressed: () {
                     String email = emailController.text;
@@ -381,21 +381,21 @@ class _EditProfileState extends State<EditProfile> {
           ),
           RuntimeStore().credentialsLogin
               ? ElevatedButton(
-                  child: const Text("Aggiorna la password"),
+                  child: const Text("Aggiorna la password", style: TextStyle(color: Colors.white)),
                   style: ElevatedButton.styleFrom(backgroundColor: Colors.brown),
                   onPressed: () {
                     Navigator.pushNamed(context, "/editpassword");
                   })
               : const SizedBox(),
           ElevatedButton(
-              child: const Text("Modifica informazioni locatario"),
+              child: const Text("Modifica informazioni locatario", style: TextStyle(color: Colors.white)),
               style: ElevatedButton.styleFrom(backgroundColor: Colors.brown),
               onPressed: () {
                 Navigator.pushNamed(context, "/edittenants");
               }),
           ElevatedButton(
               key: const Key('esci'),
-              child: const Text("Esci"),
+              child: const Text("Esci", style: TextStyle(color: Colors.white)),
               style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
               onPressed: () async {
                 setState(() {

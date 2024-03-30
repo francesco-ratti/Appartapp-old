@@ -11,26 +11,26 @@ import 'package:dio/dio.dart';
 
 class UserHandler {
   static const String urlStrGetNextNewUser =
-      "http://10.0.2.2/appart-1.0-SNAPSHOT/api/reserved/getnextnewuser";
+      "http://localhost:8080/appart-1.0-SNAPSHOT/api/reserved/getnextnewuser";
 
   static const String editUserUrlStr =
-      "http://10.0.2.2/appart-1.0-SNAPSHOT/api/reserved/edituser";
+      "http://localhost:8080/appart-1.0-SNAPSHOT/api/reserved/edituser";
 
   /*final String urlStrGetAllNewUsers =
-      "http://10.0.2.2/appart-1.0-SNAPSHOT/api/reserved/getallnewusers";*/
+      "http://localhost:8080/appart-1.0-SNAPSHOT/api/reserved/getallnewusers";*/
 
   static const String editSensitiveUrlStr =
-      "http://10.0.2.2/appart-1.0-SNAPSHOT/api/reserved/editsensitive";
+      "http://localhost:8080/appart-1.0-SNAPSHOT/api/reserved/editsensitive";
 
   static const likeUserUrlStr =
-      "http://10.0.2.2/appart-1.0-SNAPSHOT/api/reserved/likeuser";
+      "http://localhost:8080/appart-1.0-SNAPSHOT/api/reserved/likeuser";
   static const ignoreUserUrlStr =
-      "http://10.0.2.2/appart-1.0-SNAPSHOT/api/reserved/ignoreuser";
+      "http://localhost:8080/appart-1.0-SNAPSHOT/api/reserved/ignoreuser";
 
   static const String addImagesUrlStr =
-      "http://10.0.2.2/appart-1.0-SNAPSHOT/api/reserved/adduserimage";
+      "http://localhost:8080/appart-1.0-SNAPSHOT/api/reserved/adduserimage";
   static const String removeImagesUrlStr =
-      "http://10.0.2.2/appart-1.0-SNAPSHOT/api/reserved/deleteuserimage";
+      "http://localhost:8080/appart-1.0-SNAPSHOT/api/reserved/deleteuserimage";
 
   static Future<LikeFromUser?> getNewLikeFromUser(
       Function(LikeFromUser) callback) async {
